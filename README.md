@@ -14,6 +14,16 @@ Assure-toi d'avoir installé :
 
 ---
 
+## 📚 Documentation
+
+Pour comprendre l'architecture et le fonctionnement interne du projet, consulte les guides suivants :
+
+- [🏗 Architecture Technique](docs/ARCHITECTURE.md)
+- [🗄 Base de Données](docs/DATABASE.md)
+- [🔄 Flux de Données](docs/DATA_FLOW.md)
+
+---
+
 ## 📥 Installation
 
 1. Cloner le dépôt (si ce n'est pas déjà fait).
