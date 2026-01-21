@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const { userId } = await auth();
 
     if (!userId) {
-        return new NextResponse("Non autorisé", { status: 401 });
+        return NextResponse.json({ error: "User not authenticated" }, { status: 401 });
     }
 
     try {
@@ -33,6 +33,6 @@ export async function POST(req: Request) {
 
     } catch (error) {
         console.error("S3 Upload Error:", error);
-        return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to generate the URL" }, { status: 500 });
     }
 }
