@@ -6,7 +6,7 @@ import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Separator } from "@/app/components/ui/separator";
 import { getPublicImageUrl } from "@/lib/image-helper";
-import { ChevronLeft, Download, ShieldCheck, Zap, User } from "lucide-react";
+import { ChevronLeft, Download, ShieldCheck, Zap, User, Package } from "lucide-react";
 import Link from "next/link";
 import { createClerkClient } from "@clerk/nextjs/server"; // Import pour le serveur
 import { createSingleProductCheckout } from "@/app/actions/transaction"; // Import de l'action de transaction
@@ -68,6 +68,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
     } catch (error) {
         console.error("Erreur lors de la récupération du vendeur Clerk:", error);
     }
+
+    // CHECK IF USER IS THE SELLER
+    const isOwnProduct = userId && product.sellerId === userId;
 
     return (
         <div className="min-h-screen bg-background">
@@ -179,6 +182,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                             </Button>
                                             <p className="text-xs text-center text-muted-foreground">
                                                 Vous possédez déjà ce produit ✅
+                                            </p>
+                                        </div>
+                                    ) : isOwnProduct ? (
+                                        <div className="space-y-3">
+                                            <div className="w-full text-lg h-14 flex items-center justify-center bg-muted-foreground/10 rounded-lg border-2 border-primary/20">
+                                                <Package className="mr-2 h-5 w-5 text-primary" />
+                                                <span className="font-semibold text-primary">Votre produit</span>
+                                            </div>
+                                            <p className="text-xs text-center text-muted-foreground">
+                                                Vous ne pouvez pas acheter vos propres produits
                                             </p>
                                         </div>
                                     ) : !userId ? (
