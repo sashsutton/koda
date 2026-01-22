@@ -26,9 +26,14 @@ export function ProductCard({ product }: ProductCardProps) {
         <Card className="flex flex-col h-full hover:shadow-lg transition-all duration-300 border-border/50 group">
             <CardHeader className="p-4">
                 <div className="flex justify-between items-start gap-2">
-                    <Badge variant="secondary" className="text-xs font-medium">
-                        {product.category}
-                    </Badge>
+                    <div className="flex gap-2 flex-wrap">
+                        <Badge variant="secondary" className="text-xs font-medium">
+                            {product.category}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs font-medium border-primary/50 text-primary">
+                            {product.platform}
+                        </Badge>
+                    </div>
                     <span className="font-bold text-lg text-primary">{product.price} €</span>
                 </div>
             </CardHeader>

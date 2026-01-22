@@ -131,9 +131,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                 )}
                             </div>
                             <CardContent className="p-8">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <Badge variant="outline" className="capitalize">
+                                <div className="flex items-center gap-3 mb-4 flex-wrap">
+                                    <Badge variant="outline" className="capitalize text-sm">
                                         {product.category}
+                                    </Badge>
+                                    <Badge className="bg-primary/90 hover:bg-primary text-sm">
+                                        {product.platform}
                                     </Badge>
                                     {hasPurchased && (
                                         <Badge className="bg-green-600 hover:bg-green-700 text-white gap-1">
