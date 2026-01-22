@@ -11,6 +11,14 @@ import { deleteProduct } from "@/app/actions/product-management";
 import { getMyOrders } from "@/app/actions/dashboard";
 import { Download, ShoppingBag } from "lucide-react";
 import { getPublicImageUrl } from "@/lib/image-helper";
+import Image from "next/image";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: 'Dashboard - Koda',
+    description: 'Gérez vos produits, consultez vos ventes et vos achats sur Koda',
+    robots: 'noindex, nofollow', // Dashboard privé
+};
 
 export default async function DashboardPage() {
     const { userId } = await auth();
@@ -222,7 +230,13 @@ export default async function DashboardPage() {
                                 <Card key={product._id} className="overflow-hidden group">
                                     <div className="aspect-video bg-muted relative">
                                         {product.previewImageUrl ? (
-                                            <img src={getPublicImageUrl(product.previewImageUrl)} alt={product.title} className="object-cover w-full h-full" />
+                                            <Image
+                                                src={getPublicImageUrl(product.previewImageUrl)}
+                                                alt={product.title}
+                                                width={400}
+                                                height={225}
+                                                className="object-cover w-full h-full"
+                                            />
                                         ) : (
                                             <div className="flex items-center justify-center w-full h-full text-muted-foreground">
                                                 <Package className="h-10 w-10 opacity-20" />

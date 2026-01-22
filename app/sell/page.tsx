@@ -7,6 +7,13 @@ import { getStripeOnboardingLink } from "@/app/actions/stripe-connect";
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { Wallet } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: 'Vendre une Automatisation - Koda',
+    description: 'Publiez votre automatisation sur Koda et commencez à vendre vos workflows',
+    robots: 'noindex, nofollow',
+};
 
 export default async function SellPage() {
     const { userId } = await auth();

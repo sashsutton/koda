@@ -11,6 +11,7 @@ import Link from "next/link";
 import { createClerkClient } from "@clerk/nextjs/server"; // Import pour le serveur
 import { createSingleProductCheckout } from "@/app/actions/transaction"; // Import de l'action de transaction
 import { redirect } from "next/navigation";
+import Image from "next/image";
 
 const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
 
@@ -21,6 +22,31 @@ interface ProductPageProps {
 import { auth } from "@clerk/nextjs/server";
 import { getDownloadUrl } from "@/lib/s3";
 import Purchase from "@/models/Purchase";
+import { Metadata } from "next";
+
+// Generate dynamic metadata for SEO
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+    const { id } = await params;
+
+    await connectToDatabase();
+    const product = await Automation.findById(id).lean();
+
+    if (!product) {
+        return {
+            title: 'Produit introuvable - Koda',
+        };
+    }
+
+    return {
+        title: `${product.title} - Koda`,
+        description: product.description.slice(0, 160),
+        openGraph: {
+            title: product.title,
+            description: product.description.slice(0, 160),
+            images: product.previewImageUrl ? [getPublicImageUrl(product.previewImageUrl)] : [],
+        },
+    };
+}
 
 export default async function ProductPage({ params }: ProductPageProps) {
     const { id } = await params;
@@ -88,10 +114,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
                         <Card className="overflow-hidden border-border/50 bg-card/50 backdrop-blur">
                             <div className="aspect-video bg-muted flex items-center justify-center border-b relative group">
                                 {product.previewImageUrl ? (
-                                    <img
+                                    <Image
                                         src={getPublicImageUrl(product.previewImageUrl)}
                                         alt={product.title}
+                                        width={1200}
+                                        height={675}
                                         className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+                                        priority
+                                        unoptimized
                                     />
                                 ) : (
                                     <div className="flex flex-col items-center gap-3 text-muted-foreground">

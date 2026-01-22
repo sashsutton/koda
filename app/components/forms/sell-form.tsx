@@ -24,6 +24,7 @@ import {
 } from "@/app/components/ui/select";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/app/components/ui/card";
 import { UploadCloud, Loader2, X } from "lucide-react";
+import Image from "next/image";
 
 export function SellForm() {
     const router = useRouter();
@@ -244,7 +245,13 @@ export function SellForm() {
                                 />
                             ) : (
                                 <div className="space-y-2">
-                                    <img src={getPublicImageUrl(previewImageUrl)} alt="Preview" className="w-full h-48 object-cover rounded-md" />
+                                    <Image
+                                        src={getPublicImageUrl(previewImageUrl)}
+                                        alt="Preview"
+                                        width={600}
+                                        height={300}
+                                        className="w-full h-48 object-cover rounded-md"
+                                    />
                                     <Button variant="destructive" size="sm" onClick={() => setPreviewImageUrl("")} className="w-full">
                                         Supprimer l'image
                                     </Button>
