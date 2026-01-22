@@ -8,7 +8,6 @@ import User from "@/models/User"; // Gardé pour vérification, même si on ne t
 import { redirect } from "next/navigation";
 import { getPublicImageUrl } from "@/lib/image-helper";
 import { IAutomation } from "@/types/automation"; // Assure-toi d'avoir cet import
-import { checkRateLimit } from "@/lib/ratelimit";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -17,12 +16,6 @@ export async function createCheckoutSession(items: IAutomation[]) {
     const { userId } = await auth();
     if (!userId) {
         redirect("/sign-in");
-    }
-
-    // Rate Limiting
-    const { success } = await checkRateLimit(userId);
-    if (!success) {
-        throw new Error("Trop de requêtes. Veuillez réessayer dans quelques secondes.");
     }
 
     // 2. Vérification URL de l'app

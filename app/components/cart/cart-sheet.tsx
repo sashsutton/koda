@@ -1,4 +1,4 @@
-// app/components/cart/cart-sheet.tsx
+
 "use client";
 
 import { ShoppingCart, Trash2, Loader2 } from "lucide-react";
@@ -7,7 +7,7 @@ import { Button } from "@/app/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/app/components/ui/sheet";
 import { Separator } from "@/app/components/ui/separator";
 import { useEffect, useState, useTransition } from "react";
-// Import de notre nouvelle action serveur
+
 import { createCheckoutSession } from "@/app/actions/transaction";
 import { toast } from "sonner";
 
