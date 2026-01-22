@@ -25,9 +25,9 @@ async function getAutomations(searchQuery?: string) {
 
     // On récupère les données
     const automations = await Automation.find(filter)
-      .sort({ createdAt: -1 })
-      .limit(12)
-      .lean();
+        .sort({ createdAt: -1 })
+        .limit(12)
+        .lean();
 
     // On nettoie les données pour React (les IDs Mongo deviennent des strings)
     return automations.map((a: any) => ({
@@ -53,63 +53,60 @@ export default async function Home(props: HomeProps) {
   const automations = await getAutomations(query);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* --- HERO SECTION --- */}
-      <section className="relative py-20 px-4 border-b bg-gradient-to-b from-muted/50 to-background">
-        <div className="container mx-auto text-center space-y-6 max-w-3xl">
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground">
-            Automatisez votre business.
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Des workflows testés et approuvés pour gagner du temps.
-          </p>
+      <div className="min-h-screen bg-background">
+        {/* --- HERO SECTION --- */}
+        <section className="relative py-20 px-4 border-b bg-gradient-to-b from-muted/50 to-background">
+          <div className="container mx-auto text-center space-y-6 max-w-3xl">
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground">
+              Automatisez votre business.
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              Des workflows testés et approuvés pour gagner du temps.
+            </p>
 
-          {/* Barre de recherche centrée */}
-          <div className="pt-4 flex justify-center w-full">
-            <div className="w-full max-w-md">
-              <SearchBar />
+            {/* Barre de recherche centrée */}
+            <div className="pt-4 flex justify-center w-full">
+              <div className="w-full max-w-md">
+                <SearchBar />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* --- RESULTATS --- */}
-      <main id="catalogue" className="container mx-auto py-16 px-4">
-        <div className="flex justify-between items-center mb-10">
-          <h2 className="text-3xl font-bold tracking-tight">
-            {query ? `Résultats pour "${query}"` : "Nouveautés"}
-          </h2>
-          {query && (
-            <Link href="/" className="text-sm text-muted-foreground hover:underline">
-              Tout afficher
-            </Link>
+        {/* --- RESULTATS --- */}
+        <main id="catalogue" className="container mx-auto py-16 px-4">
+          <div className="flex justify-between items-center mb-10">
+            <h2 className="text-3xl font-bold tracking-tight">
+              {query ? `Résultats pour "${query}"` : "Nouveautés"}
+            </h2>
+            {query && (
+                <Link href="/" className="text-sm text-muted-foreground hover:underline">
+                  Tout afficher
+                </Link>
+            )}
+          </div>
+
+          {automations.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {automations.map((item: any) => (
+                    //Utilisation de item en lui meme et non ses propriétés
+                    <ProductCard
+                        key={item._id}
+                        product={item}
+                    />
+                ))}
+              </div>
+          ) : (
+              /* Cas où on ne trouve rien */
+              <div className="text-center py-20 bg-muted/20 rounded-xl border border-dashed">
+                <h3 className="text-lg font-semibold">Aucun résultat trouvé 🔍</h3>
+                <p className="text-muted-foreground mt-2">Essayez avec d'autres mots-clés.</p>
+                <Button variant="link" asChild className="mt-4">
+                  <Link href="/">Voir tout le catalogue</Link>
+                </Button>
+              </div>
           )}
-        </div>
-
-        {automations.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {automations.map((item: any) => (
-              <ProductCard
-                key={item._id}
-                id={item._id}
-                title={item.title}
-                description={item.description}
-                price={item.price}
-                category={item.category}
-              />
-            ))}
-          </div>
-        ) : (
-          /* Cas où on ne trouve rien */
-          <div className="text-center py-20 bg-muted/20 rounded-xl border border-dashed">
-            <h3 className="text-lg font-semibold">Aucun résultat trouvé 🔍</h3>
-            <p className="text-muted-foreground mt-2">Essayez avec d'autres mots-clés.</p>
-            <Button variant="link" asChild className="mt-4">
-              <Link href="/">Voir tout le catalogue</Link>
-            </Button>
-          </div>
-        )}
-      </main>
-    </div>
+        </main>
+      </div>
   );
 }
