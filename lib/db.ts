@@ -13,12 +13,22 @@ export const connectToDatabase = async () => {
     if (cached.conn) return cached.conn;
 
     if (!cached.promise) {
-        cached.promise = mongoose.connect(MONGODB_URI, {
-            bufferCommands: false,
-        }).then((m) => m);
+        const opts = {
+            bufferCommands: true, // On autorise le buffering pour éviter les erreurs de timing
+        };
+
+        cached.promise = mongoose.connect(MONGODB_URI, opts).then((m) => {
+            return m;
+        });
     }
 
-    cached.conn = await cached.promise;
+    try {
+        cached.conn = await cached.promise;
+    } catch (e) {
+        cached.promise = null; // Reset promise on error so we can retry
+        throw e;
+    }
+
     return cached.conn;
 };
 
