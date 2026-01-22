@@ -193,8 +193,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                         <form
                                             action={async () => {
                                                 "use server";
-                                                const url = await createCheckoutSession(id);
-                                                if (url) redirect(url);
+                                                const url = (await createCheckoutSession(id)).trim();
+                                                redirect(url);
                                             }}
                                         >
                                             <Button
