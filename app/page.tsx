@@ -1,5 +1,6 @@
 import { connectToDatabase } from "@/lib/db";
 import Automation from "@/models/Automation";
+import User from "@/models/User"; // Ajout du modèle User
 import Link from "next/link";
 import { Button } from "@/app/components/ui/button";
 import { ProductCard } from "@/app/components/products/product-card";
@@ -17,22 +18,36 @@ export const metadata: Metadata = {
   },
 };
 
-//récupère les produits en fonction de la recherche
-async function getAutomations(searchQuery?: string) {
+//récupère les produits en fonction de la recherche et des filtres
+async function getAutomations(searchQuery?: string, platform?: string, category?: string, sellerId?: string) {
   "use server";
   try {
     await connectToDatabase();
 
     const filter: any = {};
 
-    //on filtre le titre la description ou la catégorie pour les recherches
+    // Filtre texte : recherche dans titre, description
     if (searchQuery) {
       const regex = { $regex: searchQuery, $options: "i" };
       filter.$or = [
         { title: regex },
-        { description: regex },
-        { category: regex }
+        // { description: regex }, // J'ai commenté la description pour prioriser le titre comme demandé
       ];
+    }
+
+    // Filtre plateforme
+    if (platform && platform !== "all") {
+      filter.platform = platform;
+    }
+
+    // Filtre catégorie
+    if (category && category !== "all") {
+      filter.category = category;
+    }
+
+    // Filtre vendeur
+    if (sellerId && sellerId !== "all") {
+      filter.sellerId = sellerId;
     }
 
     // On récupère les données
@@ -53,22 +68,58 @@ async function getAutomations(searchQuery?: string) {
   }
 }
 
+// Récupère la liste des vendeurs actifs (ceux qui ont des produits)
+async function getActiveSellers() {
+  "use server";
+  try {
+    await connectToDatabase();
+
+    // 1. Trouver tous les IDs de vendeurs distincts dans les produits
+    const sellerIds = await Automation.distinct("sellerId");
+
+    // 2. Récupérer les infos utilisateurs correspondantes
+    const users = await User.find({ clerkId: { $in: sellerIds } })
+      .select("clerkId firstName lastName username")
+      .lean();
+
+    return users.map((u: any) => ({
+      value: u.clerkId,
+      label: u.username || `${u.firstName || ''} ${u.lastName || ''}`.trim() || "Vendeur"
+    }));
+  } catch (e) {
+    console.error("Erreur récup vendeurs:", e);
+    return [];
+  }
+}
+
 // composant FRONTEND (Page)
 interface HomeProps {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    platform?: string;
+    category?: string;
+    seller?: string;
+  }>;
 }
 
 export default async function Home(props: HomeProps) {
   const searchParams = await props.searchParams;
   const query = searchParams.q || "";
+  const platform = searchParams.platform || "all";
+  const category = searchParams.category || "all";
+  const seller = searchParams.seller || "all";
 
-  const automations = await getAutomations(query);
+  // Récupération parallèle pour perf
+  const [automations, sellers] = await Promise.all([
+    getAutomations(query, platform, category, seller),
+    getActiveSellers()
+  ]);
 
   return (
     <div className="min-h-screen bg-background">
       {/* --- HERO SECTION --- */}
       <section className="relative py-20 px-4 border-b bg-gradient-to-b from-muted/50 to-background">
-        <div className="container mx-auto text-center space-y-6 max-w-3xl">
+        <div className="container mx-auto text-center space-y-6 max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground">
             Automatisez votre business.
           </h1>
@@ -78,8 +129,8 @@ export default async function Home(props: HomeProps) {
 
           {/* Barre de recherche centrée */}
           <div className="pt-4 flex justify-center w-full">
-            <div className="w-full max-w-md">
-              <SearchBar />
+            <div className="w-full flex justify-center">
+              <SearchBar sellers={sellers} />
             </div>
           </div>
         </div>
