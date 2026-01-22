@@ -1,15 +1,17 @@
-import mongoose, { Schema, model, models } from 'mongoose';
+import { Schema } from 'mongoose';
+import { Product } from './Product';
+import { AutomationPlatform } from '@/types/automation';
 
-const AutomationSchema = new Schema({
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    price: { type: Number, required: true },
-    category: { type: String, enum: ['n8n', 'Make', 'Zapier', 'Autre'], required: true },
-    fileUrl: { type: String, required: true }, // URL vers AWS S3
-    previewImageUrl: { type: String },
-    sellerId: { type: String, required: true }, // ID Clerk de l'utilisateur
-    createdAt: { type: Date, default: Date.now },
-});
+// Check if discriminator already exists to avoid "already exists" error
+// This happens because the module can be imported multiple times
+const Automation = Product.discriminators?.Automation || Product.discriminator('Automation', new Schema({
+    platform: {
+        type: String,
+        required: true,
+        enum: ['n8n', 'Make', 'Zapier', 'Python', 'Other'] as AutomationPlatform[]
+    },
+    fileUrl: { type: String, required: true },
+    version: { type: String }
+}));
 
-const Automation = models.Automation || model('Automation', AutomationSchema);
 export default Automation;

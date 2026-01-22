@@ -2,16 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createAutomation } from "@/app/actions/automation"; // Ta Server Action existante
-import FileUpload from "@/app/components/FileUpload"; // Ton composant Upload existant
+import { createAutomation } from "@/app/actions/automation";
+import FileUpload from "@/app/components/FileUpload";
 import { getPublicImageUrl } from "@/lib/image-helper";
 import { toast } from "sonner";
+import { ProductCategory } from "@/types/product";
+import { AutomationPlatform } from "@/types/automation";
 
 // Imports UI (Design)
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Textarea } from "@/app/components/ui/textarea";
+import { Badge } from "@/app/components/ui/badge";
 import {
     Select,
     SelectContent,
@@ -20,25 +23,43 @@ import {
     SelectValue,
 } from "@/app/components/ui/select";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/app/components/ui/card";
-import { UploadCloud, Loader2 } from "lucide-react";
+import { UploadCloud, Loader2, X } from "lucide-react";
 
 export function SellForm() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [fileUrl, setFileUrl] = useState("");
     const [previewImageUrl, setPreviewImageUrl] = useState("");
+    const [tagInput, setTagInput] = useState("");
 
     const [formData, setFormData] = useState<{
         title: string;
         description: string;
         price: number;
-        category: "n8n" | "Make" | "Zapier" | "Autre";
+        category: ProductCategory;
+        platform: AutomationPlatform;
+        tags: string[];
+        version?: string;
     }>({
         title: "",
         description: "",
         price: 0,
-        category: "n8n",
+        category: ProductCategory.PRODUCTIVITY,
+        platform: "n8n",
+        tags: [],
+        version: "",
     });
+
+    const handleAddTag = () => {
+        if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
+            setFormData({ ...formData, tags: [...formData.tags, tagInput.trim()] });
+            setTagInput("");
+        }
+    };
+
+    const handleRemoveTag = (tagToRemove: string) => {
+        setFormData({ ...formData, tags: formData.tags.filter(tag => tag !== tagToRemove) });
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -48,7 +69,12 @@ export function SellForm() {
         setLoading(true);
         const toastId = toast.loading("Publication en cours...");
         try {
-            await createAutomation({ ...formData, fileUrl, previewImageUrl });
+            await createAutomation({
+                ...formData,
+                fileUrl,
+                previewImageUrl,
+                version: formData.version || undefined,
+            });
             toast.success("Produit mis en ligne avec succès !");
             router.push("/");
         } catch (error: any) {
@@ -84,14 +110,13 @@ export function SellForm() {
                         />
                     </div>
 
-                    {/* Catégorie & Prix */}
+                    {/* Plateforme & Catégorie */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="category">Catégorie <span className="text-destructive">*</span></Label>
-                            {/* Attention: Shadcn Select fonctionne avec onValueChange, pas onChange */}
+                            <Label htmlFor="platform">Plateforme <span className="text-destructive">*</span></Label>
                             <Select
-                                defaultValue={formData.category}
-                                onValueChange={(value) => setFormData({ ...formData, category: value as "n8n" | "Make" | "Zapier" | "Autre" })}
+                                defaultValue={formData.platform}
+                                onValueChange={(value) => setFormData({ ...formData, platform: value as AutomationPlatform })}
                             >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Choisir..." />
@@ -100,11 +125,34 @@ export function SellForm() {
                                     <SelectItem value="n8n">n8n</SelectItem>
                                     <SelectItem value="Make">Make</SelectItem>
                                     <SelectItem value="Zapier">Zapier</SelectItem>
-                                    <SelectItem value="Autre">Autre</SelectItem>
+                                    <SelectItem value="Python">Python</SelectItem>
+                                    <SelectItem value="Other">Autre</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
+                        <div className="space-y-2">
+                            <Label htmlFor="category">Catégorie <span className="text-destructive">*</span></Label>
+                            <Select
+                                defaultValue={formData.category}
+                                onValueChange={(value) => setFormData({ ...formData, category: value as ProductCategory })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Choisir..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value={ProductCategory.SOCIAL_MEDIA}>Social Media</SelectItem>
+                                    <SelectItem value={ProductCategory.EMAIL_MARKETING}>Email Marketing</SelectItem>
+                                    <SelectItem value={ProductCategory.PRODUCTIVITY}>Productivity</SelectItem>
+                                    <SelectItem value={ProductCategory.SALES}>Sales</SelectItem>
+                                    <SelectItem value={ProductCategory.OTHER}>Other</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+
+                    {/* Prix & Version */}
+                    <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="price">Prix (€) <span className="text-destructive">*</span></Label>
                             <div className="relative">
@@ -120,6 +168,16 @@ export function SellForm() {
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
                             </div>
                         </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="version">Version <span className="text-muted-foreground font-normal">(Optionnel)</span></Label>
+                            <Input
+                                id="version"
+                                placeholder="v1.0.0"
+                                value={formData.version}
+                                onChange={(e) => setFormData({ ...formData, version: e.target.value })}
+                            />
+                        </div>
                     </div>
 
                     {/* Description */}
@@ -133,6 +191,46 @@ export function SellForm() {
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         />
+                    </div>
+
+                    {/* Tags */}
+                    <div className="space-y-2">
+                        <Label htmlFor="tags">Tags <span className="text-muted-foreground font-normal">(Optionnel)</span></Label>
+                        <div className="flex gap-2">
+                            <Input
+                                id="tags"
+                                placeholder="Ajouter un tag..."
+                                value={tagInput}
+                                onChange={(e) => setTagInput(e.target.value)}
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        handleAddTag();
+                                    }
+                                }}
+                            />
+                            <Button type="button" onClick={handleAddTag} variant="outline">
+                                Ajouter
+                            </Button>
+                        </div>
+                        {formData.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {formData.tags.map((tag) => (
+                                    <Badge key={tag} variant="secondary" className="pl-2 pr-1">
+                                        {tag}
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-4 w-4 p-0 ml-1"
+                                            onClick={() => handleRemoveTag(tag)}
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </Button>
+                                    </Badge>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Zone d'upload Image de Démo */}

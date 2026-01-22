@@ -9,7 +9,7 @@ import { getPublicImageUrl } from "@/lib/image-helper";
 import { ChevronLeft, Download, ShieldCheck, Zap, User } from "lucide-react";
 import Link from "next/link";
 import { createClerkClient } from "@clerk/nextjs/server"; // Import pour le serveur
-import { createCheckoutSession } from "@/app/actions/transaction"; // Import de l'action de transaction
+import { createSingleProductCheckout } from "@/app/actions/transaction"; // Import de l'action de transaction
 import { redirect } from "next/navigation";
 
 const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
@@ -195,7 +195,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                         <form
                                             action={async () => {
                                                 "use server";
-                                                const url = (await createCheckoutSession(id)).trim();
+                                                const url = await createSingleProductCheckout(id);
                                                 redirect(url);
                                             }}
                                         >

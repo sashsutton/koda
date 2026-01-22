@@ -1,14 +1,14 @@
-export interface IAutomation {
-    _id: string;
-    title: string;
-    description: string;
-    price: number;
-    category: 'n8n' | 'Make' | 'Zapier' | 'Autre'; // On utilise les valeurs exactes de votre enum
-    fileUrl: string;
-    previewImageUrl?: string;
-    sellerId: string;
-    createdAt: Date;
+
+import { IProduct } from './product';
+
+export type AutomationPlatform = 'n8n' | 'Make' | 'Zapier' | 'Python' | 'Other';
+
+// Principe de substitution de Liskov
+export interface IAutomation extends IProduct {
+    platform: AutomationPlatform;
+    fileUrl: string; // Le fichier d'export JSON ou blueprint
+    version?: string;
 }
 
-// Type pour la création (sans l'ID ni la date ni le sellerId qui est géré par le serveur)
+
 export type CreateAutomationInput = Omit<IAutomation, '_id' | 'createdAt' | 'sellerId'>;

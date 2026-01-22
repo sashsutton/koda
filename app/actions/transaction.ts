@@ -106,3 +106,38 @@ export async function createCheckoutSession(items: IAutomation[]) {
 
     return { url }; // Je renvoie un objet pour être cohérent avec l'appel côté client
 }
+
+/**
+ * Helper function for single product purchase (product detail page)
+ * Wraps createCheckoutSession to work with a single product ID
+ */
+export async function createSingleProductCheckout(productId: string): Promise<string> {
+    await connectToDatabase();
+
+    // Fetch the product from DB
+    const product = await Automation.findById(productId).lean();
+
+    if (!product) {
+        throw new Error("Produit introuvable.");
+    }
+
+    // Convert to IAutomation format for checkout
+    const automationItem: IAutomation = {
+        _id: product._id.toString(),
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        category: product.category,
+        tags: product.tags || [],
+        previewImageUrl: product.previewImageUrl,
+        sellerId: typeof product.sellerId === 'object' ? product.sellerId.toString() : product.sellerId,
+        createdAt: product.createdAt,
+        platform: product.platform,
+        fileUrl: product.fileUrl,
+        version: product.version,
+    };
+
+    // Call the multi-item checkout with single item array
+    const { url } = await createCheckoutSession([automationItem]);
+    return url;
+}
