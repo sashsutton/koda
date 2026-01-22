@@ -60,9 +60,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
     let sellerImageUrl = null;
 
     try {
-        const seller = await clerkClient.users.getUser(product.sellerId);
-        sellerName = seller.username || `${seller.firstName} ${seller.lastName}` || "Utilisateur Koda";
-        sellerImageUrl = seller.imageUrl;
+        if (product.sellerId && product.sellerId !== "mock-seller") {
+            const seller = await clerkClient.users.getUser(product.sellerId);
+            sellerName = seller.username || `${seller.firstName} ${seller.lastName}` || "Utilisateur Koda";
+            sellerImageUrl = seller.imageUrl;
+        }
     } catch (error) {
         console.error("Erreur lors de la récupération du vendeur Clerk:", error);
     }

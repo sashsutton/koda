@@ -3,31 +3,54 @@ import Automation from "@/models/Automation";
 import Link from "next/link";
 import { Button } from "@/app/components/ui/button";
 import { ProductCard } from "@/app/components/products/product-card";
-import { IAutomation } from "@/types/automation";
+import { SearchBar } from "@/app/components/search/search-bar";
 
+//récupère les produits en fonction de la recherche
+async function getAutomations(searchQuery?: string) {
+  "use server";
+  try {
+    await connectToDatabase();
 
-export default async function Home() {
-  // Fonction serveur pour récupérer les données
-  async function getAutomations() {
-    "use server";
-    try {
-      await connectToDatabase();
-      // On récupère les items et on transforme _id et createdAt en string/value simple
-      // pour éviter les warnings de sérialisation React
-      const automations = await Automation.find().sort({ createdAt: -1 }).limit(12).lean();
+    const filter: any = {};
 
-      return automations.map((a: any) => ({
-        ...a,
-        _id: a._id.toString(),
-        createdAt: a.createdAt ? a.createdAt.toISOString() : null
-      }));
-    } catch (e) {
-      console.error("Erreur MongoDB:", e);
-      return [];
+    //on filtre le titre la description ou la catégorie pour les recherches
+    if (searchQuery) {
+      const regex = { $regex: searchQuery, $options: "i" };
+      filter.$or = [
+        { title: regex },
+        { description: regex },
+        { category: regex }
+      ];
     }
-  }
 
-  const automations = await getAutomations();
+    // On récupère les données
+    const automations = await Automation.find(filter)
+      .sort({ createdAt: -1 })
+      .limit(12)
+      .lean();
+
+    // On nettoie les données pour React (les IDs Mongo deviennent des strings)
+    return automations.map((a: any) => ({
+      ...a,
+      _id: a._id.toString(),
+      createdAt: a.createdAt ? a.createdAt.toISOString() : null
+    }));
+  } catch (e) {
+    console.error("Erreur MongoDB:", e);
+    return [];
+  }
+}
+
+// composant FRONTEND (Page)
+interface HomeProps {
+  searchParams: Promise<{ q?: string }>;
+}
+
+export default async function Home(props: HomeProps) {
+  const searchParams = await props.searchParams;
+  const query = searchParams.q || "";
+
+  const automations = await getAutomations(query);
 
   return (
     <div className="min-h-screen bg-background">
@@ -35,29 +58,32 @@ export default async function Home() {
       <section className="relative py-20 px-4 border-b bg-gradient-to-b from-muted/50 to-background">
         <div className="container mx-auto text-center space-y-6 max-w-3xl">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground">
-            Automatisez votre business <span className="text-primary">sans coder</span>.
+            Automatisez votre business.
           </h1>
           <p className="text-xl text-muted-foreground">
-            Découvrez des workflows vérifiés, prêts à l'emploi. Gagnez du temps dès aujourd'hui.
+            Des workflows testés et approuvés pour gagner du temps.
           </p>
-          <div className="flex justify-center gap-4 pt-4">
-            <Button asChild size="lg" className="rounded-full text-base px-8">
-              <Link href="#catalogue">Explorer le catalogue</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="rounded-full text-base px-8">
-              <Link href="/sell">Vendre une automatisation</Link>
-            </Button>
+
+          {/* Barre de recherche centrée */}
+          <div className="pt-4 flex justify-center w-full">
+            <div className="w-full max-w-md">
+              <SearchBar />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* --- CATALOGUE --- */}
+      {/* --- RESULTATS --- */}
       <main id="catalogue" className="container mx-auto py-16 px-4">
         <div className="flex justify-between items-center mb-10">
-          <h2 className="text-3xl font-bold tracking-tight">Nouveautés</h2>
-          <Link href="/search" className="text-sm font-medium text-primary hover:underline underline-offset-4">
-            Tout voir &rarr;
-          </Link>
+          <h2 className="text-3xl font-bold tracking-tight">
+            {query ? `Résultats pour "${query}"` : "Nouveautés"}
+          </h2>
+          {query && (
+            <Link href="/" className="text-sm text-muted-foreground hover:underline">
+              Tout afficher
+            </Link>
+          )}
         </div>
 
         {automations.length > 0 ? (
@@ -74,12 +100,12 @@ export default async function Home() {
             ))}
           </div>
         ) : (
-          /* Empty State (État vide joli) */
-          <div className="text-center py-20 border-2 border-dashed rounded-xl bg-muted/30">
-            <h3 className="text-xl font-semibold">Le catalogue est vide pour le moment</h3>
-            <p className="text-muted-foreground mt-2">Soyez le premier à publier une automatisation !</p>
-            <Button asChild className="mt-6">
-              <Link href="/sell">Créer une annonce</Link>
+          /* Cas où on ne trouve rien */
+          <div className="text-center py-20 bg-muted/20 rounded-xl border border-dashed">
+            <h3 className="text-lg font-semibold">Aucun résultat trouvé 🔍</h3>
+            <p className="text-muted-foreground mt-2">Essayez avec d'autres mots-clés.</p>
+            <Button variant="link" asChild className="mt-4">
+              <Link href="/">Voir tout le catalogue</Link>
             </Button>
           </div>
         )}
