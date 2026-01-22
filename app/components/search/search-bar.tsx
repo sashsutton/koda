@@ -44,6 +44,11 @@ export function SearchBar({ sellers = [] }: SearchBarProps) {
     const [platform, setPlatform] = useState(searchParams.get("platform") || "all");
     const [category, setCategory] = useState(searchParams.get("category") || "all");
     const [seller, setSeller] = useState(searchParams.get("seller") || "all");
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -74,8 +79,24 @@ export function SearchBar({ sellers = [] }: SearchBarProps) {
 
     // Appliquer les filtres quand ils changent
     useEffect(() => {
-        applyFilters();
-    }, [platform, category, seller]);
+        if (mounted) {
+            applyFilters();
+        }
+    }, [platform, category, seller]); // Retirer mounted des dépendances pour éviter double trigger
+
+    // Hydration fix: Ne pas rendre les Select (Radix UI) tant que pas monté
+    if (!mounted) {
+        return (
+            <div className="w-full max-w-4xl space-y-4">
+                <div className="flex flex-col md:flex-row gap-3">
+                    <div className="relative flex-1 h-10 bg-muted/20 animate-pulse rounded-md"></div>
+                    <div className="w-full md:w-[200px] h-10 bg-muted/20 animate-pulse rounded-md"></div>
+                    <div className="w-full md:w-[200px] h-10 bg-muted/20 animate-pulse rounded-md"></div>
+                    <div className="w-auto h-10 bg-muted/20 animate-pulse rounded-md px-8"></div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full max-w-4xl space-y-4">
