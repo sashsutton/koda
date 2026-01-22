@@ -66,6 +66,15 @@ export async function getSellerBalance() {
     if (!user || !user.stripeConnectId) return null;
 
     try {
+        // 1. Vérifier le statut du compte Stripe
+        const account = await stripe.accounts.retrieve(user.stripeConnectId);
+
+        // Si le compte n'est pas complètement configuré (onboarding inachevé)
+        if (!account.details_submitted) {
+            return null; // Cela forcera l'affichage du bouton "Configurer mes paiements"
+        }
+
+        // 2. Récupérer la balance
         const balance = await stripe.balance.retrieve({
             stripeAccount: user.stripeConnectId,
         });
