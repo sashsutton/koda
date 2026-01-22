@@ -41,3 +41,13 @@ const AutomationSchema = new Schema({
 
 - **Validation** : Mongoose assure la validation des types et des champs requis avant l'insertion.
 - **Indexation** : (À définir selon les besoins de recherche) Il peut être pertinent d'indexer `category` ou `sellerId` si les recherches sur ces champs sont fréquentes.
+
+## 🚨 Dépannage Connexion (DNS)
+
+Si vous rencontrez des erreurs de connexion persistantes en local (`MongooseServerSelectionError` ou timeouts), votre fournisseur d'accès bloque peut-être certaines résolutions DNS.
+
+**Solution recommandée :**
+Configurez votre ordinateur pour utiliser les DNS publics de Google : `8.8.8.8` (primaire) et `8.8.4.4` (secondaire).
+
+1. **Mac** : Réglages > Réseau > Détails > DNS.
+2. **Windows** : Paramètres Réseau > IPv4 > Propriétés > DNS.

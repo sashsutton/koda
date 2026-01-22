@@ -1,126 +1,135 @@
-# 🚀 Koda Marketplace - Guide de Démarrage (Dev)
+# 🚀 Koda Marketplace - Guide de Développeur
 
-Bienvenue sur le projet **Koda** !  
-Ce document explique comment configurer ton environnement local pour commencer à coder.
-
----
-
-## 🛠 Prérequis
-
-Assure-toi d'avoir installé :
-
-- **Node.js** (version 20 ou supérieure recommandée)
-- **npm**, **yarn**, **pnpm** ou **bun**
+Bienvenue sur **Koda**, la marketplace d'automations no-code (n8n, Make, Zapier).
+Ce projet permet aux créateurs de vendre leurs workflows et aux utilisateurs de les acheter instantanément.
 
 ---
 
-## 📚 Documentation
+## ✨ Fonctionnalités Principales
 
-Pour comprendre l'architecture et le fonctionnement interne du projet, consulte les guides suivants :
+- **🏪 Marketplace Digitale** : Catalogue de produits avec recherche (bientôt) et filtrage par catégorie.
+- **💳 Paiements Scindés (Stripe Connect)** :
+    - Les vendeurs connectent leur compte Stripe (Express).
+    - Lors d'une vente, 85% va au vendeur, 15% à la plateforme (Commission).
+    - Paiements sécurisés et virements automatiques.
+- **☁️ Hébergement Sécurisé (AWS S3)** :
+    - Les fichiers JSON d'automatisation sont stockés sur S3.
+    - Liens de téléchargement sécurisés et temporaires générés uniquement après achat.
+- **🔐 Authentification (Clerk)** : Gestion complète des utilisateurs (Inscription, Connexion, Profil).
+- **🛡 Protection des produits** :
+    - Les acheteurs ne peuvent télécharger que s'ils ont payé.
+    - Les vendeurs ne peuvent modifier/supprimer que leurs propres produits.
 
-- [🏗 Architecture Technique](docs/ARCHITECTURE.md)
-- [🗄 Base de Données](docs/DATABASE.md)
-- [🔄 Flux de Données](docs/DATA_FLOW.md)
+---
+
+## 🛠 Prérequis Technique
+
+- **Node.js** (v20+)
+- **npm** ou **yarn**
+- **Compte Stripe** (Mode Test)
+- **Compte AWS** (S3)
+- **Compte MongoDB Atlas**
+- **Compte Clerk**
 
 ---
 
 ## 📥 Installation
 
-1. Cloner le dépôt (si ce n'est pas déjà fait).
-2. Installer les dépendances :
+1. **Cloner le projet**
+   ```bash
+   git clone <repo_url>
+   cd koda
+   ```
 
-```bash
-npm install
-# ou
-yarn install
-```
+2. **Installer les dépendances**
+   ```bash
+   npm install
+   ```
+
+3. **Configuration de l'environnement**
+   Créez un fichier `.env.local` à la racine et remplissez-le avec vos clés API :
+
+   ```env
+   # CLERK AUTH
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+   CLERK_SECRET_KEY=sk_test_...
+
+   # MONGODB
+   MONGODB_URI=mongodb+srv://...
+
+   # AWS S3
+   AWS_ACCESS_KEY_ID=...
+   AWS_SECRET_ACCESS_KEY=...
+   AWS_REGION=eu-west-3
+   AWS_BUCKET_NAME=...
+
+   # STRIPE
+   STRIPE_SECRET_KEY=sk_test_...
+   STRIPE_WEBHOOK_SECRET=whsec_...
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+   
+   # APP URL
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
+   ```
+
+4. **Lancer le serveur**
+   ```bash
+   npm run dev
+   ```
+   Accédez à [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## 🔐 Configuration de l'environnement (IMPORTANT)
+## 📚 Documentation Détaillée
 
-Pour que l'application fonctionne (Authentification, Base de données, S3), tu as besoin de variables d'environnement.
+Pour comprendre l'architecture en profondeur, consultez le **Guide Développeur** complet :
 
-Récupère le contenu du fichier .env.local sur notre canal Discord.
-
-À la racine du projet, crée un fichier nommé .env.local.
-
-Colle le contenu récupéré à l'intérieur.
-
-⚠️ CAUTION
-Ne jamais push le fichier .env.local !
-Ce fichier contient des clés privées (Clerk, MongoDB, AWS).
-Il est déjà listé dans le fichier .gitignore pour éviter toute fuite de données.
+- [🏗 Architecture Technique](docs/ARCHITECTURE.md)
+- [🔌 Référence API (Server Actions)](docs/API.md)
+- [💳 Infrastructure Paiements (Stripe)](docs/STRIPE.md)
+- [🗄 Base de Données & Troubleshooting](docs/DATABASE.md)
+- [🔄 Flux de Données](docs/DATA_FLOW.md)
 
 ---
 
-## 🏃‍♂️ Lancer l'application
+## 🚨 Dépannage (Troubleshooting)
 
-Une fois les dépendances installées et le .env.local configuré, lance le serveur de développement :
-```bash
-npm run dev
-# ou
-yarn dev
-```
+### 🍃 Problème de connexion MongoDB
+Si vous rencontrez des erreurs de connexion à MongoDB (timeout, network error), cela est souvent lié à la configuration DNS de votre réseaux ou fournisseur d'accès.
+
+**Solution : Changer le serveur DNS pour celui de Google (8.8.8.8).**
+
+**Sur macOS :**
+1. Ouvrez **Réglages Système** > **Réseau**.
+2. Cliquez sur votre réseau actif (Wi-Fi ou Ethernet) > **Détails**.
+3. Allez dans l'onglet **DNS**.
+4. Cliquez sur le **+** et ajoutez `8.8.8.8` et `8.8.4.4`.
+5. Validez et redémarrez votre terminal.
+
+**Sur Windows :**
+1. Panneau de configuration > Réseau et Internet > Centre Réseau et partage.
+2. Modifier les paramètres de la carte > Clic droit sur votre connexion > Propriétés.
+3. Sélectionnez **Protocole Internet version 4 (TCP/IPv4)** > Propriétés.
+4. Cochez "Utiliser l'adresse de serveur DNS suivante" et mettez `8.8.8.8`.
 
 ---
-
-L'application sera disponible sur :
-👉 http://localhost:3000
 
 ## 📁 Structure du Projet
 
-- /app : Routes et pages Next.js (App Router)
-
-- /app/actions : Fonctions Server Actions pour la logique backend (ex : créer une automatisation)
-
-- /models : Schémas Mongoose pour MongoDB
-
-- /components : Composants UI réutilisables
-
-- /lib : Utilitaires et configurations (DB, S3)
+- `/app` : Pages et Routes API (Next.js App Router).
+- `/app/actions` : Server Actions (Logique métier : Stripe, Upload, DB).
+- `/models` : Schémas de base de données Mongoose.
+- `/lib` : Utilitaires (Connexion DB, Client S3).
+- `/components` : Composants React (UI).
 
 ---
 
-## 🧪 Rappel des technos utilisées
+## 🧪 Commandes Utiles
 
-- Framework : Next.js 15+
+- `npm run dev` : Lance le serveur de dev.
+- `npm run build` : Build pour la production.
+- `npm run start` : Lance le serveur de production.
+- `npx shadcn@latest add <component>` : Ajoute un composant UI.
 
-- Auth : Clerk
-
-- Base de données : MongoDB via Mongoose
-
-- Style : Tailwind CSS 4
-
-- Stockage : AWS S3
-
----
-
-## 📦 Tester l'upload de fichiers JSON sur S3 (optionnel)
-
-Pour tester l'upload vers AWS S3 en local :
-
-Assure-toi que les variables suivantes sont bien définies dans .env.local :
-
-- AWS_ACCESS_KEY_ID
-
-- AWS_SECRET_ACCESS_KEY
-
-- AWS_REGION
-
-- AWS_BUCKET_NAME
-
-Lance l'application en local :
-```bash
-
-npm run dev
-
-```
-
-Utilise l'interface prévue ou une route API pour envoyer un fichier .json.
-
-Vérifie dans la console AWS S3 que le fichier est bien présent dans le bucket.
-
-💡 Astuce : tu peux activer les logs côté serveur pour afficher la réponse S3 et déboguer plus facilement.
 
 

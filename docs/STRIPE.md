@@ -1,0 +1,72 @@
+# 💳 Infrastructure de Paiement (Stripe)
+
+Koda utilise **Stripe Connect (Express)** pour gérer une marketplace multi-vendeurs.
+Ce document détaille les flux financiers, la configuration et les webhooks.
+
+---
+
+## 🔄 Flux d'Onboarding (Vendeurs)
+
+Pour vendre sur Koda, un utilisateur doit connecter un compte Stripe.
+
+1. **Vérification** : À chaque tentative d'accès à `/sell` ou publication d'un produit, on vérifie si le champ `stripeConnectId` est présent dans le profil `User` (MongoDB).
+2. **Création du Compte** : Si absent, on appelle l'API Stripe pour créer un `account` de type `express`.
+3. **Lien d'Onboarding** : On génère un `accountLink` pour rediriger l'utilisateur vers le formulaire hébergé par Stripe (KYC, RIB).
+4. **Validation** : Une fois le formulaire rempli, Stripe renvoie l'utilisateur vers `/return`. Un webhook `account.updated` confirme que le compte est `details_submitted: true`.
+
+---
+
+## 💸 Flux de Paiement (Split Payments)
+
+Lorsqu'un acheteur paie un produit, l'argent est immédiatement séparé (**Direct Charges** avec `application_fee`).
+
+### Répartition pour une vente de 100€
+- **Prix Payé** : 100€
+- **Frais de Plateforme (Koda)** : 15% (15€)
+- **Vendeur (Stripe Connect)** : 85% (85€)
+- **Frais Stripe** : Déduits de la part de la plateforme.
+
+### Code (Server Action)
+```typescript
+const session = await stripe.checkout.sessions.create({
+    mode: "payment",
+    line_items: [...],
+    payment_intent_data: {
+        application_fee_amount: 1500, // 15.00€ pour Koda
+        transfer_data: {
+            destination: "acct_...", // ID Connect du Vendeur
+        },
+    },
+});
+```
+
+Cette méthode assure que :
+1. Le vendeur voit son propre CA net dans son dashboard.
+2. La plateforme ne touche que sa commission.
+3. Stripe gère la conformité fiscale pour les transferts.
+
+---
+
+## 🔔 Webhooks
+
+L'application écoute les événements Stripe via la route `/app/api/webhooks/stripe`.
+
+### `checkout.session.completed`
+Déclenché après un paiement réussi.
+- **Action** :
+  1. Récupère `productId` et `userId` dans les métadonnées de la session.
+  2. Crée un enregistrement `Purchase` dans MongoDB.
+  3. Débloque l'accès au téléchargement pour l'acheteur.
+
+### `account.updated`
+Déclenché quand un vendeur met à jour ses infos.
+- **Action** :
+  1. Vérifie si `details_submitted` est passé à `true`.
+  2. Met à jour le flag `onboardingComplete` de l'utilisateur dans MongoDB.
+
+---
+
+## 🛡 Sécurité
+
+- **Stripe Express** : Les vendeurs n'ont pas accès aux données de la plateforme, uniquement à leur dashboard isolé.
+- **Liens de Connexion** : Les liens "Voir mon Dashboard" sont générés dynamiquement (Tokens temporaires) et ne sont jamais stockés.
