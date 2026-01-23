@@ -25,6 +25,9 @@ Ce projet permet aux créateurs de vendre leurs workflows et aux utilisateurs de
     - Architecture extensible avec discriminators Mongoose
     - Support de multiples types de produits (Automations, et plus à venir)
     - Types TypeScript complets pour la sécurité du code
+- **👀 Monitoring & Tests** :
+    - **Sentry** : Suivi des erreurs et performances en temps réel
+    - **Vitest** : Tests unitaires et d'intégration robustes
 
 ---
 
@@ -155,6 +158,7 @@ Si vous rencontrez des erreurs de connexion à MongoDB (timeout, network error),
 - `npm run dev` : Lance le serveur de dev
 - `npm run build` : Build pour la production
 - `npm run start` : Lance le serveur de production
+- `npm run test` : Lance la suite de tests (Unitaires & Intégration)
 - `npx shadcn@latest add <component>` : Ajoute un composant UI
 - `stripe listen --forward-to localhost:3000/api/webhooks/stripe` : Écoute les webhooks Stripe
 
