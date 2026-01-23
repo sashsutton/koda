@@ -1,4 +1,3 @@
-
 "use client";
 
 import { ShoppingCart, Trash2, Loader2 } from "lucide-react";
@@ -7,36 +6,70 @@ import { Button } from "@/app/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/app/components/ui/sheet";
 import { Separator } from "@/app/components/ui/separator";
 import { useEffect, useState, useTransition } from "react";
-
 import { createCheckoutSession } from "@/app/actions/transaction";
+import { getSavedCart, syncCart } from "@/app/actions/cart";
 import { toast } from "sonner";
+import { useAuth } from "@clerk/nextjs";
 
 export default function CartSheet() {
     const [isMounted, setIsMounted] = useState(false);
-    const [isPending, startTransition] = useTransition(); //Pour gérer le chargement
+    const [isPending, startTransition] = useTransition();
     const cart = useCart();
+    const { userId } = useAuth();
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
 
-    if (!isMounted) return null;
+    // Gestion Connexion / Déconnexion
+    useEffect(() => {
+        if (userId) {
+            // Utilisateur se connecte
+            // On récupère son panier sauvegardé en base de données
+            const loadCart = async () => {
+                try {
+                    const savedItems = await getSavedCart();
+                    if (savedItems && savedItems.length > 0) {
+                        cart.setItems(savedItems);
+                    }
+                } catch (error) {
+                    console.error("Erreur chargement panier:", error);
+                }
+            };
+            loadCart();
+        } else {
+            // Utilisateur se déconnecte (ou n'est pas connecté)
+            // On vide le panier local pour ne pas afficher les articles de l'utilisateur précédent
+            if (cart.items.length > 0) {
+                cart.removeAll();
+            }
+        }
+    }, [userId]); // On ne déclenche ceci que quand le statut de connexion change
 
+    // Sauvegarde automatique
+    // À chaque fois que le panier change localement, on met à jour la BDD (si connecté)
+    useEffect(() => {
+        if (userId && isMounted) {
+            syncCart(cart.items);
+        }
+    }, [cart.items, userId, isMounted]);
+
+
+    if (!isMounted) return null;
     const total = cart.items.reduce((total, item) => total + Number(item.price), 0);
 
-    // La fonction qui déclenche le paiement
     const onCheckout = async () => {
+        if (!userId) {
+            toast.error("Veuillez vous connecter pour payer.");
+            return;
+        }
         startTransition(async () => {
             try {
                 const { url } = await createCheckoutSession(cart.items);
-                if (url) {
-                    window.location.href = url; // Redirection vers Stripe
-                } else {
-                    toast.error("Erreur lors de la création du paiement.");
-                }
-            } catch (error) {
+                if (url) window.location.href = url;
+            } catch (error: any) {
                 console.error(error);
-                toast.error("Une erreur est survenue.");
+                toast.error(error.message || "Erreur de paiement.");
             }
         });
     };
@@ -48,20 +81,24 @@ export default function CartSheet() {
                     <ShoppingCart size={20} />
                     {cart.items.length > 0 && (
                         <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-[10px] font-bold text-white flex items-center justify-center">
-                            {cart.items.length}
-                        </span>
+              {cart.items.length}
+            </span>
                     )}
                 </Button>
             </SheetTrigger>
-            {/*  Ajout de z-[100] pour être sûr qu'il passe au dessus du header */}
-            <SheetContent className="z-[100] flex flex-col h-full">
+            <SheetContent className="z-[100] flex flex-col h-full bg-background">
                 <SheetHeader>
                     <SheetTitle>Mon Panier ({cart.items.length})</SheetTitle>
                 </SheetHeader>
 
                 <div className="mt-8 flex flex-col gap-4 flex-grow overflow-y-auto">
                     {cart.items.length === 0 && (
-                        <p className="text-muted-foreground text-center my-10">Votre panier est vide.</p>
+                        <div className="text-center my-10 space-y-2">
+                            <p className="text-muted-foreground">Votre panier est vide.</p>
+                            {!userId && (
+                                <p className="text-xs text-muted-foreground">Connectez-vous pour commencer vos achats.</p>
+                            )}
+                        </div>
                     )}
 
                     {cart.items.map((item) => (
@@ -90,20 +127,13 @@ export default function CartSheet() {
                             <span className="font-bold text-lg">{total.toFixed(2)} €</span>
                         </div>
 
-                        {/* Bouton mis à jour */}
-                        <Button
-                            className="w-full"
-                            onClick={onCheckout}
-                            disabled={isPending} // Désactivé pendant le chargement
-                        >
+                        <Button className="w-full" onClick={onCheckout} disabled={isPending}>
                             {isPending ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     Préparation...
                                 </>
-                            ) : (
-                                "Passer au paiement"
-                            )}
+                            ) : "Passer au paiement"}
                         </Button>
                     </div>
                 )}

@@ -1,10 +1,11 @@
+// app/api/webhooks/stripe/route.ts
+
 import Stripe from "stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
-import User from "@/models/User";
 import Purchase from "@/models/Purchase";
-import Automation from "@/models/Automation";
+import User from "@/models/User";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: "2025-12-15.clover",
@@ -20,51 +21,65 @@ export async function POST(req: Request) {
 
     try {
         event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-    } catch (err: any) {
-        return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
+    } catch (error: any) {
+        return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
     }
 
-    await connectToDatabase();
+    // On écoute l'événement "Session de paiement terminée"
+    if (event.type === "checkout.session.completed") {
+        const session = event.data.object as Stripe.Checkout.Session;
 
-    switch (event.type) {
-        case "account.updated":
-            const account = event.data.object as Stripe.Account;
-            if (account.details_submitted) {
-                await User.findOneAndUpdate(
-                    { stripeConnectId: account.id },
-                    { onboardingComplete: true }
-                );
-            }
-            break;
+        // Récupération des métadonnées
+        const userId = session.metadata?.userId;
+        const productIdsString = session.metadata?.productIds; // C'est maintenant une liste (String JSON)
 
-        case "checkout.session.completed":
-            const session = event.data.object as Stripe.Checkout.Session;
-            const { productId, userId } = session.metadata || {};
+        // Fallback pour compatibilité (si c'est un vieil achat avec un seul ID)
+        const singleProductId = session.metadata?.productId;
 
-            if (productId && userId) {
-                // 1. Récupérer les infos du produit pour avoir le sellerId
-                const product = await Automation.findById(productId);
+        if (userId) {
+            await connectToDatabase();
 
-                if (product) {
-                    // 2. Créer l'enregistrement de l'achat
-                    await Purchase.create({
-                        productId: productId,
-                        buyerId: userId,
-                        sellerId: product.sellerId,
-                        amount: session.amount_total ? session.amount_total / 100 : product.price,
-                        stripeSessionId: session.id,
-                    });
+            const productIds: string[] = [];
 
-                    console.log(`Transaction enregistrée : Produit ${productId} acheté par ${userId}`);
-
-                    // Note : L'accès au fichier S3 est géré dynamiquement sur la page /success
-                    // via une URL pré-signée générée à la volée.
+            // Cas 1 : Panier (Liste d'IDs)
+            if (productIdsString) {
+                try {
+                    const parsed = JSON.parse(productIdsString);
+                    if (Array.isArray(parsed)) {
+                        productIds.push(...parsed);
+                    }
+                } catch (e) {
+                    console.error("Erreur parsing productIds:", e);
                 }
             }
-            break;
+            // Cas 2 : Achat unique (Ancienne méthode)
+            else if (singleProductId) {
+                productIds.push(singleProductId);
+            }
 
-        default:
-            console.log(`Événement non géré : ${event.type}`);
+            // On crée une preuve d'achat pour CHAQUE produit trouvé
+            if (productIds.length > 0) {
+                for (const productId of productIds) {
+                    // On vérifie si l'achat existe déjà pour éviter les doublons
+                    const existingPurchase = await Purchase.findOne({
+                        userId: userId,
+                        automationId: productId // Assure-toi que ton modèle Purchase utilise 'automationId' ou 'productId'
+                    });
+
+                    if (!existingPurchase) {
+                        await Purchase.create({
+                            userId: userId,
+                            automationId: productId, // Lien vers le produit
+                            stripeId: session.id,
+                            amount: session.amount_total ? session.amount_total / 100 : 0, // Optionnel selon ton modèle
+                        });
+                    }
+                }
+
+                 //Optionnel : Vider le panier de l'utilisateur dans la BDD (double sécurité)
+                 await User.findByIdAndUpdate(userId, { cart: [] });
+            }
+        }
     }
 
     return new NextResponse(null, { status: 200 });
