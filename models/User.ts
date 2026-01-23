@@ -1,4 +1,17 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
+
+export interface IUser extends Document {
+    clerkId: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    imageUrl?: string;
+    stripeConnectId?: string;
+    onboardingComplete: boolean;
+    cart: mongoose.Types.ObjectId[];
+    createdAt: Date;
+    updatedAt: Date;
+}
 
 const UserSchema = new mongoose.Schema({
     clerkId: { type: String, required: true, unique: true },
@@ -6,10 +19,10 @@ const UserSchema = new mongoose.Schema({
     lastName: { type: String },
     email: { type: String, unique: true, sparse: true },
     imageUrl: { type: String },
-    stripeConnectId: { type: String }, // L'ID du compte Stripe Connect
+    stripeConnectId: { type: String },
     onboardingComplete: { type: Boolean, default: false },
+    cart: [{ type: Schema.Types.ObjectId, ref: "Automation" }],
 }, { timestamps: true });
 
-export default mongoose.models.User || mongoose.model("User", UserSchema);
-
-
+const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+export default User;
