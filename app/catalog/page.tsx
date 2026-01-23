@@ -29,20 +29,26 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
             <div className="flex flex-col md:flex-row gap-8">
                 {/* Sidebar Sticky pour les filtres */}
                 <aside className="w-full md:w-[280px] space-y-8 md:sticky md:top-24 h-fit">
-                    <SidebarSearch defaultValue={filters.query} />
-                    <FiltersSidebar
-                        initialPlatforms={filters.platforms}
-                        initialCategories={filters.categories}
-                        initialMinPrice={filters.minPrice}
-                        initialMaxPrice={filters.maxPrice}
-                    />
+                    <Suspense fallback={<div className="h-10 w-full bg-muted animate-pulse rounded" />}>
+                        <SidebarSearch defaultValue={filters.query} />
+                    </Suspense>
+                    <Suspense fallback={<div className="h-[400px] w-full bg-muted animate-pulse rounded" />}>
+                        <FiltersSidebar
+                            initialPlatforms={filters.platforms}
+                            initialCategories={filters.categories}
+                            initialMinPrice={filters.minPrice}
+                            initialMaxPrice={filters.maxPrice}
+                        />
+                    </Suspense>
                 </aside>
 
                 {/* Contenu Principal avec Suspense pour l'optimisation du rendu */}
                 <main className="flex-1">
                     <div className="flex flex-col sm:row justify-between items-start sm:items-center mb-8 gap-4">
                         <h1 className="text-3xl font-bold italic text-primary">Marketplace</h1>
-                        <SortSelect initialSort={filters.sort} />
+                        <Suspense fallback={<div className="w-[180px] h-10 bg-muted animate-pulse rounded" />}>
+                            <SortSelect initialSort={filters.sort} />
+                        </Suspense>
                     </div>
 
                     <Suspense key={JSON.stringify(params)} fallback={<LoadingGrid />}>
