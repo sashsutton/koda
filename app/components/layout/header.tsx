@@ -9,8 +9,8 @@ export default function Header() {
         <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
                 {/* Logo */}
-                <Link href="/" className="text-xl font-bold tracking-tight">
-                    Koda.
+                <Link href="/" className="text-3xl font-bold tracking-tight">
+                    Koda<span className="text-4xl text-orange-500">.</span>
                 </Link>
 
                 {/* Navigation & Auth */}
