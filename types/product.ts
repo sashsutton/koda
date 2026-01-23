@@ -16,4 +16,10 @@ export interface IProduct {
     previewImageUrl?: string;
     sellerId: string;
     createdAt: Date;
+    seller?: {
+        username?: string;
+        firstName?: string;
+        lastName?: string;
+        imageUrl?: string;
+    };
 }

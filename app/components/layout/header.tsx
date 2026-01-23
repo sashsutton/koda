@@ -16,7 +16,7 @@ export default function Header() {
                 {/* Navigation & Auth */}
                 <div className="flex items-center gap-4">
                     <nav className="hidden md:flex gap-6 text-sm font-medium items-center">
-                        <Link href="/products" className="transition-colors hover:text-primary">
+                        <Link href="/catalog" className="transition-colors hover:text-primary">
                             Catalogue
                         </Link>
 

@@ -57,7 +57,6 @@ async function getAutomations(searchQuery?: string, platform?: string, category?
       .limit(12)
       .lean();
 
-
     return automations.map((a: any) => ({
       ...a,
       _id: a._id.toString(),
