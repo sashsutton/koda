@@ -1,7 +1,7 @@
 "use server";
 
 import Stripe from "stripe";
-import { auth } from "@clerk/nextjs/server";
+import { requireAuth } from "@/lib/auth-utils";
 import { connectToDatabase } from "@/lib/db";
 import User from "@/models/User";
 
@@ -9,10 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function getStripeOnboardingLink() {
     try {
-        const { userId } = await auth();
-        if (!userId) throw new Error("Non autorisé");
-
-        await connectToDatabase();
+        const userId = await requireAuth();
 
         // 1. Chercher l'utilisateur ou le créer
         let user = await User.findOne({ clerkId: userId });
@@ -52,30 +49,26 @@ export async function getStripeOnboardingLink() {
         return accountLink.url;
 
     } catch (error: any) {
-        console.error("Erreur Stripe Connect:", error.message);
-        // Au lieu de faire planter la page, on peut renvoyer une erreur gérable
-        throw new Error("Impossible de configurer Stripe pour le moment. Vérifiez que votre compte plateforme est activé.");
+        console.error("Stripe Connect Error:", error.message);
+        throw new Error("Could not configure Stripe at the moment. Please verify that your platform account is active.");
     }
-
 }
-
 
 export async function getStripeLoginLink() {
     try {
-        const { userId } = await auth();
-        if (!userId) throw new Error("Non autorisé");
+        const userId = await requireAuth();
 
-        await connectToDatabase();
         const user = await User.findOne({ clerkId: userId });
 
         if (!user || !user.stripeConnectId) {
-            throw new Error("Compte Stripe non trouvé");
+            throw new Error("Stripe account not found");
         }
 
         const loginLink = await stripe.accounts.createLoginLink(user.stripeConnectId);
         return loginLink.url;
     } catch (error: any) {
-        console.error("Erreur login link:", error.message);
-        throw new Error("Impossible d'accéder au dashboard Stripe.");
+        console.error("Login link error:", error.message);
+        throw new Error("Could not access the Stripe dashboard.");
     }
 }
+

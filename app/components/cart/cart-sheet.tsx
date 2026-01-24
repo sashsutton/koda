@@ -8,6 +8,8 @@ import { toast } from "sonner";
 
 import { useCart } from "@/hooks/use-cart";
 import { createCheckoutSession } from "@/app/actions/transaction";
+import { useTranslations } from "next-intl";
+import { getErrorKey } from "@/lib/error-translator";
 import { getMyOrders } from "@/app/actions/dashboard";
 import { getPublicImageUrl } from "@/lib/image-helper";
 
@@ -16,6 +18,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose 
 import { Separator } from "@/app/components/ui/separator";
 
 export default function CartSheet() {
+    const tNotif = useTranslations('Notifications');
+    const tErr = useTranslations('Errors');
     const [isMounted, setIsMounted] = useState(false);
     const [isPending, startTransition] = useTransition();
 
@@ -106,9 +110,9 @@ export default function CartSheet() {
 
             // Notification utilisateur adaptée
             if (itemsToRemove.length === 1) {
-                toast.info(`"${itemsToRemove[0].title}" a été retiré (déjà possédé ou c'est votre produit).`);
+                toast.info(tNotif('itemRemovedSingular', { title: itemsToRemove[0].title }));
             } else {
-                toast.info(`${itemsToRemove.length} articles retirés car vous les possédez déjà ou ce sont les vôtres.`);
+                toast.info(tNotif('itemsRemovedPlural', { count: itemsToRemove.length }));
             }
         }
     }, [purchasedIds, cart.items, isMounted, cart, userId]);
@@ -120,7 +124,7 @@ export default function CartSheet() {
 
     const onCheckout = async () => {
         if (!userId) {
-            toast.info("Veuillez vous connecter pour valider votre commande. Votre panier sera conservé.");
+            toast.info(tNotif('loginCheckout'));
             router.push("/sign-in");
             return;
         }
@@ -131,7 +135,8 @@ export default function CartSheet() {
                 if (url) window.location.href = url;
             } catch (error: any) {
                 console.error(error);
-                toast.error(error.message || "Une erreur est survenue lors de la préparation du paiement.");
+                const errorKey = getErrorKey(error.message || "An error occurred while preparing the payment.");
+                toast.error(tErr(errorKey));
             }
         });
     };

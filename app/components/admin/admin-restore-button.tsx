@@ -5,8 +5,11 @@ import { ConfirmButton } from "@/app/components/ui/confirm-button";
 import { RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { getErrorKey } from "@/lib/error-translator";
 
 export function AdminRestoreButton() {
+    const tErr = useTranslations('Errors');
     const [isPending, setIsPending] = useState(false);
 
     const handleRestore = async () => {
@@ -14,9 +17,9 @@ export function AdminRestoreButton() {
         const promise = restoreAllUsersFromClerk();
 
         toast.promise(promise, {
-            loading: 'Synchronisation avec Clerk en cours...',
-            success: (data) => `Synchronisation terminée ! ${data.count} utilisateurs synchronisés.`,
-            error: 'Erreur lors de la synchronisation.',
+            loading: 'Synchronizing with Clerk...',
+            success: (data) => `Synchronization complete! ${data.count} users synchronized.`,
+            error: (err: any) => tErr(getErrorKey(err.message)),
         });
 
         try {
@@ -32,12 +35,12 @@ export function AdminRestoreButton() {
         <ConfirmButton
             variant="outline"
             className="flex items-center gap-2"
-            confirmMessage="Voulez-vous synchroniser tous les utilisateurs depuis Clerk ? Cela créera les comptes manquants localement."
+            confirmMessage="Do you want to synchronize all users from Clerk? This will create any missing accounts locally."
             onClick={handleRestore}
             disabled={isPending}
         >
             <RefreshCcw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
-            Synchroniser / Restaurer Clerk
+            Sync / Restore Clerk
         </ConfirmButton>
     );
 }

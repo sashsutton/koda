@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { getErrorKey } from "@/lib/error-translator";
 
 export function FeedbackForm() {
     const t = useTranslations('Feedback');
@@ -22,13 +23,16 @@ export function FeedbackForm() {
     const [state, action, isPending] = useActionState(sendFeedbackAction, { success: false });
 
     // Effet pour afficher les toasts
+    const tNotif = useTranslations('Notifications');
+    const tErr = useTranslations('Errors');
     useEffect(() => {
         if (state.success) {
-            toast.success(state.message);
+            toast.success(tNotif('messageReceived'));
         } else if (state.message) {
-            toast.error(state.message);
+            const errorKey = getErrorKey(state.message);
+            toast.error(tErr(errorKey));
         }
-    }, [state]);
+    }, [state, tErr]);
 
     if (state.success) {
         return (

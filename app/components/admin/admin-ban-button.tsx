@@ -5,6 +5,8 @@ import { ConfirmButton } from "@/app/components/ui/confirm-button";
 import { UserX, UserCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { getErrorKey } from "@/lib/error-translator";
 
 interface AdminBanButtonProps {
     userId: string;
@@ -12,6 +14,7 @@ interface AdminBanButtonProps {
 }
 
 export function AdminBanButton({ userId, isBanned }: AdminBanButtonProps) {
+    const tErr = useTranslations('Errors');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleToggle = async () => {
@@ -19,10 +22,11 @@ export function AdminBanButton({ userId, isBanned }: AdminBanButtonProps) {
         try {
             const result = await toggleBanUser(userId);
             if (result.success) {
-                toast.success(result.isBanned ? "Utilisateur banni avec succès" : "Utilisateur débanni avec succès");
+                toast.success(result.isBanned ? "User banned successfully" : "User unbanned successfully");
             }
         } catch (err: any) {
-            toast.error(err.message || "Une erreur est survenue");
+            const errorKey = getErrorKey(err.message);
+            toast.error(tErr(errorKey));
         } finally {
             setIsLoading(false);
         }
@@ -34,18 +38,18 @@ export function AdminBanButton({ userId, isBanned }: AdminBanButtonProps) {
             size="sm"
             className="flex items-center gap-1"
             disabled={isLoading}
-            confirmMessage={isBanned ? "Voulez-vous débannir cet utilisateur ?" : "Voulez-vous vraiment bannir cet utilisateur ?"}
+            confirmMessage={isBanned ? "Do you want to unban this user?" : "Do you really want to ban this user?"}
             onClick={handleToggle}
         >
             {isBanned ? (
                 <>
                     <UserCheck className="h-3 w-3" />
-                    Débannir
+                    Unban
                 </>
             ) : (
                 <>
                     <UserX className="h-3 w-3" />
-                    Bannir
+                    Ban
                 </>
             )}
         </ConfirmButton>

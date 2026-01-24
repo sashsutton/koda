@@ -11,6 +11,7 @@ import { IProduct } from "@/types/product";
 import { PlatformIcon } from "@/app/components/icons/platform-icon";
 import { toast } from "sonner";
 import { useTranslations } from 'next-intl';
+import { getErrorKey } from "@/lib/error-translator";
 
 type ProductLike = IProduct | IAutomation;
 
@@ -25,6 +26,7 @@ function isAutomation(p: ProductLike): p is IAutomation {
 }
 
 export function ProductCard({ product, userId, isPurchased = false }: ProductCardProps) {
+    const tErr = useTranslations('Errors');
     const t = useTranslations('ProductCard');
     const cart = useCart();
     const isOwner = userId === product.sellerId;

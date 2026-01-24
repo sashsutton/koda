@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import * as Sentry from "@sentry/nextjs";
+import { useTranslations } from "next-intl";
+import { getErrorKey } from "@/lib/error-translator";
 
 interface FileUploadProps {
     onUploadSuccess: (url: string) => void;
@@ -10,7 +12,9 @@ interface FileUploadProps {
     label?: string;
 }
 
-export default function FileUpload({ onUploadSuccess, accept, label = "Fichier JSON de l'automatisation", children, className }: FileUploadProps & { children?: React.ReactNode, className?: string }) {
+export default function FileUpload({ onUploadSuccess, accept, label = "Automation JSON File", children, className }: FileUploadProps & { children?: React.ReactNode, className?: string }) {
+    const tNotif = useTranslations('Notifications');
+    const tErr = useTranslations('Errors');
     const [uploading, setUploading] = useState(false);
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,29 +22,29 @@ export default function FileUpload({ onUploadSuccess, accept, label = "Fichier J
         if (!file) return;
 
         setUploading(true);
-        const toastId = toast.loading("Envoi en cours...");
+        const toastId = toast.loading("Uploading...");
 
         try {
-            // 1. Demander l'URL présignée à notre API
+            // 1. Get presigned URL from API
             const res = await fetch("/api/upload", {
                 method: "POST",
                 body: JSON.stringify({ fileName: file.name, fileType: file.type }),
             });
 
-            // VERIFICATION CRUCIALE
+            // CRITICAL VERIFICATION
             if (!res.ok) {
-                const errorText = await res.text(); // On lit le texte si ce n'est pas du JSON
+                const errorText = await res.text();
                 try {
                     const errorJson = JSON.parse(errorText);
-                    throw new Error(errorJson.error || "Erreur upload");
+                    throw new Error(errorJson.error || "Upload error");
                 } catch {
-                    throw new Error(errorText || "Erreur serveur");
+                    throw new Error(errorText || "Server error");
                 }
             }
 
             const { uploadUrl, fileUrl } = await res.json();
 
-            // 2. Envoyer le fichier directement à AWS S3
+            // 2. Upload file directly to AWS S3
             await fetch(uploadUrl, {
                 method: "PUT",
                 body: file,
@@ -48,11 +52,12 @@ export default function FileUpload({ onUploadSuccess, accept, label = "Fichier J
             });
 
             onUploadSuccess(fileUrl);
-            toast.success("Fichier envoyé avec succès !");
-        } catch (error) {
+            toast.success(tNotif('fileUploadSuccess'));
+        } catch (error: any) {
             console.error("Upload failed", error);
             Sentry.captureException(error);
-            toast.error("Échec de l'envoi du fichier.");
+            const errorKey = getErrorKey(error.message || "File upload failed.");
+            toast.error(tErr(errorKey));
         } finally {
             setUploading(false);
             toast.dismiss(toastId);
@@ -63,7 +68,7 @@ export default function FileUpload({ onUploadSuccess, accept, label = "Fichier J
         <div className={className || "border-2 border-dashed border-gray-300 p-6 rounded-lg text-center hover:bg-muted/50 transition-colors"}>
             {uploading ? (
                 <div className="flex flex-col items-center justify-center h-full">
-                    <p className="text-primary font-medium animate-pulse">Téléchargement en cours...</p>
+                    <p className="text-primary font-medium animate-pulse">Uploading...</p>
                 </div>
             ) : (
                 <>
@@ -85,7 +90,7 @@ export default function FileUpload({ onUploadSuccess, accept, label = "Fichier J
                             <>
                                 <p className="text-sm font-medium text-muted-foreground mb-2">{label}</p>
                                 <span className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-sm">
-                                    Choisir un fichier
+                                    Choose a file
                                 </span>
                             </>
                         )}

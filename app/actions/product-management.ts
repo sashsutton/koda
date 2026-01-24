@@ -13,11 +13,11 @@ export async function deleteProduct(productId: string) {
         const product = await Product.findOne({ _id: productId });
 
         if (!product) {
-            throw new Error("Produit introuvable");
+            throw new Error("Product not found");
         }
 
         if (product.sellerId !== userId) {
-            throw new Error("Vous n'êtes pas autorisé à supprimer ce produit");
+            throw new Error("You are not authorized to delete this product");
         }
 
         await Product.deleteOne({ _id: productId });
@@ -52,8 +52,8 @@ export async function updateProduct(productId: string, data: { title: string; de
 
     const product = await Automation.findOne({ _id: productId });
 
-    if (!product) throw new Error("Produit introuvable");
-    if (product.sellerId !== userId) throw new Error("Non autorisé");
+    if (!product) throw new Error("Product not found");
+    if (product.sellerId !== userId) throw new Error("Unauthorized");
 
     product.title = validData.title;
     product.description = validData.description;

@@ -8,6 +8,8 @@ import { getPublicImageUrl } from "@/lib/image-helper";
 import { toast } from "sonner";
 import { ProductCategory } from "@/types/product";
 import { AutomationPlatform } from "@/types/automation";
+import { useTranslations } from "next-intl";
+import { getErrorKey } from "@/lib/error-translator";
 
 // Imports UI (Design)
 import { Button } from "@/app/components/ui/button";
@@ -28,6 +30,8 @@ import Image from "next/image";
 import { Separator } from "@/app/components/ui/separator";
 
 export function SellForm() {
+    const tNotif = useTranslations('Notifications');
+    const tErr = useTranslations('Errors');
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [fileUrl, setFileUrl] = useState("");
@@ -69,7 +73,7 @@ export function SellForm() {
         // if (!fileUrl) return alert("Veuillez uploader votre fichier d'automatisation"); 
 
         setLoading(true);
-        const toastId = toast.loading("Publication en cours...");
+        const toastId = toast.loading("Publishing...");
         try {
             await createAutomation({
                 ...formData,
@@ -77,11 +81,12 @@ export function SellForm() {
                 previewImageUrl,
                 version: formData.version || undefined,
             });
-            toast.success("Produit mis en ligne avec succès !");
+            toast.success(tNotif('productPublished'));
             router.push("/");
         } catch (error: any) {
             console.error(error);
-            toast.error(error.message || "Erreur lors de la mise en vente");
+            const errorKey = getErrorKey(error.message);
+            toast.error(tErr(errorKey));
         } finally {
             setLoading(false);
             toast.dismiss(toastId);
@@ -96,9 +101,9 @@ export function SellForm() {
                         <Sparkles className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                        <CardTitle className="text-2xl font-bold">Détails de l'automatisation</CardTitle>
+                        <CardTitle className="text-2xl font-bold">Automation Details</CardTitle>
                         <CardDescription className="text-base">
-                            Remplissez les informations ci-dessous pour publier votre blueprint sur le marché.
+                            Fill in the information below to publish your blueprint on the market.
                         </CardDescription>
                     </div>
                 </div>
@@ -107,12 +112,11 @@ export function SellForm() {
             <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-10 pt-8">
 
-                    {/* Section 1: Informations Générales */}
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Titre */}
                             <div className="space-y-2.5">
-                                <Label htmlFor="title" className="text-base font-medium">Titre du produit <span className="text-destructive">*</span></Label>
+                                <Label htmlFor="title" className="text-base font-medium">Product Title <span className="text-destructive">*</span></Label>
                                 <Input
                                     id="title"
                                     placeholder="Ex: LinkedIn Scraper Pro v2"
@@ -121,12 +125,12 @@ export function SellForm() {
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                 />
-                                <p className="text-xs text-muted-foreground">Donnez un nom clair et accrocheur.</p>
+                                <p className="text-xs text-muted-foreground">Give it a clear and catchy name.</p>
                             </div>
 
                             {/* Prix */}
                             <div className="space-y-2.5">
-                                <Label htmlFor="price" className="text-base font-medium">Prix (€) <span className="text-destructive">*</span></Label>
+                                <Label htmlFor="price" className="text-base font-medium">Price (€) <span className="text-destructive">*</span></Label>
                                 <div className="relative">
                                     <Input
                                         id="price"
@@ -139,16 +143,16 @@ export function SellForm() {
                                     />
                                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">€</span>
                                 </div>
-                                <p className="text-xs text-muted-foreground">Votre revenu net sera calculé après commission.</p>
+                                <p className="text-xs text-muted-foreground">Your net income will be calculated after commission.</p>
                             </div>
                         </div>
 
                         {/* Description */}
                         <div className="space-y-2.5">
-                            <Label htmlFor="description" className="text-base font-medium">Description complète <span className="text-destructive">*</span></Label>
+                            <Label htmlFor="description" className="text-base font-medium">Full Description <span className="text-destructive">*</span></Label>
                             <Textarea
                                 id="description"
-                                placeholder="Décrivez les fonctionnalités, les pré-requis et la valeur ajoutée de votre script..."
+                                placeholder="Describe features, prerequisites, and the value proposition of your script..."
                                 className="min-h-[160px] text-base leading-relaxed resize-y"
                                 required
                                 value={formData.description}
@@ -167,32 +171,32 @@ export function SellForm() {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2.5">
-                                <Label htmlFor="platform">Plateforme <span className="text-destructive">*</span></Label>
+                                <Label htmlFor="platform">Platform <span className="text-destructive">*</span></Label>
                                 <Select
                                     defaultValue={formData.platform}
                                     onValueChange={(value) => setFormData({ ...formData, platform: value as AutomationPlatform })}
                                 >
                                     <SelectTrigger className="h-11">
-                                        <SelectValue placeholder="Choisir..." />
+                                        <SelectValue placeholder="Choose..." />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="n8n">n8n</SelectItem>
                                         <SelectItem value="Make">Make</SelectItem>
                                         <SelectItem value="Zapier">Zapier</SelectItem>
                                         <SelectItem value="Python">Python</SelectItem>
-                                        <SelectItem value="Other">Autre</SelectItem>
+                                        <SelectItem value="Other">Other</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
 
                             <div className="space-y-2.5">
-                                <Label htmlFor="category">Catégorie <span className="text-destructive">*</span></Label>
+                                <Label htmlFor="category">Category <span className="text-destructive">*</span></Label>
                                 <Select
                                     defaultValue={formData.category}
                                     onValueChange={(value) => setFormData({ ...formData, category: value as ProductCategory })}
                                 >
                                     <SelectTrigger className="h-11">
-                                        <SelectValue placeholder="Choisir..." />
+                                        <SelectValue placeholder="Choose..." />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value={ProductCategory.SOCIAL_MEDIA}>Social Media</SelectItem>
@@ -208,7 +212,7 @@ export function SellForm() {
                         {/* Tags & Version */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2.5">
-                                <Label htmlFor="version">Version <span className="text-muted-foreground font-normal">(Optionnel)</span></Label>
+                                <Label htmlFor="version">Version <span className="text-muted-foreground font-normal">(Optional)</span></Label>
                                 <Input
                                     id="version"
                                     placeholder="Ex: v1.0.0"
@@ -219,11 +223,11 @@ export function SellForm() {
                             </div>
 
                             <div className="space-y-2.5">
-                                <Label htmlFor="tags">Tags <span className="text-muted-foreground font-normal">(Mots-clés pour la recherche)</span></Label>
+                                <Label htmlFor="tags">Tags <span className="text-muted-foreground font-normal">(Keywords for search)</span></Label>
                                 <div className="flex gap-2">
                                     <Input
                                         id="tags"
-                                        placeholder="Ajouter un tag..."
+                                        placeholder="Add a tag..."
                                         value={tagInput}
                                         className="h-11"
                                         onChange={(e) => setTagInput(e.target.value)}
@@ -235,7 +239,7 @@ export function SellForm() {
                                         }}
                                     />
                                     <Button type="button" onClick={handleAddTag} variant="secondary" className="h-11 px-4">
-                                        Ajouter
+                                        Add
                                     </Button>
                                 </div>
                                 {formData.tags.length > 0 && (
@@ -268,7 +272,7 @@ export function SellForm() {
                         <div className="space-y-4">
                             <div className="flex items-center gap-2 mb-2">
                                 <ImageIcon className="h-5 w-5 text-primary" />
-                                <Label className="text-base font-semibold">Image de couverture</Label>
+                                <Label className="text-base font-semibold">Cover Image</Label>
                             </div>
 
                             <FileUpload
@@ -282,12 +286,12 @@ export function SellForm() {
                                             <ImageIcon className="h-6 w-6 text-muted-foreground" />
                                         </div>
                                         <div>
-                                            <p className="font-medium text-sm">Glisser-déposer ou cliquer</p>
+                                            <p className="font-medium text-sm">Drag and drop or click</p>
                                             <p className="text-xs text-muted-foreground mt-1">PNG, JPG, WEBP (Max 2MB)</p>
                                         </div>
                                         <div className="mt-4">
                                             <span className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-sm font-medium hover:bg-secondary/80 transition-colors">
-                                                Choisir un fichier
+                                                Choose a file
                                             </span>
                                         </div>
                                     </div>
@@ -301,7 +305,7 @@ export function SellForm() {
                                             unoptimized
                                         />
                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <p className="text-white font-medium text-sm">Changer l'image</p>
+                                            <p className="text-white font-medium text-sm">Change image</p>
                                         </div>
                                     </div>
                                 )}
@@ -312,7 +316,7 @@ export function SellForm() {
                         <div className="space-y-4">
                             <div className="flex items-center gap-2 mb-2">
                                 <FileJson className="h-5 w-5 text-primary" />
-                                <Label className="text-base font-semibold">Fichier Source (JSON)</Label>
+                                <Label className="text-base font-semibold">Source File (JSON)</Label>
                                 <span className="text-destructive text-sm">*</span>
                             </div>
 
@@ -327,12 +331,12 @@ export function SellForm() {
                                             <UploadCloud className="h-8 w-8 text-primary" />
                                         </div>
                                         <div>
-                                            <p className="font-medium text-lg">Fichier d'automatisation</p>
-                                            <p className="text-sm text-muted-foreground mt-1">Format .json uniquement</p>
+                                            <p className="font-medium text-lg">Automation File</p>
+                                            <p className="text-sm text-muted-foreground mt-1">Format .json only</p>
                                         </div>
                                         <div className="mt-2">
                                             <span className="px-6 py-2.5 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
-                                                Sélectionner le fichier
+                                                Select File
                                             </span>
                                         </div>
                                     </div>
@@ -342,11 +346,11 @@ export function SellForm() {
                                             <FileJson className="h-8 w-8" />
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-lg text-green-700 dark:text-green-400">Fichier prêt !</p>
+                                            <p className="font-semibold text-lg text-green-700 dark:text-green-400">File ready!</p>
                                             <p className="text-xs text-muted-foreground mt-1 break-all px-4 max-w-xs mx-auto">{fileUrl.split('/').pop()}</p>
                                         </div>
                                         <div className="px-4 py-2 border rounded-full text-xs text-muted-foreground bg-background hover:bg-muted transition-colors">
-                                            Cliquez pour remplacer
+                                            Click to replace
                                         </div>
                                     </div>
                                 )}
@@ -358,11 +362,11 @@ export function SellForm() {
 
                 <CardFooter className="flex justify-end gap-4 border-t border-border/50 p-8 bg-muted/20 rounded-b-xl">
                     <Button variant="ghost" type="button" onClick={() => router.back()} size="lg">
-                        Annuler
+                        Cancel
                     </Button>
                     <Button type="submit" size="lg" disabled={loading || !fileUrl} className="min-w-[180px] shadow-lg shadow-primary/20">
                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        {loading ? "Publication..." : "Publier sur Koda"}
+                        {loading ? "Publishing..." : "Publish on Koda"}
                     </Button>
                 </CardFooter>
             </form>

@@ -28,7 +28,7 @@ export async function createAutomation(formData: CreateAutomationInput) {
     const userDoc = await User.findOne({ clerkId: userId });
 
     if (!userDoc || !userDoc.stripeConnectId || !userDoc.onboardingComplete) {
-        throw new Error("Veuillez configurer votre compte de paiement dans le Dashboard avant de vendre.");
+        throw new Error("Please configure your payment account in the Dashboard before selling.");
     }
 
     // Création du produit uniquement si le compte Stripe est prêt

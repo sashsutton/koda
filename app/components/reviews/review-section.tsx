@@ -10,6 +10,8 @@ import { Textarea } from "@/app/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/app/components/ui/avatar";
 import { toast } from "sonner";
 import { MessageSquarePlus, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { getErrorKey } from "@/lib/error-translator";
 
 interface ReviewsSectionProps {
     productId: string;
@@ -18,6 +20,7 @@ interface ReviewsSectionProps {
 }
 
 export function ReviewsSection({ productId, reviews, canReview }: ReviewsSectionProps) {
+    const tErr = useTranslations('Errors');
     const pathname = usePathname();
     const [rating, setRating] = useState(5);
 
@@ -29,9 +32,10 @@ export function ReviewsSection({ productId, reviews, canReview }: ReviewsSection
         if (state?.success) {
             toast.success(state.message);
         } else if (state?.error) {
-            toast.error(state.error);
+            const errorKey = getErrorKey(state.error);
+            toast.error(tErr(errorKey));
         }
-    }, [state]);
+    }, [state, tErr]);
 
     return (
         <div className="space-y-8 mt-12">

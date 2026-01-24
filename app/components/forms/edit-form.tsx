@@ -12,6 +12,8 @@ import { Loader2 } from "lucide-react";
 import FileUpload from "@/app/components/FileUpload"; // Import du composant Upload
 import { getPublicImageUrl } from "@/lib/image-helper";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
+import { getErrorKey } from "@/lib/error-translator";
 
 interface EditFormProps {
     product: {
@@ -24,6 +26,8 @@ interface EditFormProps {
 }
 
 export function EditForm({ product }: EditFormProps) {
+    const tNotif = useTranslations('Notifications');
+    const tErr = useTranslations('Errors');
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
@@ -38,15 +42,16 @@ export function EditForm({ product }: EditFormProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        const toastId = toast.loading("Mise à jour en cours...");
+        const toastId = toast.loading("Updating...");
 
         try {
             await updateProduct(product._id, formData);
-            toast.success("Produit mis à jour avec succès !");
+            toast.success(tNotif('productUpdated'));
             router.push("/dashboard");
         } catch (error: any) {
             console.error(error);
-            toast.error(error.message || "Erreur lors de la mise à jour");
+            const errorKey = getErrorKey(error.message);
+            toast.error(tErr(errorKey));
         } finally {
             setLoading(false);
             toast.dismiss(toastId);
@@ -56,12 +61,12 @@ export function EditForm({ product }: EditFormProps) {
     return (
         <Card className="max-w-2xl mx-auto">
             <CardHeader>
-                <CardTitle>Modifier {product.title}</CardTitle>
+                <CardTitle>Edit {product.title}</CardTitle>
             </CardHeader>
             <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="title">Titre</Label>
+                        <Label htmlFor="title">Title</Label>
                         <Input
                             id="title"
                             value={formData.title}
@@ -71,7 +76,7 @@ export function EditForm({ product }: EditFormProps) {
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="price">Prix (€)</Label>
+                        <Label htmlFor="price">Price (€)</Label>
                         <Input
                             id="price"
                             type="number"
@@ -83,13 +88,13 @@ export function EditForm({ product }: EditFormProps) {
                     </div>
 
                     <div className="space-y-2">
-                        <Label>Image de prévisualisation</Label>
+                        <Label>Preview Image</Label>
                         <div className="border-2 border-dashed rounded-lg p-2 hover:bg-muted/50 transition-colors">
                             {!formData.previewImageUrl ? (
                                 <FileUpload
                                     onUploadSuccess={(url) => setFormData({ ...formData, previewImageUrl: url })}
                                     accept="image/*"
-                                    label="Changer l'image de couverture"
+                                    label="Change cover image"
                                 />
                             ) : (
                                 <div className="space-y-2">
@@ -101,7 +106,7 @@ export function EditForm({ product }: EditFormProps) {
                                         onClick={() => setFormData({ ...formData, previewImageUrl: "" })}
                                         className="w-full"
                                     >
-                                        Supprimer / Changer l'image
+                                        Delete / Change image
                                     </Button>
                                 </div>
                             )}
@@ -121,11 +126,11 @@ export function EditForm({ product }: EditFormProps) {
                 </CardContent>
                 <CardFooter className="flex justify-end gap-2">
                     <Button variant="outline" type="button" onClick={() => router.back()}>
-                        Annuler
+                        Cancel
                     </Button>
                     <Button type="submit" disabled={loading}>
                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Enregistrer
+                        Save
                     </Button>
                 </CardFooter>
             </form>

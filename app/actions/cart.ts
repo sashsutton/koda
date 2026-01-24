@@ -23,8 +23,8 @@ export async function getSavedCart(): Promise<IAutomation[]> {
         _id: item._id.toString(),
         createdAt: item.createdAt ? item.createdAt.toISOString() : new Date().toISOString(),
         sellerId: item.sellerId.toString(),
-        // On s'assure que category est valide, sinon "Autre" par défaut
-        category: item.category || "Autre"
+        // On s'assure que category est valide, sinon "Other" par défaut
+        category: item.category || "Other"
     }));
 }
 

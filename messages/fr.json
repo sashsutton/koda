@@ -81,5 +81,36 @@
             "submit": "Envoyer le message",
             "sending": "Envoi en cours..."
         }
+    },
+    "Errors": {
+        "unauthorized": "Non autorisé",
+        "userNotFound": "Utilisateur introuvable",
+        "cannotBanSelf": "Vous ne pouvez pas vous bannir vous-même.",
+        "mustBeLoggedIn": "Vous devez être connecté pour effectuer cette action.",
+        "accountSuspended": "Accès refusé : Votre compte a été suspendu.",
+        "configureStripe": "Veuillez configurer votre compte de paiement dans le Dashboard avant de vendre.",
+        "productNotFound": "Produit introuvable",
+        "notAuthorizedToDelete": "Vous n'êtes pas autorisé à supprimer ce produit",
+        "cartEmpty": "Le panier est vide.",
+        "noValidProducts": "Aucun produit valide trouvé dans la base de données.",
+        "sellerStripeNotConfigured": "Le vendeur n'a pas configuré ses paiements.",
+        "checkFormFields": "Veuillez vérifier les champs du formulaire.",
+        "sendingError": "Une erreur est survenue lors de l'envoi. Réessayez plus tard.",
+        "stripeError": "Impossible de configurer Stripe pour le moment.",
+        "stripeDashboardError": "Impossible d'accéder au dashboard Stripe.",
+        "genericError": "Une erreur inattendue est survenue. Veuillez réessayer.",
+        "fileUploadFailed": "Échec de l'envoi du fichier.",
+        "paymentError": "Une erreur est survenue lors de la préparation du paiement.",
+        "serverError": "Erreur serveur."
+    },
+    "Notifications": {
+        "itemRemovedSingular": "\"{title}\" a été retiré (déjà possédé ou c'est votre produit).",
+        "itemsRemovedPlural": "{count} articles retirés car vous les possédez déjà ou ce sont les vôtres.",
+        "loginCheckout": "Veuillez vous connecter pour valider votre commande. Votre panier sera conservé.",
+        "fileUploadSuccess": "Fichier envoyé avec succès !",
+        "productPublished": "Produit mis en ligne avec succès !",
+        "productUpdated": "Produit mis à jour avec succès !",
+        "messageReceived": "Merci ! Votre message a été reçu.",
+        "reviewSuccess": "Envoyé avec succès !"
     }
 }

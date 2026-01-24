@@ -22,7 +22,7 @@ export async function createCheckoutSession(items: IAutomation[]) {
     }
 
     if (!items || items.length === 0) {
-        throw new Error("Le panier est vide.");
+        throw new Error("The cart is empty.");
     }
 
     // 3. Récupération sécurisée des produits (On ne fait pas confiance au frontend pour le prix)
@@ -32,7 +32,7 @@ export async function createCheckoutSession(items: IAutomation[]) {
     const dbProducts = await Automation.find({ _id: { $in: productIds } }).lean();
 
     if (!dbProducts || dbProducts.length === 0) {
-        throw new Error("Aucun produit valide trouvé dans la base de données.");
+        throw new Error("No valid products found in the database.");
     }
 
     // 4. (Optionnel mais recommandé) Vérifier que les vendeurs existent et ont Stripe activé
@@ -46,7 +46,7 @@ export async function createCheckoutSession(items: IAutomation[]) {
     // Vérification simple : est-ce que tous les vendeurs ont connecté Stripe ?
     for (const seller of sellers) {
         if (!seller.stripeConnectId) {
-            throw new Error(`Le vendeur ${seller.username || 'inconnu'} n'a pas configuré ses paiements.`);
+            throw new Error(`The seller ${seller.username || 'unknown'} has not configured their payments.`);
         }
     }
 
@@ -127,6 +127,7 @@ export async function createSingleProductCheckout(productId: string): Promise<st
         previewImageUrl: product.previewImageUrl,
         sellerId: typeof product.sellerId === 'object' ? product.sellerId.toString() : product.sellerId,
         createdAt: product.createdAt,
+        updatedAt: product.updatedAt || product.createdAt,
         platform: product.platform,
         fileUrl: product.fileUrl,
         version: product.version,

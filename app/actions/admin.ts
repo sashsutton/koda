@@ -93,11 +93,11 @@ export async function toggleBanUser(userId: string) {
 
     const currentAdmin = await User.findOne({ clerkId: adminId });
     if (currentAdmin?._id.toString() === userId) {
-        throw new Error("Vous ne pouvez pas vous bannir vous-même.");
+        throw new Error("You cannot ban yourself.");
     }
 
     const user = await User.findById(userId);
-    if (!user) throw new Error("Utilisateur introuvable.");
+    if (!user) throw new Error("User not found.");
 
     user.isBanned = !user.isBanned;
     await user.save();

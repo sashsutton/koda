@@ -81,5 +81,36 @@
             "submit": "Send message",
             "sending": "Sending..."
         }
+    },
+    "Errors": {
+        "unauthorized": "Unauthorized",
+        "userNotFound": "User not found",
+        "cannotBanSelf": "You cannot ban yourself.",
+        "mustBeLoggedIn": "You must be logged in to perform this action.",
+        "accountSuspended": "Access Denied: Your account has been suspended.",
+        "configureStripe": "Please configure your payment account in the Dashboard before selling.",
+        "productNotFound": "Product not found",
+        "notAuthorizedToDelete": "You are not authorized to delete this product",
+        "cartEmpty": "The cart is empty.",
+        "noValidProducts": "No valid products found in the database.",
+        "sellerStripeNotConfigured": "The seller has not configured their payments.",
+        "checkFormFields": "Please check the form fields.",
+        "sendingError": "An error occurred while sending. Please try again later.",
+        "stripeError": "Could not configure Stripe at the moment.",
+        "stripeDashboardError": "Could not access the Stripe dashboard.",
+        "genericError": "An unexpected error occurred. Please try again.",
+        "fileUploadFailed": "File upload failed.",
+        "paymentError": "An error occurred while preparing the payment.",
+        "serverError": "Server error."
+    },
+    "Notifications": {
+        "itemRemovedSingular": "\"{title}\" was removed (already owned or it's your product).",
+        "itemsRemovedPlural": "{count} items removed because you already own them or they are yours.",
+        "loginCheckout": "Please log in to checkout. Your cart will be saved.",
+        "fileUploadSuccess": "File uploaded successfully!",
+        "productPublished": "Product published successfully!",
+        "productUpdated": "Product updated successfully!",
+        "messageReceived": "Thank you! Your message has been received.",
+        "reviewSuccess": "Sent successfully!"
     }
 }

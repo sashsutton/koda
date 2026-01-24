@@ -46,7 +46,7 @@ export async function getSalesHistory() {
     return purchases.map((purchase: any) => ({
         ...purchase,
         _id: purchase._id.toString(),
-        productId: purchase.productId ? { title: purchase.productId.title } : { title: "Produit supprimé" },
+        productId: purchase.productId ? { title: purchase.productId.title } : { title: "Deleted product" },
         createdAt: purchase.createdAt.toISOString(),
     }));
 }

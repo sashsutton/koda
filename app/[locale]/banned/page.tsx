@@ -12,23 +12,23 @@ export default async function BannedPage() {
                 <ShieldAlert className="h-16 w-16 text-red-600 dark:text-red-400" />
             </div>
 
-            <h1 className="text-4xl font-bold tracking-tight">Compte Suspendu</h1>
+            <h1 className="text-4xl font-bold tracking-tight">Account Suspended</h1>
 
             <p className="max-w-md text-gray-500 text-lg">
-                Votre compte a été suspendu par un administrateur pour violation des conditions d'utilisation ou activité suspecte.
+                Your account has been suspended by an administrator for violation of terms of service or suspicious activity.
             </p>
 
             <div className="bg-gray-50 dark:bg-gray-900 border rounded-lg p-4 text-sm text-left max-w-md">
-                <p className="font-semibold mb-1">Que faire ?</p>
+                <p className="font-semibold mb-1">What to do?</p>
                 <ul className="list-disc list-inside space-y-1">
-                    <li>Contactez le support si vous pensez qu'il s'agit d'une erreur.</li>
-                    <li>Vérifiez vos e-mails pour plus de détails sur cette décision.</li>
+                    <li>Contact support if you believe this is an error.</li>
+                    <li>Check your emails for more details on this decision.</li>
                 </ul>
             </div>
 
             <Button asChild variant="outline" className="mt-4">
                 <Link href="/">
-                    Retour à l'accueil
+                    Return to home
                 </Link>
             </Button>
         </div>

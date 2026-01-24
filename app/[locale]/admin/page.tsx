@@ -9,7 +9,7 @@ export default async function AdminDashboard() {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold">Gestion des Utilisateurs</h1>
+                <h1 className="text-3xl font-bold">User Management</h1>
                 <AdminRestoreButton />
             </div>
 
@@ -17,9 +17,9 @@ export default async function AdminDashboard() {
                 <table className="w-full text-left">
                     <thead className="bg-gray-100 dark:bg-gray-900 border-b">
                         <tr>
-                            <th className="p-4">Utilisateur</th>
+                            <th className="p-4">User</th>
                             <th className="p-4">Email</th>
-                            <th className="p-4">Rôle</th>
+                            <th className="p-4">Role</th>
                             <th className="p-4">Date</th>
                             <th className="p-4 text-right">Actions</th>
                         </tr>
@@ -31,20 +31,20 @@ export default async function AdminDashboard() {
                                     <div className="font-medium">
                                         {user.username || user.firstName ?
                                             (user.username || `${user.firstName} ${user.lastName || ''}`) :
-                                            <span className="text-gray-400 italic">Sans nom</span>
+                                            <span className="text-gray-400 italic">No name</span>
                                         }
                                     </div>
                                     <div className="text-xs text-gray-500 font-mono mt-1">
                                         {user.clerkId}
                                         {user.stripeConnectId && <span className="text-green-600 ml-2">(Seller)</span>}
-                                        {user.isBanned && <span className="text-red-600 ml-2 font-bold">[BANNI]</span>}
+                                        {user.isBanned && <span className="text-red-600 ml-2 font-bold">[BANNED]</span>}
                                     </div>
                                 </td>
                                 <td className="p-4 text-sm">
                                     {user.email ? (
                                         user.email
                                     ) : (
-                                        <span className="text-orange-300 text-xs px-2 py-1 bg-orange-900/20 rounded">Email manquant</span>
+                                        <span className="text-orange-300 text-xs px-2 py-1 bg-orange-900/20 rounded">Missing email</span>
                                     )}
                                 </td>
                                 <td className="p-4">

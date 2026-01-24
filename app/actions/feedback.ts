@@ -1,14 +1,14 @@
 "use server";
 
 import { z } from "zod";
-import { resend } from "@/lib/resend"; // On importe notre client
+import { resend } from "@/lib/resend";
 import { requireUser } from "@/lib/auth-utils";
 
 const feedbackSchema = z.object({
     type: z.enum(["bug", "contact", "feature"]),
-    email: z.string().email({ message: "Email invalide" }),
-    subject: z.string().min(5, { message: "Le sujet est trop court" }),
-    message: z.string().min(10, { message: "Votre message est un peu court..." }),
+    email: z.string().email({ message: "Invalid email" }),
+    subject: z.string().min(5, { message: "Subject is too short" }),
+    message: z.string().min(10, { message: "Your message is a bit too short..." }),
 });
 
 export type FeedbackState = {
@@ -25,11 +25,11 @@ export async function sendFeedbackAction(prevState: FeedbackState, formData: For
     } catch (err: any) {
         return {
             success: false,
-            message: err.message || "Vous devez être connecté et non banni pour envoyer un message."
+            message: err.message || "You must be logged in and not banned to send a message."
         };
     }
 
-    // Validation des données
+    // Data validation
     const validatedFields = feedbackSchema.safeParse({
         type: formData.get("type"),
         email: formData.get("email"),
@@ -41,39 +41,39 @@ export async function sendFeedbackAction(prevState: FeedbackState, formData: For
         return {
             success: false,
             errors: validatedFields.error.flatten().fieldErrors,
-            message: "Veuillez vérifier les champs du formulaire.",
+            message: "Please check the form fields.",
         };
     }
 
     const { type, email, subject, message } = validatedFields.data;
 
     try {
-        // ENVOI DE L'EMAIL VIA RESEND
+        // Send email via Resend
         await resend.emails.send({
-            from: 'Koda Feedback <onboarding@resend.dev>', // Utilise ce mail par défaut tant que tu n'as pas configuré ton domaine
+            from: 'Koda Feedback <onboarding@resend.dev>',
             to: 'hello.kodateam@gmail.com',
-            replyTo: email, // Pour pouvoir répondre directement à l'utilisateur
+            replyTo: email,
             subject: `[${type.toUpperCase()}] ${subject}`,
             html: `
-        <h1>Nouveau message de Koda</h1>
-        <p><strong>Type :</strong> ${type}</p>
-        <p><strong>De :</strong> ${email}</p>
+        <h1>New message from Koda</h1>
+        <p><strong>Type:</strong> ${type}</p>
+        <p><strong>From:</strong> ${email}</p>
         <hr />
-        <h3>Message :</h3>
+        <h3>Message:</h3>
         <p style="white-space: pre-wrap;">${message}</p>
       `
         });
 
         return {
             success: true,
-            message: "Merci ! Votre message a bien été reçu.",
+            message: "Thank you! Your message has been received.",
         };
 
     } catch (error) {
-        console.error("Erreur d'envoi Resend:", error);
+        console.error("Resend send error:", error);
         return {
             success: false,
-            message: "Une erreur est survenue lors de l'envoi. Réessayez plus tard.",
+            message: "An error occurred while sending. Please try again later.",
         };
     }
 }

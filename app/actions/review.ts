@@ -15,7 +15,7 @@ export async function submitContent(prevState: any, formData: FormData) {
     const user = await currentUser();
 
     if (!user) {
-        return { error: "Non autorisé" };
+        return { error: "Unauthorized" };
     }
 
     const userId = user.id;
@@ -41,7 +41,7 @@ export async function submitContent(prevState: any, formData: FormData) {
             await Review.findOneAndUpdate(
                 { userId, productId, type: 'review' },
                 {
-                    userName: user.firstName || "Utilisateur",
+                    userName: user.firstName || "User",
                     rating,
                     comment
                 },
@@ -77,10 +77,10 @@ export async function submitContent(prevState: any, formData: FormData) {
             revalidatePath(`/product/${productId}`); // Fallback
         }
 
-        return { success: true, message: "Envoyé avec succès !" };
+        return { success: true, message: "Sent successfully!" };
 
     } catch (error) {
         console.error(error);
-        return { error: "Erreur serveur." };
+        return { error: "Server error." };
     }
 }

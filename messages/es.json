@@ -81,5 +81,36 @@
             "submit": "Enviar mensaje",
             "sending": "Enviando..."
         }
+    },
+    "Errors": {
+        "unauthorized": "No autorizado",
+        "userNotFound": "Usuario no encontrado",
+        "cannotBanSelf": "No puedes bannearte a ti mismo.",
+        "mustBeLoggedIn": "Debes iniciar sesión para realizar esta acción.",
+        "accountSuspended": "Acceso denegado: Su cuenta ha sido suspendida.",
+        "configureStripe": "Por favor, configure su cuenta de pago en el Panel antes de vender.",
+        "productNotFound": "Producto no encontrado",
+        "notAuthorizedToDelete": "No estás autorizado para eliminar este producto",
+        "cartEmpty": "El carrito está vacío.",
+        "noValidProducts": "No se encontraron productos válidos en la base de datos.",
+        "sellerStripeNotConfigured": "El vendedor no ha configurado sus pagos.",
+        "checkFormFields": "Por favor, compruebe los campos del formulario.",
+        "sendingError": "Ocurrió un error al enviar. Por favor, inténtelo de nuevo más tarde.",
+        "stripeError": "No se pudo configurar Stripe en este momento.",
+        "stripeDashboardError": "No se pudo acceder al panel de Stripe.",
+        "genericError": "Ocurrió un error inesperado. Por favor, inténtelo de nuevo.",
+        "fileUploadFailed": "Error al cargar el archivo.",
+        "paymentError": "Ocurrió un error al preparar el pago.",
+        "serverError": "Error del servidor."
+    },
+    "Notifications": {
+        "itemRemovedSingular": "\"{title}\" fue eliminado (ya es de su propiedad o es su producto).",
+        "itemsRemovedPlural": "{count} artículos eliminados porque ya los posee o son suyos.",
+        "loginCheckout": "Inicie sesión para completar el pedido. Su carrito se guardará.",
+        "fileUploadSuccess": "¡Archivo cargado con éxito!",
+        "productPublished": "¡Producto publicado con éxito!",
+        "productUpdated": "¡Producto actualizado con éxito!",
+        "messageReceived": "¡Gracias! Tu mensaje ha sido recibido.",
+        "reviewSuccess": "¡Enviado con éxito!"
     }
 }

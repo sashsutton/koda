@@ -5,6 +5,8 @@ import { Button } from "@/app/components/ui/button";
 import { Shield, User as UserIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { getErrorKey } from "@/lib/error-translator";
 
 interface AdminRoleButtonProps {
     userId: string;
@@ -12,6 +14,7 @@ interface AdminRoleButtonProps {
 }
 
 export function AdminRoleButton({ userId, currentRole }: AdminRoleButtonProps) {
+    const tErr = useTranslations('Errors');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleToggle = async () => {
@@ -20,10 +23,11 @@ export function AdminRoleButton({ userId, currentRole }: AdminRoleButtonProps) {
         try {
             const result = await updateUserRole(userId, newRole);
             if (result.success) {
-                toast.success(`Rôle mis à jour : ${newRole.toUpperCase()}`);
+                toast.success(`Role updated: ${newRole.toUpperCase()}`);
             }
         } catch (err: any) {
-            toast.error(err.message || "Une erreur est survenue");
+            const errorKey = getErrorKey(err.message);
+            toast.error(tErr(errorKey));
         } finally {
             setIsLoading(false);
         }
@@ -35,7 +39,7 @@ export function AdminRoleButton({ userId, currentRole }: AdminRoleButtonProps) {
             size="icon-sm"
             disabled={isLoading}
             onClick={handleToggle}
-            title="Changer le rôle"
+            title="Change role"
         >
             {currentRole === 'admin' ? (
                 <UserIcon className={`h-3 w-3 ${isLoading ? 'animate-pulse' : ''}`} />
