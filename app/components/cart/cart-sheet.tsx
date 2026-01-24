@@ -53,7 +53,7 @@ export default function CartSheet() {
                         }
 
                         return null;
-                    }).filter((id): id is string => !!id); // 👈 CORRECTION ICI (Type Guard)
+                    }).filter((id): id is string => !!id);
 
                     setPurchasedIds(new Set(productIds));
                 })
@@ -65,32 +65,53 @@ export default function CartSheet() {
         }
     }, [userId]);
 
-    // 2. Nettoyage automatique du panier
+    // 2. Nettoyage automatique du panier (Achats + Propres produits)
     useEffect(() => {
-        // Sécurité : on attend que le composant soit monté et les achats chargés
-        if (!isMounted || !purchasedIds || cart.items.length === 0) return;
+        // Sécurité : on attend que tout soit prêt (composant, user, liste achats)
+        if (!isMounted || !purchasedIds || cart.items.length === 0 || !userId) return;
 
-        // Identification des doublons (comparaison stricte de chaînes)
+        // Identification des doublons (Déjà acheté OU Je suis le vendeur)
         const itemsToRemove = cart.items.filter(item => {
             const itemId = String(item._id).trim();
-            return purchasedIds.has(itemId);
+            const isPurchased = purchasedIds.has(itemId);
+
+            // Vérification robuste du vendeur (String vs Object)
+            const itemSellerId = typeof item.sellerId === 'object' && item.sellerId !== null
+                ? String((item.sellerId as any)._id || item.sellerId)
+                : String(item.sellerId);
+
+            const isMyOwnProduct = itemSellerId === userId;
+
+            // On retire si l'un des deux cas est vrai
+            return isPurchased || isMyOwnProduct;
         });
 
         if (itemsToRemove.length > 0) {
-            // Filtrage : on garde uniquement ce qui n'est pas acheté
-            const cleanItems = cart.items.filter(item => !purchasedIds.has(String(item._id).trim()));
+            // Filtrage : on garde uniquement ce qui est valide (Ni acheté, ni à moi)
+            const cleanItems = cart.items.filter(item => {
+                const itemId = String(item._id).trim();
+
+                const itemSellerId = typeof item.sellerId === 'object' && item.sellerId !== null
+                    ? String((item.sellerId as any)._id || item.sellerId)
+                    : String(item.sellerId);
+
+                const isPurchased = purchasedIds.has(itemId);
+                const isMyOwnProduct = itemSellerId === userId;
+
+                return !isPurchased && !isMyOwnProduct;
+            });
 
             // Mise à jour du store
             cart.setItems(cleanItems);
 
-            // Notification utilisateur professionnelle
+            // Notification utilisateur adaptée
             if (itemsToRemove.length === 1) {
-                toast.info(`"${itemsToRemove[0].title}" a été retiré de votre panier car vous possédez déjà cet article.`);
+                toast.info(`"${itemsToRemove[0].title}" a été retiré (déjà possédé ou c'est votre produit).`);
             } else {
-                toast.info(`${itemsToRemove.length} articles ont été retirés de votre panier car vous les possédez déjà.`);
+                toast.info(`${itemsToRemove.length} articles retirés car vous les possédez déjà ou ce sont les vôtres.`);
             }
         }
-    }, [purchasedIds, cart.items, isMounted, cart]);
+    }, [purchasedIds, cart.items, isMounted, cart, userId]);
 
 
     if (!isMounted) return null;
