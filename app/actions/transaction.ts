@@ -1,7 +1,7 @@
 "use server";
 
 import Stripe from "stripe";
-import { auth } from "@clerk/nextjs/server";
+import { requireAuth } from "@/lib/auth-utils";
 import { connectToDatabase } from "@/lib/db";
 import Automation from "@/models/Automation";
 import User from "@/models/User"; // Gardé pour vérification, même si on ne transfère pas tout de suite
@@ -12,11 +12,8 @@ import { IAutomation } from "@/types/automation"; // Assure-toi d'avoir cet impo
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 export async function createCheckoutSession(items: IAutomation[]) {
-    // 1. Vérification Utilisateur
-    const { userId } = await auth();
-    if (!userId) {
-        redirect("/sign-in");
-    }
+    // 1. Vérification Utilisateur & Connexion DB
+    const userId = await requireAuth();
 
     // 2. Vérification URL de l'app
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
@@ -27,8 +24,6 @@ export async function createCheckoutSession(items: IAutomation[]) {
     if (!items || items.length === 0) {
         throw new Error("Le panier est vide.");
     }
-
-    await connectToDatabase();
 
     // 3. Récupération sécurisée des produits (On ne fait pas confiance au frontend pour le prix)
     const productIds = items.map((item) => item._id);

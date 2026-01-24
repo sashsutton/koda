@@ -7,8 +7,8 @@ import Purchase from "@/models/Purchase";
 import User from "@/models/User";
 import Stripe from "stripe";
 import { IAutomation } from "@/types/automation";
-import {IProduct} from "@/types/product";
-import {Product} from "@/models/Product";
+import { IProduct } from "@/types/product";
+import { Product } from "@/models/Product";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
