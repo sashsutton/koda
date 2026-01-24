@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from '@clerk/nextjs';
 import { Geist, Geist_Mono } from "next/font/google";
-import "../globals.css";
+import "../globals.css"; // Attention au chemin relatif selon où est ton layout
 import Header from "@/app/components/layout/header";
+import Footer from "@/app/components/layout/footer"; // Import du Footer
 import { Toaster } from "sonner";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
@@ -37,16 +38,11 @@ export default async function RootLayout({
 }) {
   const { locale } = await params;
 
-  // Ensure that the incoming `locale` is valid
   if (!routing.locales.includes(locale as any)) {
     notFound();
   }
 
-  // Enable static rendering
   setRequestLocale(locale);
-
-  // Providing all messages to the client
-  // side is the easiest way to get started
   const messages = await getMessages();
 
   return (
@@ -54,14 +50,20 @@ export default async function RootLayout({
       <html lang={locale}>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
           <NextIntlClientProvider messages={messages}>
+
             <Header />
+
             <main className="flex-1">
               {children}
             </main>
+
+            {/* Le Footer s'affichera toujours en bas grâce au flex-col et flex-1 du main */}
+            <Footer />
+
             <Toaster position="top-center" richColors />
           </NextIntlClientProvider>
         </body>
       </html>
     </ClerkProvider>
   );
-} 
+}
