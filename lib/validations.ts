@@ -2,22 +2,24 @@ import { z } from "zod";
 import { ProductCategory } from "@/types/product";
 import { AutomationPlatform } from "@/types/automation";
 
-// Schéma pour la création d'une automation
-export const AutomationSchema = z.object({
+/**
+ * Base schema for automation products (blueprints).
+ */
+export const ProductSchema = z.object({
     title: z
         .string()
-        .min(3, "Le titre doit contenir au moins 3 caractères.")
-        .max(100, "Le titre ne peut pas dépasser 100 caractères."),
+        .min(3, "Title must be at least 3 characters.")
+        .max(100, "Title cannot exceed 100 characters."),
 
     description: z
         .string()
-        .min(20, "La description doit être détaillée (min 20 caractères).")
-        .max(2000, "Description trop longue (max 2000 caractères)."),
+        .min(20, "Description must be at least 20 characters.")
+        .max(2000, "Description cannot exceed 2000 characters."),
 
     price: z
         .number()
-        .min(1, "Le prix minimum est de 1€.")
-        .max(1000, "Le prix maximum est de 1000€."),
+        .min(1, "Minimum price is 1€.")
+        .max(1000, "Maximum price is 1000€."),
 
     category: z.nativeEnum(ProductCategory),
 
@@ -25,30 +27,34 @@ export const AutomationSchema = z.object({
 
     tags: z.array(z.string()).default([]),
 
-    fileUrl: z.string().url("L'URL du fichier est invalide."),
+    fileUrl: z.string().url("Invalid file URL."),
 
     previewImageUrl: z
         .string()
-        .url("L'URL de l'image est invalide.")
+        .url("Invalid image URL.")
         .optional()
         .or(z.literal("")),
 
-    version: z.string().optional(),
+    version: z.string().optional().or(z.literal("")),
 });
 
-// Type inféré à partir du schéma
-export type AutomationInput = z.infer<typeof AutomationSchema>;
+export type ProductInput = z.infer<typeof ProductSchema>;
 
-// Schéma d'update (partiel possible)
-export const UpdateAutomationSchema = AutomationSchema.pick({
+/**
+ * Schema for updating an existing product.
+ */
+export const UpdateProductSchema = ProductSchema.pick({
     title: true,
     description: true,
     price: true,
-    previewImageUrl: true
-}).partial({
-    previewImageUrl: true
-});
+    previewImageUrl: true,
+    category: true,
+    platform: true,
+    tags: true,
+    version: true,
+}).partial();
 
-// Legacy export for backward compatibility (to be removed later)
-export const ProductSchema = AutomationSchema;
-export type ProductInput = AutomationInput;
+// Compatibility aliases
+export const AutomationSchema = ProductSchema;
+export type AutomationInput = ProductInput;
+export const UpdateAutomationSchema = UpdateProductSchema;

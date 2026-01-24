@@ -9,9 +9,9 @@ import { useCart } from "@/hooks/use-cart";
 import { IAutomation } from "@/types/automation";
 import { IProduct } from "@/types/product";
 import { PlatformIcon } from "@/app/components/icons/platform-icon";
-import { toast } from "sonner";
-import { useTranslations } from 'next-intl';
+import { useLocalizedToast } from "@/hooks/use-localized-toast";
 import { getErrorKey } from "@/lib/error-translator";
+import { useTranslations } from "next-intl";
 
 type ProductLike = IProduct | IAutomation;
 
@@ -26,7 +26,7 @@ function isAutomation(p: ProductLike): p is IAutomation {
 }
 
 export function ProductCard({ product, userId, isPurchased = false }: ProductCardProps) {
-    const tErr = useTranslations('Errors');
+    const { showSuccess, showError } = useLocalizedToast();
     const t = useTranslations('ProductCard');
     const cart = useCart();
     const isOwner = userId === product.sellerId;
@@ -38,19 +38,30 @@ export function ProductCard({ product, userId, isPurchased = false }: ProductCar
 
     const onAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        e.stopPropagation();
+        e.stopPropagation(); // Prevent navigation when clicking the button inside the Link
 
         if (!automation) {
-            toast.error(t('toast.cannotAdd'));
+            showError(t('toast.cannotAdd'));
+            return;
+        }
+
+        if (isOwner) {
+            showError(t('toast.ownProduct'));
             return;
         }
 
         if (isPurchased) {
-            toast.error(t('toast.alreadyOwned'));
+            showError(t('toast.alreadyOwned'));
             return;
         }
 
-        cart.addItem(product);
+        if (cart.items.some(item => item._id === product._id)) {
+            cart.removeItem(product._id);
+            // Optionally show a toast for removal
+        } else {
+            cart.addItem(product as any);
+            showSuccess('articleAddedToCart'); // I should probably use the key from my previous implementation or a raw string
+        }
     };
 
     return (

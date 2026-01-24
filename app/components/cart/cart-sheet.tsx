@@ -4,22 +4,18 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { ShoppingCart, Trash2, Loader2, LogIn } from "lucide-react";
-import { toast } from "sonner";
-
 import { useCart } from "@/hooks/use-cart";
 import { createCheckoutSession } from "@/app/actions/transaction";
-import { useTranslations } from "next-intl";
-import { getErrorKey } from "@/lib/error-translator";
-import { getMyOrders } from "@/app/actions/dashboard";
 import { getPublicImageUrl } from "@/lib/image-helper";
+import { useLocalizedToast } from "@/hooks/use-localized-toast";
+import { getMyOrders } from "@/app/actions/dashboard";
 
 import { Button } from "@/app/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/app/components/ui/sheet";
 import { Separator } from "@/app/components/ui/separator";
 
 export default function CartSheet() {
-    const tNotif = useTranslations('Notifications');
-    const tErr = useTranslations('Errors');
+    const { showSuccess, showError, showInfo, showLoading, dismiss } = useLocalizedToast();
     const [isMounted, setIsMounted] = useState(false);
     const [isPending, startTransition] = useTransition();
 
@@ -110,9 +106,9 @@ export default function CartSheet() {
 
             // Notification utilisateur adaptée
             if (itemsToRemove.length === 1) {
-                toast.info(tNotif('itemRemovedSingular', { title: itemsToRemove[0].title }));
+                showInfo('itemRemovedSingular', { title: itemsToRemove[0].title });
             } else {
-                toast.info(tNotif('itemsRemovedPlural', { count: itemsToRemove.length }));
+                showInfo('itemsRemovedPlural', { count: itemsToRemove.length });
             }
         }
     }, [purchasedIds, cart.items, isMounted, cart, userId]);
@@ -124,7 +120,7 @@ export default function CartSheet() {
 
     const onCheckout = async () => {
         if (!userId) {
-            toast.info(tNotif('loginCheckout'));
+            showInfo('loginCheckout');
             router.push("/sign-in");
             return;
         }
@@ -135,8 +131,7 @@ export default function CartSheet() {
                 if (url) window.location.href = url;
             } catch (error: any) {
                 console.error(error);
-                const errorKey = getErrorKey(error.message || "An error occurred while preparing the payment.");
-                toast.error(tErr(errorKey));
+                showError(error.message || "An error occurred while preparing the payment.");
             }
         });
     };

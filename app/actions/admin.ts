@@ -89,10 +89,9 @@ export async function updateUserRole(userId: string, newRole: 'user' | 'admin') 
  * Change le statut 'Banni' d'un utilisateur (Soft Ban).
  */
 export async function toggleBanUser(userId: string) {
-    const adminId = await requireAdmin();
+    const admin = await requireAdmin();
 
-    const currentAdmin = await User.findOne({ clerkId: adminId });
-    if (currentAdmin?._id.toString() === userId) {
+    if (admin._id.toString() === userId) {
         throw new Error("You cannot ban yourself.");
     }
 

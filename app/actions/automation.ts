@@ -5,11 +5,12 @@ import { connectToDatabase } from "@/lib/db";
 import Automation from "@/models/Automation";
 import User from "@/models/User";
 import { revalidatePath } from "next/cache";
+import { ensureSellerIsReady } from "@/lib/stripe-utils";
 import { CreateAutomationInput } from "@/types/automation";
 import { ProductSchema } from "@/lib/validations";
 
 export async function createAutomation(formData: CreateAutomationInput) {
-    const userId = await requireUser();
+    const user = await requireUser();
 
 
     // Validation Zod
@@ -25,16 +26,12 @@ export async function createAutomation(formData: CreateAutomationInput) {
     await connectToDatabase();
 
     // VÉRIFICATION STRIPE CONNECT
-    const userDoc = await User.findOne({ clerkId: userId });
-
-    if (!userDoc || !userDoc.stripeConnectId || !userDoc.onboardingComplete) {
-        throw new Error("Please configure your payment account in the Dashboard before selling.");
-    }
+    ensureSellerIsReady(user);
 
     // Création du produit uniquement si le compte Stripe est prêt
     const newAutomation = await Automation.create({
         ...validData,
-        sellerId: userId,
+        sellerId: user.clerkId,
     });
 
     revalidatePath("/");

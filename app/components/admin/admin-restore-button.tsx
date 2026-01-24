@@ -2,45 +2,41 @@
 
 import { restoreAllUsersFromClerk } from "@/app/actions/admin";
 import { ConfirmButton } from "@/app/components/ui/confirm-button";
-import { RefreshCcw } from "lucide-react";
-import { toast } from "sonner";
+import { RefreshCw, Loader2 } from "lucide-react";
+import { useLocalizedToast } from "@/hooks/use-localized-toast";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { getErrorKey } from "@/lib/error-translator";
 
 export function AdminRestoreButton() {
     const tErr = useTranslations('Errors');
-    const [isPending, setIsPending] = useState(false);
+    const { showSuccess, showError, showLoading, dismiss } = useLocalizedToast();
+    const [loading, setLoading] = useState(false);
 
     const handleRestore = async () => {
-        setIsPending(true);
-        const promise = restoreAllUsersFromClerk();
-
-        toast.promise(promise, {
-            loading: 'Synchronizing with Clerk...',
-            success: (data) => `Synchronization complete! ${data.count} users synchronized.`,
-            error: (err: any) => tErr(getErrorKey(err.message)),
-        });
-
+        if (!confirm("Voulez-vous vraiment synchroniser tous les utilisateurs depuis Clerk ?")) return;
+        setLoading(true);
+        const toastId = showLoading("Synchronisation en cours...");
         try {
-            await promise;
-        } catch (err) {
-            console.error(err);
+            const result = await restoreAllUsersFromClerk();
+            showSuccess(`${result.count} utilisateurs synchronisés.`);
+        } catch (error: any) {
+            showError(error);
         } finally {
-            setIsPending(false);
+            setLoading(false);
+            dismiss(toastId);
         }
     };
 
     return (
         <ConfirmButton
             variant="outline"
-            className="flex items-center gap-2"
-            confirmMessage="Do you want to synchronize all users from Clerk? This will create any missing accounts locally."
+            confirmMessage="Voulez-vous vraiment synchroniser tous les utilisateurs depuis Clerk ?"
             onClick={handleRestore}
-            disabled={isPending}
+            disabled={loading}
         >
-            <RefreshCcw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
-            Sync / Restore Clerk
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+            Sync all from Clerk
         </ConfirmButton>
     );
 }

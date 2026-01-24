@@ -17,10 +17,10 @@ export async function requireAuth() {
 
     await connectToDatabase();
 
-    // Check if banned
-    const user = await User.findOne({ clerkId: userId }, 'isBanned');
+    // Check if banned - only fetch the field we need
+    const user = await User.findOne({ clerkId: userId }).select('isBanned').lean();
     if (user?.isBanned) {
-        redirect("/banned"); // Create this page later or just redirect home with error?
+        redirect("/banned");
     }
 
     return userId;
@@ -40,13 +40,17 @@ export async function requireUser() {
 
     await connectToDatabase();
 
-    // Check if banned
-    const user = await User.findOne({ clerkId: userId }, 'isBanned');
-    if (user?.isBanned) {
+    const user = await User.findOne({ clerkId: userId });
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    if (user.isBanned) {
         throw new Error("Access Denied: Your account has been suspended.");
     }
 
-    return userId;
+    return user;
 }
 
 /**
@@ -64,15 +68,12 @@ export async function requireAdmin() {
     const user = await User.findOne({ clerkId: userId });
 
     if (!user || user.role !== 'admin') {
-        redirect("/"); // Build a 403 page ideally, but home redirect works for MVP
+        redirect("/");
     }
 
-    // Admins technically can't be banned by this logic unless we check, 
-    // but usually we don't want to lock out admins unless intentional.
-    // Let's enforce it for consistency.
     if (user.isBanned) {
         redirect("/banned");
     }
 
-    return userId;
+    return user;
 }

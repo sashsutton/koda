@@ -1,6 +1,6 @@
 "use server";
 
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { requireUser } from "@/lib/auth-utils";
 import { connectToDatabase } from "@/lib/db";
 import Review from "@/models/Review";
 import Purchase from "@/models/Purchase";
@@ -11,14 +11,14 @@ import mongoose from "mongoose";
 
 
 export async function submitContent(prevState: any, formData: FormData) {
-
-    const user = await currentUser();
-
-    if (!user) {
-        return { error: "Unauthorized" };
+    let user;
+    try {
+        user = await requireUser();
+    } catch (err: any) {
+        return { error: err.message };
     }
 
-    const userId = user.id;
+    const userId = user.clerkId;
     const rawData = {
         productId: formData.get("productId"),
         path: formData.get("path"),

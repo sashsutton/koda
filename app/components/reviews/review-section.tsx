@@ -10,8 +10,7 @@ import { Textarea } from "@/app/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/app/components/ui/avatar";
 import { toast } from "sonner";
 import { MessageSquarePlus, Loader2 } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { getErrorKey } from "@/lib/error-translator";
+import { useLocalizedToast } from "@/hooks/use-localized-toast";
 
 interface ReviewsSectionProps {
     productId: string;
@@ -20,7 +19,7 @@ interface ReviewsSectionProps {
 }
 
 export function ReviewsSection({ productId, reviews, canReview }: ReviewsSectionProps) {
-    const tErr = useTranslations('Errors');
+    const { showSuccess, showError } = useLocalizedToast();
     const pathname = usePathname();
     const [rating, setRating] = useState(5);
 
@@ -30,12 +29,11 @@ export function ReviewsSection({ productId, reviews, canReview }: ReviewsSection
     // Effet pour gérer les notifications (Toasts)
     useEffect(() => {
         if (state?.success) {
-            toast.success(state.message);
+            showSuccess(state.message); // message is already dynamic from action
         } else if (state?.error) {
-            const errorKey = getErrorKey(state.error);
-            toast.error(tErr(errorKey));
+            showError(state.error);
         }
-    }, [state, tErr]);
+    }, [state, showSuccess, showError]);
 
     return (
         <div className="space-y-8 mt-12">

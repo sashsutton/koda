@@ -9,30 +9,27 @@ import { Label } from "@/app/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { AlertCircle, CheckCircle2, Loader2, Send } from "lucide-react";
-import { toast } from "sonner";
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useLocalizedToast } from "@/hooks/use-localized-toast";
 import { useTranslations } from "next-intl";
-import { getErrorKey } from "@/lib/error-translator";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 export function FeedbackForm() {
     const t = useTranslations('Feedback');
+    const { showSuccess, showError } = useLocalizedToast();
     const searchParams = useSearchParams();
     const defaultType = searchParams.get("type") || "contact"; // Récupère ?type=bug depuis l'URL
 
     const [state, action, isPending] = useActionState(sendFeedbackAction, { success: false });
 
     // Effet pour afficher les toasts
-    const tNotif = useTranslations('Notifications');
-    const tErr = useTranslations('Errors');
     useEffect(() => {
         if (state.success) {
-            toast.success(tNotif('messageReceived'));
+            showSuccess('messageReceived');
         } else if (state.message) {
-            const errorKey = getErrorKey(state.message);
-            toast.error(tErr(errorKey));
+            showError(state.message);
         }
-    }, [state, tErr]);
+    }, [state, showSuccess, showError]);
 
     if (state.success) {
         return (

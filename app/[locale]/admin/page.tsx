@@ -55,14 +55,20 @@ export default async function AdminDashboard() {
                                             }`}>
                                             {user.role}
                                         </span>
-                                        <AdminRoleButton userId={user._id} currentRole={user.role} />
+                                        <AdminBanButton
+                                            userId={user.clerkId}
+                                            initialIsBanned={user.isBanned}
+                                        />
                                     </div>
                                 </td>
                                 <td className="p-4 text-sm text-gray-500">
                                     {new Date(user.createdAt).toLocaleDateString()}
                                 </td>
                                 <td className="p-4 text-right">
-                                    <AdminBanButton userId={user._id} isBanned={!!user.isBanned} />
+                                    <AdminRoleButton
+                                        userId={user.clerkId}
+                                        initialRole={user.role}
+                                    />
                                 </td>
                             </tr>
                         ))}

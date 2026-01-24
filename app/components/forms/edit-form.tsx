@@ -11,9 +11,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/app/comp
 import { Loader2 } from "lucide-react";
 import FileUpload from "@/app/components/FileUpload"; // Import du composant Upload
 import { getPublicImageUrl } from "@/lib/image-helper";
-import { toast } from "sonner";
-import { useTranslations } from "next-intl";
-import { getErrorKey } from "@/lib/error-translator";
+import { useLocalizedToast } from "@/hooks/use-localized-toast";
 
 interface EditFormProps {
     product: {
@@ -26,8 +24,7 @@ interface EditFormProps {
 }
 
 export function EditForm({ product }: EditFormProps) {
-    const tNotif = useTranslations('Notifications');
-    const tErr = useTranslations('Errors');
+    const { showSuccess, showError, showLoading, dismiss } = useLocalizedToast();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
@@ -42,19 +39,18 @@ export function EditForm({ product }: EditFormProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        const toastId = toast.loading("Updating...");
+        const toastId = showLoading("Updating...");
 
         try {
             await updateProduct(product._id, formData);
-            toast.success(tNotif('productUpdated'));
+            showSuccess('productUpdated');
             router.push("/dashboard");
         } catch (error: any) {
             console.error(error);
-            const errorKey = getErrorKey(error.message);
-            toast.error(tErr(errorKey));
+            showError(error);
         } finally {
             setLoading(false);
-            toast.dismiss(toastId);
+            dismiss(toastId);
         }
     };
 

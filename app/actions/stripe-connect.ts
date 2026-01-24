@@ -1,7 +1,7 @@
 "use server";
 
 import Stripe from "stripe";
-import { requireAuth } from "@/lib/auth-utils";
+import { requireUser } from "@/lib/auth-utils";
 import { connectToDatabase } from "@/lib/db";
 import User from "@/models/User";
 
@@ -9,12 +9,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function getStripeOnboardingLink() {
     try {
-        const userId = await requireAuth();
+        const user = await requireUser();
 
-        // 1. Chercher l'utilisateur ou le créer
-        let user = await User.findOne({ clerkId: userId });
-
-        let stripeAccountId = user?.stripeConnectId;
+        let stripeAccountId = user.stripeConnectId;
 
         // 2. Si pas de compte Stripe, on le crée
         if (!stripeAccountId) {
@@ -27,13 +24,8 @@ export async function getStripeOnboardingLink() {
             });
 
             stripeAccountId = account.id;
-
-            if (!user) {
-                await User.create({ clerkId: userId, stripeConnectId: stripeAccountId });
-            } else {
-                user.stripeConnectId = stripeAccountId;
-                await user.save();
-            }
+            user.stripeConnectId = stripeAccountId;
+            await user.save();
         }
 
         // 3. Créer le lien d'onboarding
@@ -56,11 +48,9 @@ export async function getStripeOnboardingLink() {
 
 export async function getStripeLoginLink() {
     try {
-        const userId = await requireAuth();
+        const user = await requireUser();
 
-        const user = await User.findOne({ clerkId: userId });
-
-        if (!user || !user.stripeConnectId) {
+        if (!user.stripeConnectId) {
             throw new Error("Stripe account not found");
         }
 

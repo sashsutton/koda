@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "sonner";
 import * as Sentry from "@sentry/nextjs";
-import { useTranslations } from "next-intl";
-import { getErrorKey } from "@/lib/error-translator";
+import { useLocalizedToast } from "@/hooks/use-localized-toast";
 
 interface FileUploadProps {
     onUploadSuccess: (url: string) => void;
@@ -13,8 +11,7 @@ interface FileUploadProps {
 }
 
 export default function FileUpload({ onUploadSuccess, accept, label = "Automation JSON File", children, className }: FileUploadProps & { children?: React.ReactNode, className?: string }) {
-    const tNotif = useTranslations('Notifications');
-    const tErr = useTranslations('Errors');
+    const { showSuccess, showError, showLoading, dismiss } = useLocalizedToast();
     const [uploading, setUploading] = useState(false);
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +19,7 @@ export default function FileUpload({ onUploadSuccess, accept, label = "Automatio
         if (!file) return;
 
         setUploading(true);
-        const toastId = toast.loading("Uploading...");
+        const toastId = showLoading("Uploading...");
 
         try {
             // 1. Get presigned URL from API
@@ -52,15 +49,14 @@ export default function FileUpload({ onUploadSuccess, accept, label = "Automatio
             });
 
             onUploadSuccess(fileUrl);
-            toast.success(tNotif('fileUploadSuccess'));
+            showSuccess('fileUploadSuccess');
         } catch (error: any) {
             console.error("Upload failed", error);
             Sentry.captureException(error);
-            const errorKey = getErrorKey(error.message || "File upload failed.");
-            toast.error(tErr(errorKey));
+            showError(error.message || "File upload failed.");
         } finally {
             setUploading(false);
-            toast.dismiss(toastId);
+            dismiss(toastId);
         }
     };
 

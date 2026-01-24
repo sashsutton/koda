@@ -1,6 +1,6 @@
 "use server";
 
-import { requireAuth } from "@/lib/auth-utils";
+import { requireAuth, requireUser } from "@/lib/auth-utils";
 import { connectToDatabase } from "@/lib/db";
 import Automation from "@/models/Automation";
 import Purchase from "@/models/Purchase";
@@ -55,13 +55,14 @@ export async function getSalesHistory() {
  * Récupère la balance Stripe du vendeur (Fonds disponibles et en attente).
  */
 export async function getSellerBalance() {
-    const userId = await requireAuth();
+    let user;
+    try {
+        user = await requireUser();
+    } catch (err) {
+        return null; // Silent fail for balance display
+    }
 
-
-    await connectToDatabase();
-    const user = await User.findOne({ clerkId: userId });
-
-    if (!user || !user.stripeConnectId) return null;
+    if (!user.stripeConnectId) return null;
 
     try {
         // 1. Vérifier le statut du compte Stripe

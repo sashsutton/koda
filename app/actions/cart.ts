@@ -8,12 +8,12 @@ import { IAutomation } from "@/types/automation";
 
 // Récupérer le panier depuis la BDD
 export async function getSavedCart(): Promise<IAutomation[]> {
-    const userId = await requireAuth();
+    const user = await requireUser();
 
-    // On cherche l'utilisateur et on "populate" (remplit) le champ cart avec les vrais objets produits
-    const user = await User.findOne({ clerkId: userId }).populate("cart").lean();
+    // On peuple manuellement le champ cart
+    await user.populate("cart");
 
-    if (!user || !user.cart) return [];
+    if (!user.cart || user.cart.length === 0) return [];
 
     // Conversion propre des données pour le client
     const cartItems = user.cart as unknown as any[];
@@ -30,12 +30,10 @@ export async function getSavedCart(): Promise<IAutomation[]> {
 
 // Sauvegarder le panier dans la BDD
 export async function syncCart(items: IAutomation[]) {
-    const userId = await requireUser();
+    const user = await requireUser();
 
     const productIds = items.map((item) => item._id);
 
-    await User.findOneAndUpdate(
-        { clerkId: userId },
-        { $set: { cart: productIds } }
-    );
+    user.cart = productIds as any;
+    await user.save();
 }
