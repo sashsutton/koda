@@ -57,17 +57,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
     const isOwner = userId === product.sellerId;
 
-    // --- 1. VÉRIFICATION DE L'ACHAT ---
+    // --- 1. VÉRIFICATION DE L'ACHAT (CORRIGÉE) ---
     let hasPurchased = false;
     let secureDownloadUrl = "#";
     let purchase = null;
 
     if (userId) {
-        purchase = await Purchase.findOne({
-            buyerId: userId,
-            productId: id,
-            status: 'completed'
-        });
+        // CORRECTION : On ne filtre plus par 'status' car le modèle Purchase n'en a pas.
+        // Si l'entrée existe dans Purchase, c'est que c'est payé (le webhook ne crée que si success).
+        const userPurchases = await Purchase.find({
+            buyerId: userId
+        }).lean();
+
+        // On cherche le bon produit en comparant les IDs en String (sécurité maximale)
+        purchase = userPurchases.find((p: any) => p.productId.toString() === id);
 
         if (purchase) {
             hasPurchased = true;
@@ -82,22 +85,27 @@ export default async function ProductPage({ params }: ProductPageProps) {
     }
 
     // --- 2. RÉCUPÉRATION DES AVIS ---
-    const reviews = await Review.find({
-        productId: product._id,
-        type: 'review'
-    })
+    // Note : On utilise type: 'review' au cas où tu as fait la mise à jour du modèle.
+    // Si ton modèle n'a pas de 'type', cela peut ne rien renvoyer ou tout renvoyer selon la config MongoDB.
+    // Si tu n'as pas encore mis à jour tes anciens avis, ils n'apparaîtront peut-être pas ici, mais les nouveaux OUI.
+    const reviewsQuery = { productId: product._id } as any;
+    // On essaie de filtrer par type seulement si nécessaire, pour l'instant on prend tout ce qui matche le produit
+    // pour éviter de masquer tes anciens avis de test.
+
+    const reviews = await Review.find(reviewsQuery)
         .sort({ createdAt: -1 })
         .lean();
 
+    // On filtre côté JS pour être sûr d'afficher les avis (et éviter les bugs si le champ type manque)
+    const filteredReviews = reviews.filter((r: any) => !r.type || r.type === 'review');
+
     // --- 3. VÉRIFICATION : A-T-IL DÉJÀ NOTÉ ? ---
-    // On cherche si l'ID de l'utilisateur est déjà dans la liste des avis
-    const hasAlreadyReviewed = userId ? reviews.some((r: any) => r.userId === userId) : false;
+    const hasAlreadyReviewed = userId ? filteredReviews.some((r: any) => r.userId === userId) : false;
 
     // Mise à jour de la permission :
-    // (Achat OU Vendeur) ET (Pas encore d'avis posté)
     const canReview = (!!purchase || isOwner) && !hasAlreadyReviewed;
 
-    const serializedReviews = reviews.map((r: any) => ({
+    const serializedReviews = filteredReviews.map((r: any) => ({
         ...r,
         _id: r._id.toString(),
         productId: r.productId.toString(),
@@ -119,7 +127,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     }
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background relative">
             <div className="container mx-auto py-8 px-4 max-w-6xl">
                 <Button variant="ghost" asChild className="mb-6 -ml-2 text-muted-foreground hover:text-primary">
                     <Link href="/">
@@ -181,7 +189,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                         <ReviewsSection
                                             productId={product._id.toString()}
                                             reviews={serializedReviews}
-                                            canReview={canReview} // Sera FALSE si user a déjà commenté
+                                            canReview={canReview}
                                         />
                                     </TabsContent>
 
@@ -198,7 +206,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                             </CardContent>
                         </Card>
 
-                        {/* Avantages (Bloc statique inchangé) */}
+                        {/* Avantages */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Card className="p-4 border-border/40 bg-card/30">
                                 <div className="flex items-start gap-3">
@@ -236,6 +244,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                                 </a>
                                             </Button>
                                             <p className="text-xs text-center text-muted-foreground">Vous possédez déjà ce produit ✅</p>
+
+                                            {/* RAPPEL POUR NOTER */}
+                                            {canReview && (
+                                                <div className="pt-3 border-t border-dashed">
+                                                    <p className="text-xs text-muted-foreground text-center mb-2">
+                                                        Satisfait de votre achat ?
+                                                    </p>
+                                                    <Badge
+                                                        variant="outline"
+                                                        className="w-full justify-center py-2 text-primary border-primary/30 bg-primary/5"
+                                                    >
+                                                        ⭐ Laissez un avis dans l'onglet dédié !
+                                                    </Badge>
+                                                </div>
+                                            )}
                                         </div>
                                     ) : isOwner ? (
                                         <div className="space-y-3">
@@ -271,6 +294,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     </div>
                 </div>
             </div>
+
         </div>
     );
 }
