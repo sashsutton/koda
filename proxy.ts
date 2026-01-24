@@ -13,6 +13,11 @@ export default clerkMiddleware(async (auth, req) => {
         // await auth.protect(); // Uncomment if you want to protect all other routes
     }
 
+    // Si c'est une route API, on ne l'internationalise pas
+    if (req.nextUrl.pathname.startsWith('/api')) {
+        return;
+    }
+
     return intlMiddleware(req);
 });
 
