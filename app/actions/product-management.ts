@@ -4,6 +4,7 @@ import { Product } from "@/models/Product";
 import { revalidatePath } from "next/cache";
 import { UpdateAutomationSchema } from "@/lib/validations";
 import Automation from "@/models/Automation";
+import { invalidateCache } from "@/lib/cache-utils";
 
 export async function deleteProduct(productId: string) {
     try {
@@ -20,6 +21,9 @@ export async function deleteProduct(productId: string) {
         }
 
         await Product.deleteOne({ _id: productId });
+
+        // Invalidate cache for product listings
+        await invalidateCache("products:*");
 
         revalidatePath("/dashboard");
         return { success: true };
@@ -59,6 +63,8 @@ export async function updateProduct(productId: string, data: { title: string; de
     }
 
     await product.save();
+
+    await invalidateCache("products:*");
 
     revalidatePath("/dashboard");
     return { success: true };
