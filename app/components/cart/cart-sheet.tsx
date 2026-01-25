@@ -141,7 +141,7 @@ export default function CartSheet() {
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <Button variant="ghost" className="relative hover:bg-secondary/50">
+                <Button variant="ghost" className="relative hover:bg-secondary/50 active:scale-95 transition-transform duration-200">
                     <ShoppingCart size={20} />
                     {cart.items.length > 0 && (
                         <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-[10px] font-bold text-white flex items-center justify-center animate-in zoom-in">
@@ -151,7 +151,7 @@ export default function CartSheet() {
                 </Button>
             </SheetTrigger>
 
-            <SheetContent className="z-[100] flex flex-col h-full bg-background/95 backdrop-blur-sm sm:max-w-md">
+            <SheetContent className="z-[100] flex flex-col h-[calc(100%-2rem)] top-4 right-4 rounded-2xl border border-orange-500/20 shadow-2xl bg-background/80 backdrop-blur-xl sm:max-w-md overflow-hidden">
                 <SheetHeader className="border-b pb-4">
                     <SheetTitle className="flex items-center gap-2">
                         <ShoppingCart className="w-5 h-5" />
