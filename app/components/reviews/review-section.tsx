@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback } from "@/app/components/ui/avatar";
 import { toast } from "sonner";
 import { MessageSquarePlus, Loader2, Pencil, Trash2, X } from "lucide-react";
 import { useLocalizedToast } from "@/hooks/use-localized-toast";
+import { useFormatter } from "next-intl";
 
 interface ReviewsSectionProps {
     productId: string;
@@ -22,6 +23,7 @@ interface ReviewsSectionProps {
 export function ReviewsSection({ productId, reviews, canReview, currentUserId }: ReviewsSectionProps) {
     const { showSuccess, showError } = useLocalizedToast();
     const pathname = usePathname();
+    const format = useFormatter();
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState("");
     const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
@@ -148,7 +150,7 @@ export function ReviewsSection({ productId, reviews, canReview, currentUserId }:
                             </div>
                             <div className="flex items-center gap-4">
                                 <span className="text-xs text-muted-foreground">
-                                    {new Date(review.createdAt).toLocaleDateString()}
+                                    {format.dateTime(new Date(review.createdAt), { year: 'numeric', month: 'numeric', day: 'numeric' })}
                                 </span>
                                 {review.userId === currentUserId && review.type === 'review' && (
                                     <div className="flex items-center gap-1">

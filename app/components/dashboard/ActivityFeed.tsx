@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/app/components/ui/card";
 import { ShoppingBag, ArrowUpRight, Clock, ShoppingCart } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
@@ -14,6 +14,7 @@ interface ActivityFeedProps {
 
 export function ActivityFeed({ sales = [], orders = [] }: ActivityFeedProps) {
     const t = useTranslations('Dashboard');
+    const format = useFormatter();
 
     return (
         <div className="grid grid-cols-1 gap-8">
@@ -54,7 +55,7 @@ export function ActivityFeed({ sales = [], orders = [] }: ActivityFeedProps) {
                                                     </p>
                                                     <div className="flex items-center gap-2 text-[11px] text-muted-foreground mt-0.5">
                                                         <Clock className="h-3 w-3" />
-                                                        {new Date(order.createdAt).toLocaleDateString()} • <span className="font-bold text-foreground/70">{order.amount.toFixed(2)} €</span>
+                                                        {format.dateTime(new Date(order.createdAt), { year: 'numeric', month: 'numeric', day: 'numeric' })} • <span className="font-bold text-foreground/70">{order.amount.toFixed(2)} €</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -111,7 +112,7 @@ export function ActivityFeed({ sales = [], orders = [] }: ActivityFeedProps) {
                                             <p className="font-bold text-sm text-foreground line-clamp-1">{sale.productId.title}</p>
                                             <div className="flex items-center gap-2 text-[11px] text-muted-foreground mt-0.5">
                                                 <Clock className="h-3 w-3" />
-                                                {new Date(sale.createdAt).toLocaleDateString()}
+                                                {format.dateTime(new Date(sale.createdAt), { year: 'numeric', month: 'numeric', day: 'numeric' })}
                                             </div>
                                         </div>
                                     </div>

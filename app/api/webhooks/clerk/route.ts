@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
 import { connectToDatabase } from '@/lib/db'
 import User from '@/models/User'
+import { revalidatePath } from 'next/cache'
 
 export async function POST(req: Request) {
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -71,6 +72,9 @@ export async function POST(req: Request) {
                 { upsert: true, new: true }
             );
             console.log(`User ${id} synced to DB`);
+
+            // Revalidate admin dashboard to show new/updated users immediately
+            revalidatePath('/admin');
         } catch (error) {
             console.error(`Error syncing user ${id}:`, error);
             return new Response('Error syncing user', { status: 500 });
@@ -83,6 +87,9 @@ export async function POST(req: Request) {
         try {
             await User.findOneAndDelete({ clerkId: id });
             console.log(`User ${id} deleted from DB`);
+
+            // Revalidate admin dashboard to remove deleted users immediately
+            revalidatePath('/admin');
         } catch (error) {
             console.error(`Error deleting user ${id}:`, error);
             return new Response('Error deleting user', { status: 500 });

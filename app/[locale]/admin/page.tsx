@@ -6,13 +6,14 @@ import { AdminDeleteButton } from "@/app/components/admin/admin-delete-button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
 import { AdminProductTable } from "@/app/components/admin/admin-product-table";
 import { Users, Package } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getFormatter } from "next-intl/server";
 
 export default async function AdminDashboard() {
-    const [users, products, t] = await Promise.all([
+    const [users, products, t, format] = await Promise.all([
         getAllUsers(),
         getAllProducts(),
-        getTranslations('Admin')
+        getTranslations('Admin'),
+        getFormatter()
     ]);
 
     return (
@@ -82,7 +83,7 @@ export default async function AdminDashboard() {
                                             </div>
                                         </td>
                                         <td className="p-4 text-sm text-gray-500">
-                                            {new Date(user.createdAt).toLocaleDateString()}
+                                            {format.dateTime(new Date(user.createdAt), { year: 'numeric', month: 'numeric', day: 'numeric' })}
                                         </td>
                                         <td className="p-4 flex justify-end items-center gap-2">
                                             <AdminRoleButton

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { UserButton } from "@clerk/nextjs";
 import { Badge } from "@/app/components/ui/badge";
 import { Calendar } from "lucide-react";
@@ -16,7 +16,12 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ user }: DashboardHeaderProps) {
     const t = useTranslations('Dashboard');
-    const memberSince = new Date(user.createdAt).toLocaleDateString();
+    const format = useFormatter();
+    const memberSince = format.dateTime(new Date(user.createdAt), {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+    });
 
     return (
         <div className="relative overflow-hidden rounded-3xl bg-card border border-border/50 shadow-xl p-8 mb-8">
