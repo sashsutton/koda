@@ -4,6 +4,7 @@ import { connectToDatabase } from "@/lib/db";
 import User from "@/models/User";
 import { redirect } from "next/navigation";
 import { getStripeOnboardingLink } from "@/app/actions/stripe-connect";
+import { StripeOnboardingButton } from "@/app/components/dashboard/StripeDashboardButtons";
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { Wallet } from "lucide-react";
@@ -28,12 +29,6 @@ export default async function SellPage() {
     const user = await User.findOne({ clerkId: userId });
 
     if (!user || !user.stripeConnectId) {
-        async function handleConnect() {
-            "use server";
-            const url = await getStripeOnboardingLink();
-            redirect(url);
-        }
-
         return (
             <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
                 {/* Background Glow */}
@@ -52,11 +47,7 @@ export default async function SellPage() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="pt-6">
-                        <form action={handleConnect}>
-                            <Button className="w-full text-lg h-12 shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]" size="lg">
-                                {t('stripe.button')}
-                            </Button>
-                        </form>
+                        <StripeOnboardingButton className="w-full text-lg h-12 shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]" />
                     </CardContent>
                 </Card>
             </div>

@@ -11,7 +11,7 @@ export default async function AdminLayout({
 
     return (
         <div className="flex min-h-screen">
-            <aside className="w-64 bg-gray-100 dark:bg-gray-900 border-r p-6 hidden md:block">
+            <aside className="w-64 bg-gray-100 dark:bg-gray-900 border-r p-6 pt-32 hidden md:block">
                 <h2 className="text-xl font-bold mb-6">Admin Koda</h2>
                 <nav className="space-y-2">
                     <Link href="/admin" className="block p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800">
@@ -25,7 +25,7 @@ export default async function AdminLayout({
                     </Link>
                 </nav>
             </aside>
-            <main className="flex-1 p-8">
+            <main className="flex-1 p-8 pt-32">
                 {children}
             </main>
         </div>
