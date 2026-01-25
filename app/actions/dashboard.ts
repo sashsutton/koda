@@ -90,6 +90,21 @@ export async function getSellerBalance() {
 }
 
 /**
+ * Récupère le montant total des ventes (brut) via la base de données.
+ */
+export async function getTotalEarnings(): Promise<number> {
+    const userId = await requireAuth();
+    await connectToDatabase();
+
+    const result = await Purchase.aggregate([
+        { $match: { sellerId: userId } },
+        { $group: { _id: null, total: { $sum: "$amount" } } }
+    ]);
+
+    return result.length > 0 ? result[0].total : 0;
+}
+
+/**
  * Récupère les achats de l'utilisateur (en tant qu'acheteur).
  */
 export async function getMyOrders() {

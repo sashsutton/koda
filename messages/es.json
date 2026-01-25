@@ -22,7 +22,8 @@
         "addToCart": "Añadir al carrito",
         "toast": {
             "cannotAdd": "Este producto no se puede añadir al carrito.",
-            "alreadyOwned": "Ya posees este producto."
+            "alreadyOwned": "Ya posees este producto.",
+            "ownProduct": "No puedes comprar tu propio producto."
         }
     },
     "Search": {
@@ -30,7 +31,7 @@
         "allPlatforms": "Todas las plataformas",
         "allCategories": "Todas las categorías",
         "allSellers": "Todos los vendedores",
-        "platform": "Plataforma",
+        "platform": "Platforma",
         "category": "Categoría",
         "seller": "Vendedor",
         "other": "Otro",
@@ -92,7 +93,7 @@
         "productNotFound": "Producto no encontrado",
         "notAuthorizedToDelete": "No estás autorizado para eliminar este producto",
         "cartEmpty": "El carrito está vacío.",
-        "noValidProducts": "No se encontraron productos válidos en la base de datos.",
+        "noValidProducts": "No se encontraron productos válidos en la base de données.",
         "sellerStripeNotConfigured": "El vendedor no ha configurado sus pagos.",
         "checkFormFields": "Por favor, compruebe los campos del formulario.",
         "sendingError": "Ocurrió un error al enviar. Por favor, inténtelo de nuevo más tarde.",
@@ -114,6 +115,19 @@
         "reviewSuccess": "¡Enviado con éxito!",
         "roleUpdated": "Rol actualizado con éxito a {role}",
         "userBanned": "El usuario ha sido baneado",
-        "userUnbanned": "El usuario ha sido desbaneado"
+        "userUnbanned": "El usuario ha sido desbaneado",
+        "articleAddedToCart": "¡Artículo añadido al carrito!",
+        "articleRemoved": "Artículo eliminado del carrito.",
+        "alreadyInCart": "Este artículo ya está en tu carrito."
+    },
+    "CartSheet": {
+        "title": "Mi Carrito",
+        "empty": "Tu carrito está vacío.",
+        "continue": "Continuar comprando",
+        "subtotal": "Subtotal",
+        "total": "Total",
+        "loading": "Cargando...",
+        "login": "Iniciar sesión para pagar",
+        "checkout": "Proceder al pago"
     }
 }

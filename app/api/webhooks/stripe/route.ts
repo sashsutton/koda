@@ -58,6 +58,13 @@ export async function POST(req: Request) {
                 productIds.push(singleProductId);
             }
 
+            // On récupère la session complète une seule fois pour avoir le chargeId (Utile pour les transferts)
+            const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
+                expand: ["payment_intent.latest_charge"],
+            });
+            const paymentIntent = fullSession.payment_intent as Stripe.PaymentIntent;
+            const chargeId = (paymentIntent?.latest_charge as Stripe.Charge)?.id;
+
             // On crée une preuve d'achat pour CHAQUE produit trouvé
             if (productIds.length > 0) {
                 for (const productId of productIds) {
@@ -65,7 +72,13 @@ export async function POST(req: Request) {
                     const product = await Automation.findById(productId);
 
                     if (product) {
-                        // On vérifie si l'achat existe déjà
+                        const seller = await User.findOne({ clerkId: typeof product.sellerId === 'object' ? product.sellerId.toString() : product.sellerId });
+
+                        if (!seller?.stripeConnectId) {
+                            console.error(`Seller ${product.sellerId} has no Stripe Connect ID. Skipping transfer.`);
+                        }
+
+                        // 1. Create the purchase record locally
                         const existingPurchase = await Purchase.findOne({
                             buyerId: userId,
                             productId: productId
@@ -75,10 +88,32 @@ export async function POST(req: Request) {
                             await Purchase.create({
                                 buyerId: userId,
                                 productId: productId,
-                                sellerId: typeof product.sellerId === 'object' ? product.sellerId.toString() : product.sellerId,
+                                sellerId: seller?.clerkId || product.sellerId,
                                 stripeSessionId: session.id,
-                                amount: product.price, // On utilise le prix du produit
+                                amount: product.price,
                             });
+                        }
+
+                        // 2. Transfer 85% of the price to the seller (if they have a connect ID)
+                        if (seller?.stripeConnectId) {
+                            try {
+                                const transferAmount = Math.round(product.price * 100 * 0.85); // 85% in cents
+
+                                await stripe.transfers.create({
+                                    amount: transferAmount,
+                                    currency: "eur",
+                                    destination: seller.stripeConnectId,
+                                    description: `Payout for ${product.title}`,
+                                    source_transaction: chargeId, // Link transfer to the original charge
+                                    metadata: {
+                                        productId: productId.toString(),
+                                        buyerId: userId,
+                                    },
+                                });
+                                console.log(`Transfer of ${transferAmount} cents of ${product.price} to seller ${seller.stripeConnectId} successful.`);
+                            } catch (transferError) {
+                                console.error(`Failed to transfer funds to seller ${seller.stripeConnectId}:`, transferError);
+                            }
                         }
                     }
                 }

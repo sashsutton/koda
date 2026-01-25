@@ -38,7 +38,7 @@ export function ProductCard({ product, userId, isPurchased = false }: ProductCar
 
     const onAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        e.stopPropagation(); // Prevent navigation when clicking the button inside the Link
+        e.stopPropagation();
 
         if (!automation) {
             showError(t('toast.cannotAdd'));
@@ -57,10 +57,10 @@ export function ProductCard({ product, userId, isPurchased = false }: ProductCar
 
         if (cart.items.some(item => item._id === product._id)) {
             cart.removeItem(product._id);
-            // Optionally show a toast for removal
+            showSuccess('articleRemoved');
         } else {
             cart.addItem(product as any);
-            showSuccess('articleAddedToCart'); // I should probably use the key from my previous implementation or a raw string
+            showSuccess('articleAddedToCart');
         }
     };
 

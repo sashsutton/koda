@@ -3,7 +3,7 @@ import { Button } from "@/app/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/app/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
 import { getStripeOnboardingLink, getStripeLoginLink } from "@/app/actions/stripe-connect";
-import { getSellerBalance, getSalesHistory, getMyProducts } from "@/app/actions/dashboard";
+import { getSellerBalance, getSalesHistory, getMyProducts, getTotalEarnings } from "@/app/actions/dashboard";
 import { redirect } from "next/navigation";
 import { Wallet, TrendingUp, User, Package, Edit, Trash2, Plus } from "lucide-react";
 import Link from "next/link";
@@ -13,6 +13,8 @@ import { Download, ShoppingBag } from "lucide-react";
 import { getPublicImageUrl } from "@/lib/image-helper";
 import Image from "next/image";
 import { Metadata } from "next";
+
+import { StripeDashboardButton, StripeOnboardingButton } from "@/app/components/dashboard/StripeDashboardButtons";
 
 export const metadata: Metadata = {
     title: 'Dashboard - Koda',
@@ -27,24 +29,13 @@ export default async function DashboardPage() {
     if (!userId || !user) redirect("/sign-in");
 
     // Récupération des données parallèles
-    const [balance, sales, products, orders] = await Promise.all([
+    const [balance, sales, products, orders, totalEarnings] = await Promise.all([
         getSellerBalance(),
         getSalesHistory(),
         getMyProducts(),
         getMyOrders(),
+        getTotalEarnings(),
     ]);
-
-    async function handleConnect() {
-        "use server";
-        const url = await getStripeOnboardingLink();
-        redirect(url);
-    }
-
-    async function handleStripeDashboard() {
-        "use server";
-        const url = await getStripeLoginLink();
-        redirect(url);
-    }
 
     async function handleDelete(productId: string) {
         "use server";
@@ -138,7 +129,7 @@ export default async function DashboardPage() {
 
                 {/* --- SECTION PAIEMENTS --- */}
                 <TabsContent value="payments" className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* Carte Balance */}
                         <Card className="border-primary/20 bg-primary/5">
                             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -152,22 +143,28 @@ export default async function DashboardPage() {
                                         <p className="text-xs text-muted-foreground mb-4">
                                             En attente : {balance.pending.toFixed(2)} {balance.currency}
                                         </p>
-                                        <form action={handleStripeDashboard}>
-                                            <Button variant="outline" size="sm" type="submit" className="w-full">
-                                                Voir mon Dashboard Stripe
-                                            </Button>
-                                        </form>
+                                        <StripeDashboardButton />
                                     </>
                                 ) : (
                                     <>
                                         <p className="text-xs text-muted-foreground mb-4">
                                             Vous devez configurer vos paiements pour recevoir des fonds.
                                         </p>
-                                        <form action={handleConnect}>
-                                            <Button className="w-full">Configurer mes paiements</Button>
-                                        </form>
+                                        <StripeOnboardingButton />
                                     </>
                                 )}
+                            </CardContent>
+                        </Card>
+
+                        {/* Carte Ventes Totales (DB) */}
+                        <Card className="border-green-600/20 bg-green-600/5">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <CardTitle className="text-sm font-medium">Ventes Totales (Koda)</CardTitle>
+                                <TrendingUp className="h-4 w-4 text-green-600" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-green-600">{totalEarnings.toFixed(2)} €</div>
+                                <p className="text-xs text-muted-foreground">Chiffre d'affaires brut généré sur Koda.</p>
                             </CardContent>
                         </Card>
 

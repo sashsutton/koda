@@ -22,7 +22,8 @@
         "addToCart": "Ajouter au panier",
         "toast": {
             "cannotAdd": "Ce produit ne peut pas être ajouté au panier.",
-            "alreadyOwned": "Vous possédez déjà ce produit."
+            "alreadyOwned": "Vous possédez déjà ce produit.",
+            "ownProduct": "Vous ne pouvez pas acheter votre propre produit."
         }
     },
     "Search": {
@@ -114,6 +115,19 @@
         "reviewSuccess": "Envoyé avec succès !",
         "roleUpdated": "Rôle mis à jour avec succès en {role}",
         "userBanned": "L'utilisateur a été banni",
-        "userUnbanned": "L'utilisateur a été débanni"
+        "userUnbanned": "L'utilisateur a été débanni",
+        "articleAddedToCart": "Article ajouté au panier !",
+        "articleRemoved": "Article retiré du panier.",
+        "alreadyInCart": "Cet article est déjà dans votre panier."
+    },
+    "CartSheet": {
+        "title": "Mon Panier",
+        "empty": "Votre panier est vide.",
+        "continue": "Continuer mes achats",
+        "subtotal": "Sous-total",
+        "total": "Total",
+        "loading": "Chargement...",
+        "login": "Se connecter pour payer",
+        "checkout": "Passer au paiement"
     }
 }

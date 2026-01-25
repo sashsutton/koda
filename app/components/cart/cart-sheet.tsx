@@ -13,8 +13,10 @@ import { getMyOrders } from "@/app/actions/dashboard";
 import { Button } from "@/app/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/app/components/ui/sheet";
 import { Separator } from "@/app/components/ui/separator";
+import { useTranslations } from "next-intl";
 
 export default function CartSheet() {
+    const t = useTranslations('CartSheet');
     const { showSuccess, showError, showInfo, showLoading, dismiss } = useLocalizedToast();
     const [isMounted, setIsMounted] = useState(false);
     const [isPending, startTransition] = useTransition();
@@ -153,7 +155,7 @@ export default function CartSheet() {
                 <SheetHeader className="border-b pb-4">
                     <SheetTitle className="flex items-center gap-2">
                         <ShoppingCart className="w-5 h-5" />
-                        Mon Panier <span className="text-muted-foreground font-normal text-sm">({cart.items.length})</span>
+                        {t('title')} <span className="text-muted-foreground font-normal text-sm">({cart.items.length})</span>
                     </SheetTitle>
                 </SheetHeader>
 
@@ -161,10 +163,10 @@ export default function CartSheet() {
                     {cart.items.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center space-y-4 opacity-60">
                             <ShoppingCart className="h-12 w-12 text-muted-foreground" />
-                            <p className="text-muted-foreground font-medium">Votre panier est vide.</p>
+                            <p className="text-muted-foreground font-medium">{t('empty')}</p>
                             <SheetClose asChild>
                                 <Button variant="outline" size="sm">
-                                    Continuer mes achats
+                                    {t('continue')}
                                 </Button>
                             </SheetClose>
                         </div>
@@ -196,7 +198,10 @@ export default function CartSheet() {
                                             variant="ghost"
                                             size="icon"
                                             className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                                            onClick={() => cart.removeItem(item._id)}
+                                            onClick={() => {
+                                                cart.removeItem(item._id);
+                                                showSuccess('articleRemoved');
+                                            }}
                                         >
                                             <Trash2 size={14} />
                                         </Button>
@@ -211,12 +216,12 @@ export default function CartSheet() {
                     <div className="border-t pt-6 mt-auto bg-background">
                         <div className="space-y-2 mb-4">
                             <div className="flex justify-between text-sm text-muted-foreground">
-                                <span>Sous-total</span>
+                                <span>{t('subtotal')}</span>
                                 <span>{total.toFixed(2)} €</span>
                             </div>
                             <Separator />
                             <div className="flex justify-between items-center font-bold text-lg">
-                                <span>Total</span>
+                                <span>{t('total')}</span>
                                 <span className="text-primary">{total.toFixed(2)} €</span>
                             </div>
                         </div>
@@ -229,15 +234,15 @@ export default function CartSheet() {
                             {isPending ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Chargement...
+                                    {t('loading')}
                                 </>
                             ) : !userId ? (
                                 <>
                                     <LogIn className="mr-2 h-4 w-4" />
-                                    Se connecter pour payer
+                                    {t('login')}
                                 </>
                             ) : (
-                                "Passer au paiement"
+                                t('checkout')
                             )}
                         </Button>
                     </div>

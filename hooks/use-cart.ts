@@ -19,13 +19,11 @@ export const useCart = create(
             addItem: (data: IAutomation) => {
                 const currentItems = get().items;
                 const existingItem = currentItems.find((item) => item._id === data._id);
-                if (existingItem) return toast.error("Cet article est déjà dans le panier.");
+                if (existingItem) return;
                 set({ items: [...get().items, data] });
-                toast.success("Article ajouté au panier !");
             },
             removeItem: (id: string) => {
                 set({ items: [...get().items.filter((item) => item._id !== id)] });
-                toast.success("Article retiré.");
             },
             removeAll: () => set({ items: [] }),
             // charger le panier BDD

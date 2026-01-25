@@ -22,7 +22,8 @@
         "addToCart": "Add to cart",
         "toast": {
             "cannotAdd": "This product cannot be added to the cart.",
-            "alreadyOwned": "You already own this product."
+            "alreadyOwned": "You already own this product.",
+            "ownProduct": "You cannot buy your own product."
         }
     },
     "Search": {
@@ -114,6 +115,19 @@
         "reviewSuccess": "Sent successfully!",
         "roleUpdated": "Role successfully updated to {role}",
         "userBanned": "User has been banned",
-        "userUnbanned": "User has been unbanned"
+        "userUnbanned": "User has been unbanned",
+        "articleAddedToCart": "Article added to the cart!",
+        "articleRemoved": "Article removed from the cart.",
+        "alreadyInCart": "This article is already in your cart."
+    },
+    "CartSheet": {
+        "title": "My Cart",
+        "empty": "Your cart is empty.",
+        "continue": "Continue shopping",
+        "subtotal": "Subtotal",
+        "total": "Total",
+        "loading": "Loading...",
+        "login": "Sign in to checkout",
+        "checkout": "Proceed to checkout"
     }
 }

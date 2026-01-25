@@ -26,17 +26,19 @@ We implement **Direct Charges with Application Fees**. This ensures that sellers
 - **Stripe Fees**: Deducted from the platform's €15.00 share.
 
 ### Technical Implementation
-When creating the checkout session, we specify the `application_fee_amount`:
+When creating the checkout session, the funds initially land on the platform account. Upon a successful `checkout.session.completed` event, the webhook handles the split:
+
+1. **Calculate**: Determine the 85% share (e.g., €100 sale = €85 seller share).
+2. **Transfer**: Use the `stripe.transfers.create` API to move funds to the seller's **Connect Express** account.
+3. **Record**: Log the purchase in MongoDB.
+
 ```typescript
-const session = await stripe.checkout.sessions.create({
-    mode: "payment",
-    line_items: [...],
-    payment_intent_data: {
-        application_fee_amount: 1500, // €15.00 fee
-        transfer_data: {
-            destination: seller_connect_id,
-        },
-    },
+// Inside Webhook (Simplified logic)
+const transfer = await stripe.transfers.create({
+    amount: Math.round(product.price * 100 * 0.85),
+    currency: "eur",
+    destination: seller.stripeConnectId,
+    description: `Payout for ${product.title}`,
 });
 ```
 
