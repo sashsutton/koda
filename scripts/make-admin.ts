@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { connectToDatabase } from "../lib/db";
-import User from "../models/User";
+
 
 // 1. Manually load .env.local to avoid shell complexity and dependency issues
 const envPath = path.resolve(process.cwd(), '.env.local');
@@ -26,6 +25,8 @@ const emailToSet = process.argv[3]; // Optional: set this email if missing
 async function makeAdmin() {
     try {
         console.log("Connecting to database...");
+        const { connectToDatabase } = await import("../lib/db");
+        const { default: User } = await import("../models/User");
         await connectToDatabase();
 
         if (!identifier) {
@@ -58,8 +59,31 @@ async function makeAdmin() {
         });
 
         if (!user) {
-            console.error(`❌ User with identifier "${identifier}" not found!`);
-            process.exit(1);
+            console.log(`User not found.`);
+
+            // Check if we have enough info to create the user
+            const isClerkId = identifier.startsWith('user_');
+            const isEmail = identifier.includes('@');
+
+            const clerkId = isClerkId ? identifier : null;
+            const email = isEmail ? identifier : emailToSet;
+
+            if (clerkId && email) {
+                console.log(`Creating new user with Clerk ID: ${clerkId} and Email: ${email}`);
+                user = new User({
+                    clerkId,
+                    email,
+                    role: 'admin'
+                });
+                await user.save();
+                console.log(`✅ Success! Created new ADMIN user: ${email} (${clerkId})`);
+                process.exit(0);
+            } else {
+                console.error(`❌ User not found and insufficient info to create one.`);
+                console.error(`To create a NEW admin user, provide both Clerk ID and Email:`);
+                console.error(`Usage: npx tsx scripts/make-admin.ts <clerkId> <email>`);
+                process.exit(1);
+            }
         }
 
         console.log(`Found user: ${user.clerkId}`);

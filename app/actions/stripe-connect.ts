@@ -21,6 +21,9 @@ export async function getStripeOnboardingLink() {
                     card_payments: { requested: true },
                     transfers: { requested: true },
                 },
+                metadata: {
+                    userId: user.clerkId,
+                }
             });
 
             stripeAccountId = account.id;

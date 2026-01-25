@@ -163,5 +163,32 @@ export async function POST(req: Request) {
         }
     }
 
+    // 4. Handle Stripe Connect Account Updates (Onboarding)
+    if (event.type === 'account.updated') {
+        const account = event.data.object as Stripe.Account;
+
+        if (account.metadata?.userId || account.id) {
+            await connectToDatabase();
+
+            // We can find by stripeConnectId (which is account.id)
+            const user = await User.findOne({ stripeConnectId: account.id });
+
+            if (user) {
+                // Check if user has provided all necessary details
+                const isComplete = account.details_submitted && account.charges_enabled;
+
+                if (user.onboardingComplete !== isComplete) {
+                    user.onboardingComplete = isComplete;
+                    await user.save();
+                    console.log(`Updated user ${user.clerkId} onboarding status to: ${isComplete}`);
+
+                    // Revalidate to update UI immediately
+                    const { revalidatePath } = await import('next/cache');
+                    revalidatePath('/');
+                }
+            }
+        }
+    }
+
     return new NextResponse(null, { status: 200 });
 }

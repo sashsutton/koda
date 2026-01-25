@@ -23,18 +23,22 @@ export function AdminSearch({ type }: AdminSearchProps) {
     const [query, setQuery] = useState(searchParams.get(paramKey) || "");
 
     useEffect(() => {
-        const params = new URLSearchParams(searchParams.toString());
-
-        if (query) {
-            params.set(paramKey, query);
-        } else {
-            params.delete(paramKey);
-        }
-
         const timeoutId = setTimeout(() => {
-            // 5. On utilise pathname (dynamique) au lieu de hardcoder "/admin"
-            // Le router.replace de next-intl ajoutera automatiquement /fr, /en, etc.
-            router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+            const params = new URLSearchParams(searchParams.toString());
+
+            if (query) {
+                params.set(paramKey, query);
+            } else {
+                params.delete(paramKey);
+            }
+
+            const newQueryString = params.toString();
+            const currentQueryString = searchParams.toString();
+
+            // Only update if something actually changed
+            if (newQueryString !== currentQueryString) {
+                router.replace(`${pathname}?${newQueryString}`, { scroll: false });
+            }
         }, 300);
 
         return () => clearTimeout(timeoutId);
