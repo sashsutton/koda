@@ -77,6 +77,28 @@ Wrappers for Mongoose queries to fetch user-specific records with proper object 
 
 ---
 
+## 📂 `app/actions/admin.ts`
+
+Administrative tools for platform management.
+
+### `getAllUsers()`
+Fetches all users from MongoDB and synchronizes missing metadata from Clerk.
+- **Security**: Restricted to admins via `requireAdmin`.
+- **Logic**: Compares local records with Clerk's `getUserList` to ensure profiles (Email, Name) are up to date.
+
+### `updateUserRole(userId: string, newRole: 'user' | 'admin')`
+Promotes or demotes a user.
+- **UserId**: Uses the **Clerk ID** for lookup.
+- **Logic**: Performs a `findOneAndUpdate` using `{ clerkId: userId }`.
+
+### `toggleBanUser(userId: string)`
+Bans or unbans a user account.
+- **UserId**: Uses the **Clerk ID**.
+- **Security**: Prevents admins from banning themselves.
+- **Effect**: Toggles the `isBanned` boolean in the User model.
+
+---
+
 ## 📂 Specialized API Routes
 
 ### `app/api/webhooks/stripe/route.ts`

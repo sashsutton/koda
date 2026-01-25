@@ -18,8 +18,9 @@ vi.mock("@/models/User", () => ({
                 })
             })
         }),
+        findOneAndUpdate: vi.fn(),
+        findOne: vi.fn(),
         findByIdAndUpdate: vi.fn(),
-        findById: vi.fn(),
     }
 }));
 
@@ -66,7 +67,7 @@ describe("admin actions", () => {
             vi.mocked(requireAdmin).mockResolvedValue({} as any);
             const result = await updateUserRole("user_123", "admin");
             expect(result.success).toBe(true);
-            expect(User.findByIdAndUpdate).toHaveBeenCalledWith("user_123", { role: "admin" });
+            expect(User.findOneAndUpdate).toHaveBeenCalledWith({ clerkId: "user_123" }, { role: "admin" });
             expect(revalidatePath).toHaveBeenCalledWith("/admin");
         });
     });
@@ -74,14 +75,14 @@ describe("admin actions", () => {
     describe("toggleBanUser", () => {
         it("should throw error if admin tries to ban themselves", async () => {
             const adminId = "admin_123";
-            vi.mocked(requireAdmin).mockResolvedValue({ _id: { toString: () => adminId } } as any);
+            vi.mocked(requireAdmin).mockResolvedValue({ clerkId: adminId } as any);
             await expect(toggleBanUser(adminId)).rejects.toThrow("You cannot ban yourself.");
         });
 
         it("should toggle ban status of a user", async () => {
-            vi.mocked(requireAdmin).mockResolvedValue({ _id: { toString: () => "admin" } } as any);
-            const mockUser = { _id: "u1", isBanned: false, save: vi.fn() };
-            vi.mocked(User.findById).mockResolvedValue(mockUser);
+            vi.mocked(requireAdmin).mockResolvedValue({ clerkId: "admin" } as any);
+            const mockUser = { clerkId: "u1", isBanned: false, save: vi.fn() };
+            vi.mocked(User.findOne).mockResolvedValue(mockUser);
 
             const result = await toggleBanUser("u1");
             expect(result.isBanned).toBe(true);

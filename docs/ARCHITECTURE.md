@@ -63,6 +63,12 @@ For product listings, we use a `getOrSetCache` utility. This utility:
 3. Saves to Redis for future requests (TTL based).
 4. Automatic invalidation occurs when products are created, updated, or deleted.
 
+### Internationalization (i18n)
+Koda uses `next-intl` for a seamless multi-language experience.
+1. **Translation Files**: Located in `/messages/{locale}.json`.
+2. **Context-Aware Hooks**: Components use `useTranslations` to fetch keys.
+3. **Localized Toasts**: The `useLocalizedToast` hook handles mapped error and notification keys, ensuring feedback matches the user's language.
+
 ## 🔒 Security Architecture
 
 - **Path Protection**: Next.js middleware checks for active sessions on sensitive routes.

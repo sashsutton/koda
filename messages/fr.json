@@ -111,6 +111,9 @@
         "productPublished": "Produit mis en ligne avec succès !",
         "productUpdated": "Produit mis à jour avec succès !",
         "messageReceived": "Merci ! Votre message a été reçu.",
-        "reviewSuccess": "Envoyé avec succès !"
+        "reviewSuccess": "Envoyé avec succès !",
+        "roleUpdated": "Rôle mis à jour avec succès en {role}",
+        "userBanned": "L'utilisateur a été banni",
+        "userUnbanned": "L'utilisateur a été débanni"
     }
 }

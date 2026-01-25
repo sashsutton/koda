@@ -77,7 +77,7 @@ export async function getAllUsers() {
 export async function updateUserRole(userId: string, newRole: 'user' | 'admin') {
     await requireAdmin();
 
-    await User.findByIdAndUpdate(userId, { role: newRole });
+    await User.findOneAndUpdate({ clerkId: userId }, { role: newRole });
     revalidatePath("/admin");
     return { success: true };
 }
@@ -91,11 +91,12 @@ export async function updateUserRole(userId: string, newRole: 'user' | 'admin') 
 export async function toggleBanUser(userId: string) {
     const admin = await requireAdmin();
 
-    if (admin._id.toString() === userId) {
+    // userId passed from frontend is clerkId
+    if (admin.clerkId === userId) {
         throw new Error("You cannot ban yourself.");
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findOne({ clerkId: userId });
     if (!user) throw new Error("User not found.");
 
     user.isBanned = !user.isBanned;

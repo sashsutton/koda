@@ -22,7 +22,7 @@ export function AdminBanButton({ userId, initialIsBanned }: AdminBanButtonProps)
         try {
             const result = await toggleBanUser(userId);
             setIsBanned(result.isBanned);
-            showSuccess(result.isBanned ? "User banned" : "User unbanned");
+            showSuccess(result.isBanned ? "userBanned" : "userUnbanned");
         } catch (error: any) {
             showError(error);
         } finally {

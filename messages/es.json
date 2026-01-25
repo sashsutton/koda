@@ -111,6 +111,9 @@
         "productPublished": "¡Producto publicado con éxito!",
         "productUpdated": "¡Producto actualizado con éxito!",
         "messageReceived": "¡Gracias! Tu mensaje ha sido recibido.",
-        "reviewSuccess": "¡Enviado con éxito!"
+        "reviewSuccess": "¡Enviado con éxito!",
+        "roleUpdated": "Rol actualizado con éxito a {role}",
+        "userBanned": "El usuario ha sido baneado",
+        "userUnbanned": "El usuario ha sido desbaneado"
     }
 }

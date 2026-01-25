@@ -13,8 +13,8 @@ export default async function AdminDashboard() {
                 <AdminRestoreButton />
             </div>
 
-            <div className="bg-white dark:bg-gray-950 rounded-lg shadow overflow-hidden">
-                <table className="w-full text-left">
+            <div className="bg-white dark:bg-gray-950 rounded-lg shadow overflow-x-auto">
+                <table className="w-full text-left min-w-[900px]">
                     <thead className="bg-gray-100 dark:bg-gray-900 border-b">
                         <tr>
                             <th className="p-4">User</th>
@@ -64,7 +64,7 @@ export default async function AdminDashboard() {
                                 <td className="p-4 text-sm text-gray-500">
                                     {new Date(user.createdAt).toLocaleDateString()}
                                 </td>
-                                <td className="p-4 text-right">
+                                <td className="p-4 flex justify-end">
                                     <AdminRoleButton
                                         userId={user.clerkId}
                                         initialRole={user.role}

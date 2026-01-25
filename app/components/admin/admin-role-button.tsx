@@ -24,7 +24,7 @@ export function AdminRoleButton({ userId, initialRole }: AdminRoleButtonProps) {
         try {
             await updateUserRole(userId, newRole);
             setRole(newRole);
-            showSuccess(`Role updated to ${newRole}`);
+            showSuccess("roleUpdated", { role: newRole });
         } catch (error: any) {
             showError(error);
         } finally {
@@ -35,13 +35,13 @@ export function AdminRoleButton({ userId, initialRole }: AdminRoleButtonProps) {
     return (
         <Button
             variant="ghost"
-            size="icon-sm"
+            size="sm"
             disabled={isLoading}
             onClick={handleToggle}
-            title={`Switch to ${role === 'admin' ? 'User' : 'Admin'}`}
+            className="flex items-center gap-2"
         >
             <UserCog className="h-4 w-4" />
-            {role === 'admin' ? "Demote" : "Promote"}
+            <span>{role === 'admin' ? "Demote" : "Promote"}</span>
         </Button>
     );
 }
