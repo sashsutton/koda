@@ -4,11 +4,13 @@ import { useState } from "react";
 import { Button } from "@/app/components/ui/button";
 import { getStripeLoginLink, getStripeOnboardingLink } from "@/app/actions/stripe-connect";
 import { useLocalizedToast } from "@/hooks/use-localized-toast";
+import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 
-export function StripeDashboardButton() {
+export function StripeDashboardButton({ className }: { className?: string }) {
     const [isLoading, setIsLoading] = useState(false);
     const { showError } = useLocalizedToast();
+    const t = useTranslations('Dashboard.stats');
 
     const handleClick = async () => {
         setIsLoading(true);
@@ -25,20 +27,21 @@ export function StripeDashboardButton() {
     return (
         <Button
             variant="outline"
-            size="sm"
+            size="default"
             onClick={handleClick}
             disabled={isLoading}
-            className="w-full"
+            className={`w-full rounded-xl border-primary/20 hover:bg-primary/5 transition-all text-sm font-bold ${className}`}
         >
-            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            Voir mon Dashboard Stripe
+            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" /> : null}
+            {t('openStripe')}
         </Button>
     );
 }
 
-export function StripeOnboardingButton() {
+export function StripeOnboardingButton({ className }: { className?: string }) {
     const [isLoading, setIsLoading] = useState(false);
     const { showError } = useLocalizedToast();
+    const t = useTranslations('Dashboard.stats');
 
     const handleClick = async () => {
         setIsLoading(true);
@@ -56,10 +59,10 @@ export function StripeOnboardingButton() {
         <Button
             onClick={handleClick}
             disabled={isLoading}
-            className="w-full"
+            className={`w-full rounded-xl shadow-lg shadow-primary/20 h-11 text-sm font-bold ${className}`}
         >
             {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            Configurer mes paiements
+            {t('setupPayouts')}
         </Button>
     );
 }

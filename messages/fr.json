@@ -197,5 +197,114 @@
                 "Other": "Autre"
             }
         }
+    },
+    "Terms": {
+        "title": "Conditions Générales de Vente et d'Utilisation",
+        "lastUpdated": "Dernière mise à jour : 25 janvier 2026",
+        "s1": {
+            "title": "1. Acceptation des Conditions",
+            "content": "En accédant et en utilisant Koda (la \"Plateforme\"), vous acceptez d'être lié par ces Conditions Générales. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser la Plateforme."
+        },
+        "s2": {
+            "title": "2. Description du Service",
+            "content": "Koda est une marketplace permettant aux utilisateurs de vendre et d'acheter des blueprints d'automatisation (workflows pour n8n, Make, Zapier, etc.)."
+        },
+        "s3": {
+            "title": "3. Obligations des Vendeurs",
+            "content": "Les vendeurs doivent s'assurer qu'ils détiennent les droits sur les blueprints qu'ils publient. Les blueprints doivent être fonctionnels et décrits avec précision."
+        },
+        "s4": {
+            "title": "4. Paiements et Commissions",
+            "content": "Les paiements sont traités via Stripe. Koda prélève une commission sur chaque vente, telle que spécifiée lors du processus de publication."
+        },
+        "s5": {
+            "title": "5. Propriété Intellectuelle",
+            "content": "Sauf indication contraire, les acheteurs reçoivent une licence non exclusive d'utilisation du blueprint acheté pour leurs propres besoins."
+        }
+    },
+    "Privacy": {
+        "title": "Politique de Confidentialité",
+        "lastUpdated": "Dernière mise à jour : 25 janvier 2026",
+        "s1": {
+            "title": "1. Collecte des Données",
+            "content": "Nous collectons les informations que vous nous fournissez directement via Clerk (authentification) et Stripe (paiements)."
+        },
+        "s2": {
+            "title": "2. Utilisation des Données",
+            "content": "Vos données sont utilisées pour gérer votre compte, traiter les transactions et améliorer nos services."
+        },
+        "s3": {
+            "title": "3. Partage des Données",
+            "content": "Nous ne vendons pas vos données personnelles. Nous partageons les informations uniquement avec nos prestataires de services (Clerk, Stripe) nécessaires au fonctionnement de la Plateforme."
+        },
+        "s4": {
+            "title": "4. Cookies",
+            "content": "Nous utilisons des cookies pour maintenir votre session et analyser l'utilisation de la Plateforme."
+        }
+    },
+    "Legal": {
+        "title": "Mentions Légales",
+        "lastUpdated": "Dernière mise à jour : 25 janvier 2026",
+        "editor": {
+            "title": "Éditeur du Site",
+            "content": "Koda est édité par [Votre Nom / Nom de l'Entreprise], situé à [Adresse]."
+        },
+        "host": {
+            "title": "Hébergement",
+            "content": "Le site est hébergé par [Nom de l'Hébergeur]."
+        },
+        "contact": {
+            "title": "Contact",
+            "content": "Pour toute demande, vous pouvez nous contacter à [Votre Email]."
+        }
+    },
+    "Dashboard": {
+        "title": "Mon Dashboard",
+        "description": "Gérez votre compte, consultez vos ventes et accédez à vos produits.",
+        "welcome": "Bon retour,",
+        "modes": {
+            "buyer": "Vue Acheteur",
+            "seller": "Vue Vendeur",
+            "buyerDesc": "Gérez vos achats et vos téléchargements.",
+            "sellerDesc": "Suivez vos ventes et gérez votre inventaire."
+        },
+        "sections": {
+            "overview": "Vue d'ensemble",
+            "activity": "Activité Récente",
+            "products": "Mes Produits",
+            "orders": "Mes Achats",
+            "sales": "Ventes Récentes"
+        },
+        "stats": {
+            "balance": "Balance Stripe",
+            "available": "Disponible",
+            "pending": "En attente",
+            "commission": "Commission Koda",
+            "commissionDesc": "Frais de service Koda par vente.",
+            "stripeConfig": "Vous devez configurer vos paiements pour recevoir des fonds.",
+            "setupPayouts": "Configurer mes paiements",
+            "openStripe": "Ouvrir le Dashboard Stripe"
+        },
+        "account": {
+            "memberSince": "Membre depuis le",
+            "manageProfile": "Gérer ma sécurité et mon profil"
+        },
+        "products": {
+            "new": "Nouveau Produit",
+            "noProducts": "Vous n'avez pas encore mis de produits en ligne.",
+            "startSelling": "Commencer à vendre",
+            "edit": "Modifier",
+            "delete": "Supprimer",
+            "noImage": "Aucune image"
+        },
+        "orders": {
+            "noOrders": "Vous n'avez pas encore effectué d'achats.",
+            "explore": "Explorer le catalogue",
+            "boughtOn": "Acheté le",
+            "access": "Accéder"
+        },
+        "sales": {
+            "noSales": "Aucune vente pour le moment."
+        }
     }
 }

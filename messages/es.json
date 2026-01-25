@@ -197,5 +197,114 @@
                 "Other": "Otro"
             }
         }
+    },
+    "Terms": {
+        "title": "Términos y Condiciones",
+        "lastUpdated": "Última actualización: 25 de enero de 2026",
+        "s1": {
+            "title": "1. Aceptación de los Términos",
+            "content": "Al acceder y utilizar Koda (la \"Plataforma\"), usted acepta estar sujeto a estos Términos y Condiciones. Si no está de acuerdo con estos términos, no utilice la Plataforma."
+        },
+        "s2": {
+            "title": "2. Descripción del Servicio",
+            "content": "Koda es un mercado que permite a los usuarios vender y comprar blueprints de automatización (flujos de trabajo para n8n, Make, Zapier, etc.)."
+        },
+        "s3": {
+            "title": "3. Obligaciones de los Vendedores",
+            "content": "Los vendedores deben asegurarse de tener los derechos sobre los blueprints que publican. Los blueprints deben ser funcionales y estar descritos correctamente."
+        },
+        "s4": {
+            "title": "4. Pagos y Comisiones",
+            "content": "Los pagos se procesan a través de Stripe. Koda cobra una comisión por cada venta, como se especifica durante el proceso de publicación."
+        },
+        "s5": {
+            "title": "5. Propiedad Intelectual",
+            "content": "A menos que se especifique lo contrario, los compradores reciben una licencia no exclusiva para usar el blueprint comprado para sus propias necesidades."
+        }
+    },
+    "Privacy": {
+        "title": "Política de Privacidad",
+        "lastUpdated": "Última actualización: 25 de enero de 2026",
+        "s1": {
+            "title": "1. Recopilación de Datos",
+            "content": "Recopilamos la información que usted nos proporciona directamente a través de Clerk (autenticación) y Stripe (pagos)."
+        },
+        "s2": {
+            "title": "2. Uso de los Datos",
+            "content": "Sus datos se utilizan para gestionar su cuenta, procesar transacciones y mejorar nuestros servicios."
+        },
+        "s3": {
+            "title": "3. Intercambio de Datos",
+            "content": "No vendemos sus datos personales. Compartimos información solo con nuestros proveedores de servicios (Clerk, Stripe) necesarios para el funcionamiento de la Plataforma."
+        },
+        "s4": {
+            "title": "4. Cookies",
+            "content": "Utilizamos cookies para mantener su sesión y analizar el uso de la Plataforma."
+        }
+    },
+    "Legal": {
+        "title": "Aviso Legal",
+        "lastUpdated": "Última actualización: 25 de enero de 2026",
+        "editor": {
+            "title": "Editor del Sitio",
+            "content": "Koda es editado por [Su Nombre / Nombre de la Empresa], ubicado en [Dirección]."
+        },
+        "host": {
+            "title": "Alojamiento",
+            "content": "El sitio está alojado por [Nombre del Proveedor de Alojamiento]."
+        },
+        "contact": {
+            "title": "Contacto",
+            "content": "Para cualquier consulta, puede contactarnos en [Su Correo Electrónico]."
+        }
+    },
+    "Dashboard": {
+        "title": "Mi Panel",
+        "description": "Gestiona tu cuenta, mira tus ventas y accede a tus productos.",
+        "welcome": "Bienvenido de nuevo,",
+        "modes": {
+            "buyer": "Vista de Comprador",
+            "seller": "Vista de Vendedor",
+            "buyerDesc": "Gestiona tus compras y descargas.",
+            "sellerDesc": "Sigue tus ventas y gestiona tu inventario."
+        },
+        "sections": {
+            "overview": "Resumen",
+            "activity": "Actividad Reciente",
+            "products": "Mis Productos",
+            "orders": "Mis Compras",
+            "sales": "Ventas Recientes"
+        },
+        "stats": {
+            "balance": "Balance de Stripe",
+            "available": "Disponible",
+            "pending": "Pendiente",
+            "commission": "Comisión Koda",
+            "commissionDesc": "Tarifa de servicio de Koda por venta.",
+            "stripeConfig": "Debes configurar tus pagos para recibir fondos.",
+            "setupPayouts": "Configurar mis pagos",
+            "openStripe": "Abrir el Panel de Stripe"
+        },
+        "account": {
+            "memberSince": "Miembro desde",
+            "manageProfile": "Gestionar mi seguridad y perfil"
+        },
+        "products": {
+            "new": "Nuevo Producto",
+            "noProducts": "Aún no has publicado ningún producto.",
+            "startSelling": "Empezar a vender",
+            "edit": "Editar",
+            "delete": "Eliminar",
+            "noImage": "Sin imagen"
+        },
+        "orders": {
+            "noOrders": "Aún no has realizado ninguna compra.",
+            "explore": "Explorar catálogo",
+            "boughtOn": "Comprado el",
+            "access": "Acceder"
+        },
+        "sales": {
+            "noSales": "No hay ventas por el momento."
+        }
     }
 }

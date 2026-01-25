@@ -198,5 +198,114 @@
                 "Other": "Other"
             }
         }
+    },
+    "Terms": {
+        "title": "Terms and Conditions",
+        "lastUpdated": "Last updated: January 25, 2026",
+        "s1": {
+            "title": "1. Acceptance of Terms",
+            "content": "By accessing and using Koda (the \"Platform\"), you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use the Platform."
+        },
+        "s2": {
+            "title": "2. Description of Service",
+            "content": "Koda is a marketplace that allows users to sell and buy automation blueprints (workflows for n8n, Make, Zapier, etc.)."
+        },
+        "s3": {
+            "title": "3. Sellers Obligations",
+            "content": "Sellers must ensure they have the rights to the blueprints they publish. Blueprints must be functional and correctly described."
+        },
+        "s4": {
+            "title": "4. Payments and Commissions",
+            "content": "Payments are processed via Stripe. Koda takes a commission on each sale as specified during the publication process."
+        },
+        "s5": {
+            "title": "5. Intellectual Property",
+            "content": "Unless otherwise specified, buyers receive a non-exclusive license to use the purchased blueprint for their own needs."
+        }
+    },
+    "Privacy": {
+        "title": "Privacy Policy",
+        "lastUpdated": "Last updated: January 25, 2026",
+        "s1": {
+            "title": "1. Data Collection",
+            "content": "We collect information you provide directly to us through Clerk (authentication) and Stripe (payments)."
+        },
+        "s2": {
+            "title": "2. Use of Data",
+            "content": "Your data is used to manage your account, process transactions, and improve our services."
+        },
+        "s3": {
+            "title": "3. Data Sharing",
+            "content": "We do not sell your personal data. We share information only with our service providers (Clerk, Stripe) necessary for the operation of the Platform."
+        },
+        "s4": {
+            "title": "4. Cookies",
+            "content": "We use cookies to maintain your session and analyze the usage of the Platform."
+        }
+    },
+    "Legal": {
+        "title": "Legal Mentions",
+        "lastUpdated": "Last updated: January 25, 2026",
+        "editor": {
+            "title": "Site Editor",
+            "content": "Koda is edited by [Your Name / Company Name], located at [Address]."
+        },
+        "host": {
+            "title": "Hosting",
+            "content": "The site is hosted by [Hosting Provider Name]."
+        },
+        "contact": {
+            "title": "Contact",
+            "content": "For any inquiries, you can contact us at [Your Email]."
+        }
+    },
+    "Dashboard": {
+        "title": "My Dashboard",
+        "description": "Manage your account, view sales and access your products.",
+        "welcome": "Welcome back,",
+        "modes": {
+            "buyer": "Buyer View",
+            "seller": "Seller View",
+            "buyerDesc": "Manage your purchases and downloads.",
+            "sellerDesc": "Track your sales and manage your inventory."
+        },
+        "sections": {
+            "overview": "Overview",
+            "activity": "Recent Activity",
+            "products": "My Products",
+            "orders": "My Purchases",
+            "sales": "Recent Sales"
+        },
+        "stats": {
+            "balance": "Stripe Balance",
+            "available": "Available",
+            "pending": "Pending",
+            "commission": "Platform Fee",
+            "commissionDesc": "Koda service fee per sale.",
+            "stripeConfig": "To receive funds, you must configure your payments.",
+            "setupPayouts": "Setup Payouts",
+            "openStripe": "Open Stripe Dashboard"
+        },
+        "account": {
+            "memberSince": "Member since",
+            "manageProfile": "Manage Security & Profile"
+        },
+        "products": {
+            "new": "New Product",
+            "noProducts": "You haven't listed any products yet.",
+            "startSelling": "Start selling",
+            "edit": "Edit",
+            "delete": "Delete",
+            "noImage": "No image"
+        },
+        "orders": {
+            "noOrders": "You haven't made any purchases yet.",
+            "explore": "Explore catalog",
+            "boughtOn": "Bought on",
+            "access": "Access"
+        },
+        "sales": {
+            "noSales": "No sales yet."
+        }
     }
 }
