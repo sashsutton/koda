@@ -2,6 +2,7 @@ import { getAllUsers } from "@/app/actions/admin";
 import { AdminRestoreButton } from "@/app/components/admin/admin-restore-button";
 import { AdminBanButton } from "@/app/components/admin/admin-ban-button";
 import { AdminRoleButton } from "@/app/components/admin/admin-role-button";
+import { AdminDeleteButton } from "@/app/components/admin/admin-delete-button";
 
 export default async function AdminDashboard() {
     const users = await getAllUsers();
@@ -64,11 +65,12 @@ export default async function AdminDashboard() {
                                 <td className="p-4 text-sm text-gray-500">
                                     {new Date(user.createdAt).toLocaleDateString()}
                                 </td>
-                                <td className="p-4 flex justify-end">
+                                <td className="p-4 flex justify-end items-center gap-2">
                                     <AdminRoleButton
                                         userId={user.clerkId}
                                         initialRole={user.role}
                                     />
+                                    <AdminDeleteButton userId={user.clerkId} />
                                 </td>
                             </tr>
                         ))}

@@ -7,6 +7,8 @@ import { connectToDatabase } from "@/lib/db";
 import Purchase from "@/models/Purchase";
 import User from "@/models/User";
 import Automation from "@/models/Automation";
+import { sendBuyerEmail, sendSellerEmail } from "@/lib/emails";
+import { clerkClient } from "@clerk/nextjs/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: "2025-12-15.clover",
@@ -67,12 +69,19 @@ export async function POST(req: Request) {
 
             // On crée une preuve d'achat pour CHAQUE produit trouvé
             if (productIds.length > 0) {
+                const buyerEmail = session.customer_details?.email;
+                const buyerOrderItems: { title: string, price: number }[] = [];
+                let orderTotal = 0;
+
                 for (const productId of productIds) {
                     // 1. On récupère le produit pour avoir le vendeur (sellerId)
                     const product = await Automation.findById(productId);
 
                     if (product) {
                         const seller = await User.findOne({ clerkId: typeof product.sellerId === 'object' ? product.sellerId.toString() : product.sellerId });
+
+                        buyerOrderItems.push({ title: product.title, price: product.price });
+                        orderTotal += product.price;
 
                         if (!seller?.stripeConnectId) {
                             console.error(`Seller ${product.sellerId} has no Stripe Connect ID. Skipping transfer.`);
@@ -99,6 +108,24 @@ export async function POST(req: Request) {
                                 category: product.category,
                                 platform: (product as any).platform, // Automation platform
                             });
+
+                            // 1a. Send Email to Seller
+                            if (seller) {
+                                let sellerEmail = seller.email;
+                                if (!sellerEmail) {
+                                    try {
+                                        const clerk = await clerkClient();
+                                        const clerkUser = await clerk.users.getUser(seller.clerkId);
+                                        sellerEmail = clerkUser.emailAddresses[0]?.emailAddress;
+                                    } catch (e) {
+                                        console.error("Failed to fetch seller email from Clerk:", e);
+                                    }
+                                }
+
+                                if (sellerEmail) {
+                                    await sendSellerEmail(sellerEmail, product.title, product.price * 0.85);
+                                }
+                            }
                         }
 
                         // 2. Transfer 85% of the price to the seller (if they have a connect ID)
@@ -123,6 +150,11 @@ export async function POST(req: Request) {
                             }
                         }
                     }
+                }
+
+                // 3. Send Email to Buyer
+                if (buyerEmail && buyerOrderItems.length > 0) {
+                    await sendBuyerEmail(buyerEmail, buyerOrderItems, orderTotal);
                 }
 
                 // Optionnel : Vider le panier de l'utilisateur dans la BDD

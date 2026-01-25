@@ -1,25 +1,22 @@
 "use client";
 
-import { restoreAllUsersFromClerk } from "@/app/actions/admin";
+import { fullSyncWithClerk } from "@/app/actions/admin";
 import { ConfirmButton } from "@/app/components/ui/confirm-button";
-import { RefreshCw, Loader2 } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { useLocalizedToast } from "@/hooks/use-localized-toast";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { getErrorKey } from "@/lib/error-translator";
 
 export function AdminRestoreButton() {
-    const tErr = useTranslations('Errors');
     const { showSuccess, showError, showLoading, dismiss } = useLocalizedToast();
     const [loading, setLoading] = useState(false);
 
-    const handleRestore = async () => {
-        if (!confirm("Voulez-vous vraiment synchroniser tous les utilisateurs depuis Clerk ?")) return;
+    const handleSync = async () => {
         setLoading(true);
-        const toastId = showLoading("Synchronisation en cours...");
+        const toastId = showLoading("Synchronisation complète en cours...");
         try {
-            const result = await restoreAllUsersFromClerk();
-            showSuccess(`${result.count} utilisateurs synchronisés.`);
+            const result = await fullSyncWithClerk();
+            showSuccess(`${result.count} synchronisés, ${result.deleted} supprimés (orphelins).`);
         } catch (error: any) {
             showError(error);
         } finally {
@@ -31,12 +28,12 @@ export function AdminRestoreButton() {
     return (
         <ConfirmButton
             variant="outline"
-            confirmMessage="Voulez-vous vraiment synchroniser tous les utilisateurs depuis Clerk ?"
-            onClick={handleRestore}
+            confirmMessage="Cela synchronisera TOUS les utilisateurs avec Clerk et SUPPRIMERA les utilisateurs locaux qui n'existent plus sur Clerk. Continuer ?"
+            onClick={handleSync}
             disabled={loading}
         >
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
-            Sync all from Clerk
+            Full Database Sync
         </ConfirmButton>
     );
 }

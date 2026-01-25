@@ -3,11 +3,12 @@
 import { requireAdmin } from "@/lib/auth-utils";
 import User from "@/models/User";
 import { revalidatePath } from "next/cache";
-
-/**
- * Récupère tous les utilisateurs (pour l'admin).
- */
 import { clerkClient } from "@clerk/nextjs/server";
+import Stripe from "stripe";
+import { Product } from "@/models/Product";
+import Purchase from "@/models/Purchase";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 /**
  * Récupère tous les utilisateurs (pour l'admin).
@@ -108,20 +109,21 @@ export async function toggleBanUser(userId: string) {
 
 
 /**
- * Restaure tous les utilisateurs depuis Clerk (Recovery).
- * Utile si des utilisateurs ont été supprimés localement par erreur.
+ * Full Sync with Clerk.
+ * 1. Upserts all Clerk users into the local DB.
+ * 2. Deletes local users that are NOT in Clerk.
  */
-export async function restoreAllUsersFromClerk() {
+export async function fullSyncWithClerk() {
     await requireAdmin();
     const client = await clerkClient();
-    let count = 0;
+    let totalSynced = 0;
+    const clerkIds = new Set<string>();
 
     let hasMore = true;
     let offset = 0;
     const limit = 100;
 
     while (hasMore) {
-        // Fetch users from Clerk
         const { data: clerkUsers, totalCount } = await client.users.getUserList({
             limit,
             offset,
@@ -132,9 +134,9 @@ export async function restoreAllUsersFromClerk() {
             break;
         }
 
-        // Sync each user
         await Promise.all(clerkUsers.map(async (clerkUser) => {
             const email = clerkUser.emailAddresses[0]?.emailAddress;
+            clerkIds.add(clerkUser.id);
 
             await User.findOneAndUpdate(
                 { clerkId: clerkUser.id },
@@ -145,7 +147,6 @@ export async function restoreAllUsersFromClerk() {
                     lastName: clerkUser.lastName,
                     imageUrl: clerkUser.imageUrl,
                     username: clerkUser.username,
-                    // Preserve existing role/ban status if exists, otherwise default
                     $setOnInsert: {
                         role: 'user',
                         isBanned: false,
@@ -154,15 +155,84 @@ export async function restoreAllUsersFromClerk() {
                 },
                 { upsert: true, new: true, setDefaultsOnInsert: true }
             );
-            count++;
+            totalSynced++;
         }));
 
         offset += limit;
-        if (offset >= totalCount) {
-            hasMore = false;
-        }
+        if (offset >= totalCount) hasMore = false;
+    }
+
+    // Cleanup: Find local users whose clerkId is NOT in the set of IDs we just fetched
+    const localUsers = await User.find({}, "clerkId").lean();
+    const idsToDelete = localUsers
+        .filter(lu => !clerkIds.has(lu.clerkId))
+        .map(lu => lu.clerkId);
+
+    if (idsToDelete.length > 0) {
+        await User.deleteMany({ clerkId: { $in: idsToDelete } });
+        console.log(`Cleaned up ${idsToDelete.length} orphaned users.`);
     }
 
     revalidatePath("/admin");
-    return { success: true, count };
+    return { success: true, count: totalSynced, deleted: idsToDelete.length };
+}
+
+/**
+ * Supprime un utilisateur de manière COMPLÈTE (Nuclear Delete).
+ * 1. Supprime le compte Stripe Connect (si existe)
+ * 2. Supprime l'utilisateur de Clerk
+ * 3. Supprime tous ses produits
+ * 4. Supprime son historique (ventes et achats)
+ * 5. Supprime l'utilisateur de MongoDB
+ */
+export async function deleteUser(userId: string) {
+    const admin = await requireAdmin();
+    if (admin.clerkId === userId) throw new Error("You cannot delete yourself.");
+
+    const user = await User.findOne({ clerkId: userId });
+    if (!user) throw new Error("User not found in local database.");
+
+    const client = await clerkClient();
+
+    // 1. Delete from Stripe Connect (if applicable)
+    if (user.stripeConnectId) {
+        try {
+            await stripe.accounts.del(user.stripeConnectId);
+            console.log(`Stripe account ${user.stripeConnectId} deleted.`);
+        } catch (err) {
+            console.error("Failed to delete Stripe account:", err);
+        }
+    }
+
+    // 2. Delete from Clerk
+    try {
+        await client.users.deleteUser(userId);
+        console.log(`User ${userId} deleted from Clerk.`);
+    } catch (err) {
+        console.error("Failed to delete Clerk user:", err);
+    }
+
+    // 3. Delete Products
+    try {
+        await Product.deleteMany({ sellerId: userId });
+        console.log(`Products for user ${userId} deleted.`);
+    } catch (err) {
+        console.error("Failed to delete products:", err);
+    }
+
+    // 4. Delete Purchases (Buyer & Seller)
+    try {
+        await Purchase.deleteMany({
+            $or: [{ buyerId: userId }, { sellerId: userId }]
+        });
+        console.log(`Purchase records for user ${userId} deleted.`);
+    } catch (err) {
+        console.error("Failed to delete purchase records:", err);
+    }
+
+    // 5. Delete from MongoDB
+    await User.findOneAndDelete({ clerkId: userId });
+
+    revalidatePath("/admin");
+    return { success: true };
 }
