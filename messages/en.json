@@ -100,6 +100,7 @@
         "stripeError": "Could not configure Stripe at the moment.",
         "stripeDashboardError": "Could not access the Stripe dashboard.",
         "genericError": "An unexpected error occurred. Please try again.",
+        "genericFormError": "There was an error while submitting the form. Please try again.",
         "fileUploadFailed": "File upload failed.",
         "paymentError": "An error occurred while preparing the payment.",
         "serverError": "Server error."
@@ -129,5 +130,73 @@
         "loading": "Loading...",
         "login": "Sign in to checkout",
         "checkout": "Proceed to checkout"
+    },
+    "Sell": {
+        "title": "Sell a Blueprint",
+        "description": "Share your expertise, help the community and generate passive income with your automations.",
+        "badge": "Seller Area",
+        "stripe": {
+            "title": "Setup Required",
+            "description": "To sell on Koda, you must connect a Stripe account to receive your payments securely.",
+            "button": "Configure my payments"
+        },
+        "form": {
+            "details": "Automation Details",
+            "detailsDesc": "Fill in the information below to publish your blueprint on the market.",
+            "title": "Product Title",
+            "titleRequired": "Product Title *",
+            "titlePlaceholder": "Ex: LinkedIn Scraper Pro v2",
+            "titleHelp": "Give it a clear and catchy name.",
+            "price": "Price",
+            "priceRequired": "Price (€) *",
+            "pricePlaceholder": "49",
+            "priceHelp": "Your net income will be calculated after commission.",
+            "description": "Full Description",
+            "descriptionRequired": "Full Description *",
+            "descriptionPlaceholder": "Describe features, prerequisites, and the value proposition of your script...",
+            "classification": "Classification",
+            "platform": "Platform",
+            "platformRequired": "Platform *",
+            "category": "Category",
+            "categoryRequired": "Category *",
+            "choose": "Choose...",
+            "version": "Version",
+            "versionPlaceholder": "Ex: v1.0.0",
+            "optional": "(Optional)",
+            "tags": "Tags",
+            "tagsHelp": "(Keywords for search)",
+            "tagsPlaceholder": "Add a tag...",
+            "add": "Add",
+            "upload": {
+                "cover": "Cover Image",
+                "source": "Source File (JSON)",
+                "blueprint": "Automation File",
+                "blueprintFormat": "Format .json only",
+                "drop": "Drag and drop or click",
+                "dropDesc": "PNG, JPG, WEBP (Max 2MB)",
+                "choose": "Choose a file",
+                "select": "Select File",
+                "change": "Change image",
+                "ready": "File ready!",
+                "replace": "Click to replace"
+            },
+            "cancel": "Cancel",
+            "publish": "Publish on Koda",
+            "publishing": "Publishing...",
+            "platforms": {
+                "n8n": "n8n",
+                "Make": "Make",
+                "Zapier": "Zapier",
+                "Python": "Python",
+                "Other": "Other"
+            },
+            "categories": {
+                "Social Media": "Social Media",
+                "Email Marketing": "Email Marketing",
+                "Productivity": "Productivity",
+                "Sales": "Sales",
+                "Other": "Other"
+            }
+        }
     }
 }

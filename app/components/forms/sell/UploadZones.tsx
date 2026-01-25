@@ -3,6 +3,7 @@ import { FileJson, Image as ImageIcon, UploadCloud } from "lucide-react";
 import FileUpload from "@/app/components/FileUpload";
 import Image from "next/image";
 import { getPublicImageUrl } from "@/lib/image-helper";
+import { useTranslations } from "next-intl";
 
 interface UploadZonesProps {
     previewImageUrl: string;
@@ -17,13 +18,14 @@ export function UploadZones({
     onPreviewImageUpload,
     onFileUpload
 }: UploadZonesProps) {
+    const t = useTranslations('Sell.form.upload');
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Zone d'upload Image */}
             <div className="space-y-4">
                 <div className="flex items-center gap-2 mb-2">
                     <ImageIcon className="h-5 w-5 text-primary" />
-                    <Label className="text-base font-semibold">Cover Image</Label>
+                    <Label className="text-base font-semibold">{t('cover')}</Label>
                 </div>
 
                 <FileUpload
@@ -37,12 +39,12 @@ export function UploadZones({
                                 <ImageIcon className="h-6 w-6 text-muted-foreground" />
                             </div>
                             <div>
-                                <p className="font-medium text-sm">Drag and drop or click</p>
-                                <p className="text-xs text-muted-foreground mt-1">PNG, JPG, WEBP (Max 2MB)</p>
+                                <p className="font-medium text-sm">{t('drop')}</p>
+                                <p className="text-xs text-muted-foreground mt-1">{t('dropDesc')}</p>
                             </div>
                             <div className="mt-4">
                                 <span className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-sm font-medium hover:bg-secondary/80 transition-colors">
-                                    Choose a file
+                                    {t('choose')}
                                 </span>
                             </div>
                         </div>
@@ -56,7 +58,7 @@ export function UploadZones({
                                 unoptimized
                             />
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <p className="text-white font-medium text-sm">Change image</p>
+                                <p className="text-white font-medium text-sm">{t('change')}</p>
                             </div>
                         </div>
                     )}
@@ -67,7 +69,7 @@ export function UploadZones({
             <div className="space-y-4">
                 <div className="flex items-center gap-2 mb-2">
                     <FileJson className="h-5 w-5 text-primary" />
-                    <Label className="text-base font-semibold">Source File (JSON)</Label>
+                    <Label className="text-base font-semibold">{t('source')}</Label>
                     <span className="text-destructive text-sm">*</span>
                 </div>
 
@@ -82,12 +84,12 @@ export function UploadZones({
                                 <UploadCloud className="h-8 w-8 text-primary" />
                             </div>
                             <div>
-                                <p className="font-medium text-lg">Automation File</p>
-                                <p className="text-sm text-muted-foreground mt-1">Format .json only</p>
+                                <p className="font-medium text-lg">{t('blueprint')}</p>
+                                <p className="text-sm text-muted-foreground mt-1">{t('blueprintFormat')}</p>
                             </div>
                             <div className="mt-2">
                                 <span className="px-6 py-2.5 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
-                                    Select File
+                                    {t('select')}
                                 </span>
                             </div>
                         </div>
@@ -97,11 +99,11 @@ export function UploadZones({
                                 <FileJson className="h-8 w-8" />
                             </div>
                             <div>
-                                <p className="font-semibold text-lg text-green-700 dark:text-green-400">File ready!</p>
+                                <p className="font-semibold text-lg text-green-700 dark:text-green-400">{t('ready')}</p>
                                 <p className="text-xs text-muted-foreground mt-1 break-all px-4 max-w-xs mx-auto">{fileUrl.split('/').pop()}</p>
                             </div>
                             <div className="px-4 py-2 border rounded-full text-xs text-muted-foreground bg-background hover:bg-muted transition-colors">
-                                Click to replace
+                                {t('replace')}
                             </div>
                         </div>
                     )}

@@ -129,5 +129,73 @@
         "loading": "Cargando...",
         "login": "Iniciar sesión para pagar",
         "checkout": "Proceder al pago"
+    },
+    "Sell": {
+        "title": "Vender un Blueprint",
+        "description": "Comparte tu experiencia, ayuda a la comunidad y genera ingresos pasivos con tus automatizaciones.",
+        "badge": "Espacio de Vendedor",
+        "stripe": {
+            "title": "Configuración Requerida",
+            "description": "Para vender en Koda, debes conectar una cuenta de Stripe para recibir tus pagos de forma segura.",
+            "button": "Configurar mis pagos"
+        },
+        "form": {
+            "details": "Details of the Automation",
+            "detailsDesc": "Completa la información a continuación para publicar tu blueprint en el mercado.",
+            "title": "Título del Producto",
+            "titleRequired": "Título del Producto *",
+            "titlePlaceholder": "Ej: LinkedIn Scraper Pro v2",
+            "titleHelp": "Dale un nombre claro y pegadizo.",
+            "price": "Precio",
+            "priceRequired": "Precio (€) *",
+            "pricePlaceholder": "49",
+            "priceHelp": "Tus ingresos netos se calcularán después de la comisión.",
+            "description": "Descripción Completa",
+            "descriptionRequired": "Descripción Completa *",
+            "descriptionPlaceholder": "Describe las características, los requisitos previos y la propuesta de valor de tu script...",
+            "classification": "Clasificación",
+            "platform": "Plataforma",
+            "platformRequired": "Plataforma *",
+            "category": "Categoría",
+            "categoryRequired": "Categoría *",
+            "choose": "Elegir...",
+            "version": "Versión",
+            "versionPlaceholder": "Ej: v1.0.0",
+            "optional": "(Opcional)",
+            "tags": "Etiquetas",
+            "tagsHelp": "(Palabras clave para la búsqueda)",
+            "tagsPlaceholder": "Añadir una etiqueta...",
+            "add": "Añadir",
+            "upload": {
+                "cover": "Imagen de Portada",
+                "source": "Archivo Fuente (JSON)",
+                "blueprint": "Archivo de Automatización",
+                "blueprintFormat": "Solo formato .json",
+                "drop": "Arrastra y suelta o haz clic",
+                "dropDesc": "PNG, JPG, WEBP (Máx. 2MB)",
+                "choose": "Elegir un archivo",
+                "select": "Seleccionar Archivo",
+                "change": "Cambiar imagen",
+                "ready": "¡Archivo listo!",
+                "replace": "Haz clic para reemplazar"
+            },
+            "cancel": "Cancelar",
+            "publish": "Publicar en Koda",
+            "publishing": "Publicando...",
+            "platforms": {
+                "n8n": "n8n",
+                "Make": "Make",
+                "Zapier": "Zapier",
+                "Python": "Python",
+                "Other": "Otro"
+            },
+            "categories": {
+                "Social Media": "Redes Sociales",
+                "Email Marketing": "Email Marketing",
+                "Productivity": "Productividad",
+                "Sales": "Ventas",
+                "Other": "Otro"
+            }
+        }
     }
 }

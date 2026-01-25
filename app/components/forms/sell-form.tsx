@@ -6,6 +6,7 @@ import { createAutomation } from "@/app/actions/automation";
 import { useLocalizedToast } from "@/hooks/use-localized-toast";
 import { ProductCategory } from "@/types/product";
 import { AutomationPlatform } from "@/types/automation";
+import { useTranslations } from "next-intl";
 
 // Imports UI (Design)
 import { Button } from "@/app/components/ui/button";
@@ -24,6 +25,7 @@ import { UploadZones } from "./sell/UploadZones";
 
 export function SellForm() {
     const { showSuccess, showError, showLoading, dismiss } = useLocalizedToast();
+    const t = useTranslations('Sell.form');
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [fileUrl, setFileUrl] = useState("");
@@ -53,7 +55,7 @@ export function SellForm() {
         // if (!fileUrl) return alert("Veuillez uploader votre fichier d'automatisation"); 
 
         setLoading(true);
-        const toastId = showLoading("Publishing...");
+        const toastId = showLoading(t('publishing'));
         try {
             await createAutomation({
                 ...formData,
@@ -80,9 +82,9 @@ export function SellForm() {
                         <Sparkles className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                        <CardTitle className="text-2xl font-bold">Automation Details</CardTitle>
+                        <CardTitle className="text-2xl font-bold">{t('details')}</CardTitle>
                         <CardDescription className="text-base">
-                            Fill in the information below to publish your blueprint on the market.
+                            {t('detailsDesc')}
                         </CardDescription>
                     </div>
                 </div>
@@ -95,31 +97,31 @@ export function SellForm() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Titre */}
                             <div className="space-y-2.5">
-                                <Label htmlFor="title" className="text-base font-medium">Product Title <span className="text-destructive">*</span></Label>
+                                <Label htmlFor="title" className="text-base font-medium">{t('titleRequired')} <span className="text-destructive">*</span></Label>
                                 <Input
                                     id="title"
-                                    placeholder="Ex: LinkedIn Scraper Pro v2"
+                                    placeholder={t('titlePlaceholder')}
                                     required
                                     className="h-11 text-lg"
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                 />
-                                <p className="text-xs text-muted-foreground">Give it a clear and catchy name.</p>
+                                <p className="text-xs text-muted-foreground">{t('titleHelp')}</p>
                             </div>
 
                             {/* Prix */}
                             <PriceInput
                                 value={formData.price}
-                                onChange={(val) => setFormData({ ...formData, price: val })}
+                                onChange={(val: number) => setFormData({ ...formData, price: val })}
                             />
                         </div>
 
                         {/* Description */}
                         <div className="space-y-2.5">
-                            <Label htmlFor="description" className="text-base font-medium">Full Description <span className="text-destructive">*</span></Label>
+                            <Label htmlFor="description" className="text-base font-medium">{t('descriptionRequired')} <span className="text-destructive">*</span></Label>
                             <Textarea
                                 id="description"
-                                placeholder="Describe features, prerequisites, and the value proposition of your script..."
+                                placeholder={t('descriptionPlaceholder')}
                                 className="min-h-[160px] text-base leading-relaxed resize-y"
                                 required
                                 value={formData.description}
@@ -134,7 +136,7 @@ export function SellForm() {
                     <div className="space-y-6">
                         <h3 className="text-lg font-semibold flex items-center gap-2">
                             <Info className="h-5 w-5 text-muted-foreground" />
-                            Classification
+                            {t('classification')}
                         </h3>
 
                         <CategoryPlatformSelects
@@ -147,10 +149,10 @@ export function SellForm() {
                         {/* Tags & Version */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2.5">
-                                <Label htmlFor="version">Version <span className="text-muted-foreground font-normal">(Optional)</span></Label>
+                                <Label htmlFor="version">{t('version')} <span className="text-muted-foreground font-normal">{t('optional')}</span></Label>
                                 <Input
                                     id="version"
-                                    placeholder="Ex: v1.0.0"
+                                    placeholder={t('versionPlaceholder')}
                                     className="h-11"
                                     value={formData.version}
                                     onChange={(e) => setFormData({ ...formData, version: e.target.value })}
@@ -178,11 +180,11 @@ export function SellForm() {
 
                 <CardFooter className="flex justify-end gap-4 border-t border-border/50 p-8 bg-muted/20 rounded-b-xl">
                     <Button variant="ghost" type="button" onClick={() => router.back()} size="lg">
-                        Cancel
+                        {t('cancel')}
                     </Button>
                     <Button type="submit" size="lg" disabled={loading || !fileUrl} className="min-w-[180px] shadow-lg shadow-primary/20">
                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        {loading ? "Publishing..." : "Publish on Koda"}
+                        {loading ? t('publishing') : t('publish')}
                     </Button>
                 </CardFooter>
             </form>

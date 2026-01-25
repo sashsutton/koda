@@ -4,6 +4,7 @@ import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface TagInputProps {
     tags: string[];
@@ -11,6 +12,7 @@ interface TagInputProps {
 }
 
 export function TagInput({ tags, onTagsChange }: TagInputProps) {
+    const t = useTranslations('Sell.form');
     const [tagInput, setTagInput] = useState("");
 
     const handleAddTag = () => {
@@ -26,11 +28,11 @@ export function TagInput({ tags, onTagsChange }: TagInputProps) {
 
     return (
         <div className="space-y-2.5">
-            <Label htmlFor="tags">Tags <span className="text-muted-foreground font-normal">(Keywords for search)</span></Label>
+            <Label htmlFor="tags">Tags <span className="text-muted-foreground font-normal">{t('tagsHelp')}</span></Label>
             <div className="flex gap-2">
                 <Input
                     id="tags"
-                    placeholder="Add a tag..."
+                    placeholder={t('tagsPlaceholder')}
                     value={tagInput}
                     className="h-11"
                     onChange={(e) => setTagInput(e.target.value)}
@@ -42,7 +44,7 @@ export function TagInput({ tags, onTagsChange }: TagInputProps) {
                     }}
                 />
                 <Button type="button" onClick={handleAddTag} variant="secondary" className="h-11 px-4">
-                    Add
+                    {t('add')}
                 </Button>
             </div>
             {tags.length > 0 && (
