@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { Readable } from "stream";
+import { ratelimit } from "@/lib/ratelimit";
 
 // On recrée le client ici ou on l'importe. Pour éviter les soucis de Edge Runtime, on utilise Node.js runtime par défaut.
 const s3 = new S3Client({
@@ -12,6 +13,14 @@ const s3 = new S3Client({
 });
 
 export async function GET(req: NextRequest) {
+    // RATE LIMITING
+    const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
+    const { success } = await ratelimit.limit(`image_proxy_${ip}`);
+
+    if (!success) {
+        return new NextResponse("Too Many Requests", { status: 429 });
+    }
+
     const { searchParams } = new URL(req.url);
     const imageUrl = searchParams.get("url");
 
