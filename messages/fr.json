@@ -314,6 +314,47 @@
         }
     },
     "Admin": {
+        "title": "Console Administration",
+        "tabs": {
+            "users": "Utilisateurs",
+            "products": "Produits"
+        },
+        "usersTable": {
+            "user": "Utilisateur",
+            "email": "Email",
+            "role": "Rôle",
+            "date": "Date",
+            "actions": "Actions",
+            "noName": "Sans nom",
+            "missingEmail": "Email manquant",
+            "seller": "Vendeur",
+            "banned": "BANNI",
+            "banConfirm": "Voulez-vous vraiment bannir cet utilisateur ?",
+            "unbanConfirm": "Voulez-vous débannir cet utilisateur ?",
+            "banLabel": "Bannir",
+            "unbanLabel": "Débannir",
+            "promoteLabel": "Promouvoir",
+            "demoteLabel": "Rétrograder"
+        },
+        "productsTable": {
+            "product": "Produit",
+            "seller": "Vendeur",
+            "price": "Prix",
+            "status": "Statut",
+            "actions": "Actions",
+            "certified": "Certifié",
+            "unverified": "Non vérifié",
+            "test": "Tester",
+            "certify": "Certifier",
+            "decertify": "Dé-certifier",
+            "noProducts": "Aucun produit trouvé.",
+            "toasts": {
+                "certified": "Produit certifié !",
+                "decertified": "Certification retirée.",
+                "error": "Erreur lors de la certification.",
+                "downloadError": "Erreur de téléchargement."
+            }
+        },
         "sync": {
             "button": "Synchro Complète BDD",
             "loading": "Synchronisation complète en cours...",

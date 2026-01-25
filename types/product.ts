@@ -19,6 +19,7 @@ export interface IProduct {
     tags?: string[];
     createdAt: string | Date;
     updatedAt: string | Date;
+    isCertified?: boolean;
 
     averageRating?: number;
     reviewCount?: number;

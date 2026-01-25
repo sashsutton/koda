@@ -16,6 +16,7 @@ export function AdminBanButton({ userId, initialIsBanned }: AdminBanButtonProps)
     const { showSuccess, showError } = useLocalizedToast();
     const [isBanned, setIsBanned] = useState(initialIsBanned);
     const [isLoading, setIsLoading] = useState(false);
+    const t = useTranslations('Admin');
 
     const handleToggle = async () => {
         setIsLoading(true);
@@ -36,7 +37,7 @@ export function AdminBanButton({ userId, initialIsBanned }: AdminBanButtonProps)
             size="sm"
             className="flex items-center gap-1"
             disabled={isLoading}
-            confirmMessage={isBanned ? "Do you want to unban this user?" : "Do you really want to ban this user?"}
+            confirmMessage={isBanned ? t('usersTable.unbanConfirm') : t('usersTable.banConfirm')}
             onClick={handleToggle}
         >
             <div className="flex items-center gap-2">
@@ -45,7 +46,7 @@ export function AdminBanButton({ userId, initialIsBanned }: AdminBanButtonProps)
                 ) : (
                     <Ban className="h-4 w-4 text-destructive" />
                 )}
-                {isBanned ? "Unban User" : "Ban User"}
+                {isBanned ? t('usersTable.unbanLabel') : t('usersTable.banLabel')}
             </div>
         </ConfirmButton>
     );

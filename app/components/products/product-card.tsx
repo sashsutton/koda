@@ -4,7 +4,7 @@ import { Link } from '@/i18n/routing';
 import { Card, CardContent, CardFooter, CardHeader } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
-import { ShoppingCart, Eye, Check, Star } from "lucide-react"; // <--- AJOUT DE STAR
+import { ShoppingCart, Eye, Check, Star, ShieldCheck } from "lucide-react"; // <--- AJOUT DE STAR
 import { useCart } from "@/hooks/use-cart";
 import { IAutomation } from "@/types/automation";
 import { IProduct } from "@/types/product";
@@ -103,6 +103,16 @@ export function ProductCard({ product, userId, isPurchased = false }: ProductCar
                         {product.category}
                     </Badge>
                 </div>
+
+                {/* Badge Certification (Top Right) */}
+                {product.isCertified && (
+                    <div className="absolute top-2 right-2">
+                        <Badge className="bg-green-600 hover:bg-green-700 text-white border-none shadow-lg gap-1.5 py-1 px-2.5">
+                            <ShieldCheck className="w-3.5 h-3.5" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider">Certifié</span>
+                        </Badge>
+                    </div>
+                )}
             </div>
 
             <CardHeader className="p-4 pb-2">

@@ -315,6 +315,47 @@
         }
     },
     "Admin": {
+        "title": "Admin Console",
+        "tabs": {
+            "users": "Users",
+            "products": "Products"
+        },
+        "usersTable": {
+            "user": "User",
+            "email": "Email",
+            "role": "Role",
+            "date": "Date",
+            "actions": "Actions",
+            "noName": "No name",
+            "missingEmail": "Missing email",
+            "seller": "Seller",
+            "banned": "BANNED",
+            "banConfirm": "Do you really want to ban this user?",
+            "unbanConfirm": "Do you want to unban this user?",
+            "banLabel": "Ban",
+            "unbanLabel": "Unban",
+            "promoteLabel": "Promote",
+            "demoteLabel": "Demote"
+        },
+        "productsTable": {
+            "product": "Product",
+            "seller": "Seller",
+            "price": "Price",
+            "status": "Status",
+            "actions": "Actions",
+            "certified": "Certified",
+            "unverified": "Unverified",
+            "test": "Test",
+            "certify": "Certify",
+            "decertify": "De-certify",
+            "noProducts": "No products found.",
+            "toasts": {
+                "certified": "Product certified!",
+                "decertified": "Certification removed.",
+                "error": "Error during certification.",
+                "downloadError": "Download error."
+            }
+        },
         "sync": {
             "button": "Full Database Sync",
             "loading": "Full synchronization in progress...",

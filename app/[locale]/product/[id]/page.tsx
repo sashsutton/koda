@@ -156,8 +156,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                     <Badge variant="outline" className="capitalize text-sm">{product.category}</Badge>
                                     <Badge className="bg-primary/90 hover:bg-primary text-sm">{product.platform}</Badge>
                                     {hasPurchased && (
-                                        <Badge className="bg-green-600 hover:bg-green-700 text-white gap-1">
+                                        <Badge className="bg-green-600 hover:bg-green-700 text-white gap-1 shadow-sm border-none">
                                             <ShieldCheck className="h-3 w-3" /> Acheté
+                                        </Badge>
+                                    )}
+                                    {product.isCertified && (
+                                        <Badge className="bg-green-600 hover:bg-green-700 text-white gap-1.5 shadow-sm border-none">
+                                            <ShieldCheck className="h-3.5 w-3.5" /> Certifié par Koda
                                         </Badge>
                                     )}
                                 </div>
@@ -183,6 +188,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                             productId={product._id.toString()}
                                             reviews={serializedReviews}
                                             canReview={canReview}
+                                            currentUserId={userId}
                                         />
                                     </TabsContent>
 
@@ -207,12 +213,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                     <div><h4 className="font-medium text-sm">Accès immédiat</h4><p className="text-xs text-muted-foreground">Téléchargement instantané.</p></div>
                                 </div>
                             </Card>
-                            <Card className="p-4 border-border/40 bg-card/30">
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-primary/10 rounded-lg text-primary"><ShieldCheck size={20} /></div>
-                                    <div><h4 className="font-medium text-sm">Vérifié par Koda</h4><p className="text-xs text-muted-foreground">Structure validée.</p></div>
-                                </div>
-                            </Card>
+                            {product.isCertified && (
+                                <Card className="p-4 border-border/40 bg-card/30">
+                                    <div className="flex items-start gap-3">
+                                        <div className="p-2 bg-primary/10 rounded-lg text-primary"><ShieldCheck size={20} /></div>
+                                        <div><h4 className="font-medium text-sm">Vérifié par Koda</h4><p className="text-xs text-muted-foreground">Structure validée.</p></div>
+                                    </div>
+                                </Card>
+                            )}
                         </div>
                     </div>
 

@@ -6,10 +6,80 @@ import { revalidatePath } from "next/cache";
 import { clerkClient } from "@clerk/nextjs/server";
 import Stripe from "stripe";
 import { Product } from "@/models/Product";
+import Automation from "@/models/Automation";
 import Purchase from "@/models/Purchase";
 import { ratelimit } from "@/lib/ratelimit";
+import { getDownloadUrl } from "@/lib/s3";
+import { invalidateCache } from "@/lib/cache-utils";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+
+/**
+ * Récupère tous les produits (pour l'admin).
+ */
+export async function getAllProducts() {
+    await requireAdmin();
+
+    const products = await Product.find({})
+        .sort({ createdAt: -1 })
+        .lean();
+
+    // Fetch sellers in batch
+    const sellerIds = [...new Set(products.map((p: any) => p.sellerId))];
+    const sellers = await User.find({ clerkId: { $in: sellerIds } }).lean();
+    const sellerMap = new Map(sellers.map((s: any) => [s.clerkId, s]));
+
+    return products.map((product: any) => ({
+        ...product,
+        _id: product._id.toString(),
+        createdAt: product.createdAt?.toISOString(),
+        updatedAt: product.updatedAt?.toISOString(),
+        seller: sellerMap.get(product.sellerId) ? {
+            username: (sellerMap.get(product.sellerId) as any).username ||
+                `${(sellerMap.get(product.sellerId) as any).firstName || ''} ${(sellerMap.get(product.sellerId) as any).lastName || ''}`.trim() ||
+                "Vendeur",
+        } : null
+    }));
+}
+
+/**
+ * Change le statut de certification d'un produit.
+ */
+export async function toggleProductCertification(productId: string, isCertified: boolean) {
+    await requireAdmin();
+
+    await Product.findByIdAndUpdate(productId, { isCertified });
+
+    // Invalidate cache and revalidate paths
+    await invalidateCache("products_v2:*");
+    revalidatePath("/admin");
+    revalidatePath(`/product/${productId}`);
+    revalidatePath("/"); // Also revalidate catalog
+
+    return { success: true };
+}
+
+/**
+ * Génère un lien de téléchargement pour l'admin (audit).
+ */
+export async function getAdminDownloadUrl(productId: string) {
+    await requireAdmin();
+
+    const product = await Automation.findById(productId).lean();
+    if (!product || !product.fileUrl) {
+        throw new Error("Product or file not found.");
+    }
+
+    try {
+        const fileKey = product.fileUrl.split('.com/')[1];
+        const filename = `${product.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`;
+        const secureDownloadUrl = await getDownloadUrl(fileKey, filename);
+        return { success: true, url: secureDownloadUrl };
+    } catch (e) {
+        console.error("Erreur génération lien S3 admin:", e);
+        throw new Error("Failed to generate download URL.");
+    }
+}
 
 /**
  * Récupère tous les utilisateurs (pour l'admin).

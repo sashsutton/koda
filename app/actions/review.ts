@@ -32,10 +32,19 @@ export async function submitContent(prevState: any, formData: FormData) {
 
     await connectToDatabase();
 
-
-
-    //logique de vérification d'achat
+    // logique de vérification d'achat
     try {
+        if (type === 'review') {
+            const hasPurchased = await Purchase.findOne({
+                buyerId: userId,
+                productId: new mongoose.Types.ObjectId(productId)
+            });
+
+            if (!hasPurchased) {
+                return { error: "You must purchase this product to leave a review." };
+            }
+        }
+
         // logique de création/update
         if (type === 'review') {
             await Review.findOneAndUpdate(
@@ -48,33 +57,25 @@ export async function submitContent(prevState: any, formData: FormData) {
                 { upsert: true, new: true }
             );
         } else {
-            // ...
+            // Discussion logic could be added here
+            await Review.create({
+                productId,
+                userId,
+                userName: user.firstName || "User",
+                type: 'comment',
+                comment
+            });
         }
 
         // CALCUL DE MOYENNE
         if (type === 'review') {
-            const stats = await Review.aggregate([
-                {
-                    $match: {
-                        productId: new mongoose.Types.ObjectId(productId),
-                        type: 'review'
-                    }
-                },
-                { $group: { _id: "$productId", avg: { $avg: "$rating" }, count: { $sum: 1 } } }
-            ]);
-
-            if (stats.length > 0) {
-                await Product.findByIdAndUpdate(productId, {
-                    averageRating: Math.round(stats[0].avg * 10) / 10,
-                    reviewCount: stats[0].count
-                });
-            }
+            await updateProductStats(productId);
         }
 
         if (path) {
-            revalidatePath(path); // Rafraîchit /fr/product/123 au lieu de /product/123
+            revalidatePath(path);
         } else {
-            revalidatePath(`/product/${productId}`); // Fallback
+            revalidatePath(`/product/${productId}`);
         }
 
         return { success: true, message: "Sent successfully!" };
@@ -82,5 +83,73 @@ export async function submitContent(prevState: any, formData: FormData) {
     } catch (error) {
         console.error(error);
         return { error: "Server error." };
+    }
+}
+
+export async function deleteReview(prevState: any, formData: FormData) {
+    let user;
+    try {
+        user = await requireUser();
+    } catch (err: any) {
+        return { error: err.message };
+    }
+
+    const userId = user.clerkId;
+    const reviewId = formData.get("reviewId") as string;
+    const path = formData.get("path") as string;
+
+    await connectToDatabase();
+
+    try {
+        const review = await Review.findById(reviewId);
+
+        if (!review) {
+            return { error: "Review not found." };
+        }
+
+        if (review.userId !== userId) {
+            return { error: "Unauthorized to delete this review." };
+        }
+
+        const productId = review.productId;
+        await Review.findByIdAndDelete(reviewId);
+
+        // Update stats
+        if (review.type === 'review') {
+            await updateProductStats(productId.toString());
+        }
+
+        if (path) {
+            revalidatePath(path);
+        }
+
+        return { success: true, message: "Review deleted successfully." };
+    } catch (error) {
+        console.error(error);
+        return { error: "Server error." };
+    }
+}
+
+async function updateProductStats(productId: string) {
+    const stats = await Review.aggregate([
+        {
+            $match: {
+                productId: new mongoose.Types.ObjectId(productId),
+                type: 'review'
+            }
+        },
+        { $group: { _id: "$productId", avg: { $avg: "$rating" }, count: { $sum: 1 } } }
+    ]);
+
+    if (stats.length > 0) {
+        await Product.findByIdAndUpdate(productId, {
+            averageRating: Math.round(stats[0].avg * 10) / 10,
+            reviewCount: stats[0].count
+        });
+    } else {
+        await Product.findByIdAndUpdate(productId, {
+            averageRating: 0,
+            reviewCount: 0
+        });
     }
 }

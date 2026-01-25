@@ -23,7 +23,7 @@ export async function deleteProduct(productId: string) {
         await Product.deleteOne({ _id: productId });
 
         // Invalidate cache for product listings
-        await invalidateCache("products:*");
+        await invalidateCache("products_v2:*");
 
         revalidatePath("/dashboard");
         return { success: true };
@@ -64,7 +64,7 @@ export async function updateProduct(productId: string, data: { title: string; de
 
     await product.save();
 
-    await invalidateCache("products:*");
+    await invalidateCache("products_v2:*");
 
     revalidatePath("/dashboard");
     return { success: true };

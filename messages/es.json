@@ -81,7 +81,7 @@
             "emailPlaceholder": "tu@ejemplo.com",
             "subjectLabel": "Asunto",
             "subjectPlaceholder": "Ej: Error durante el pago...",
-            "messageLabel": "Mensaje",
+            "messageLabel": "Message",
             "messagePlaceholder": "Cuéntanoslo todo...",
             "submit": "Enviar mensaje",
             "sending": "Enviando..."
@@ -199,7 +199,7 @@
                 "Social Media": "Redes Sociales",
                 "Email Marketing": "Email Marketing",
                 "Productivity": "Productividad",
-                "Sales": "Ventas",
+                "Sales": "Ventes",
                 "Other": "Otro"
             }
         }
@@ -253,7 +253,7 @@
         "lastUpdated": "Última actualización: 25 de enero de 2026",
         "editor": {
             "title": "Editor del Sitio",
-            "content": "Koda es editado por [Su Nombre / Nombre de la Empresa], ubicado en [Dirección]."
+            "content": "Koda es editado por [Su Nombre / Nombre de l'Empresa], ubicado en [Dirección]."
         },
         "host": {
             "title": "Alojamiento",
@@ -314,6 +314,47 @@
         }
     },
     "Admin": {
+        "title": "Consola de Administración",
+        "tabs": {
+            "users": "Usuarios",
+            "products": "Productos"
+        },
+        "usersTable": {
+            "user": "Usuario",
+            "email": "Correo electrónico",
+            "role": "Rol",
+            "date": "Fecha",
+            "actions": "Acciones",
+            "noName": "Sin nombre",
+            "missingEmail": "Correo faltante",
+            "seller": "Vendedor",
+            "banned": "BANEADO",
+            "banConfirm": "¿Realmente quieres banear a este usuario?",
+            "unbanConfirm": "¿Quieres desbanear a este usuario?",
+            "banLabel": "Banear",
+            "unbanLabel": "Desbanear",
+            "promoteLabel": "Promover",
+            "demoteLabel": "Degradar"
+        },
+        "productsTable": {
+            "product": "Producto",
+            "seller": "Vendedor",
+            "price": "Precio",
+            "status": "Estado",
+            "actions": "Acciones",
+            "certified": "Certificado",
+            "unverified": "No verificado",
+            "test": "Probar",
+            "certify": "Certificar",
+            "decertify": "Descertificar",
+            "noProducts": "No se encontraron productos.",
+            "toasts": {
+                "certified": "¡Producto certificado!",
+                "decertified": "Certificación eliminada.",
+                "error": "Error durante la certificación.",
+                "downloadError": "Error de descarga."
+            }
+        },
         "sync": {
             "button": "Sincronización Completa BD",
             "loading": "Sincronización completa en curso...",

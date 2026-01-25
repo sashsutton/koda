@@ -22,6 +22,7 @@ const ProductSchema = new Schema({
     tags: [{ type: String }],
     sellerId: { type: String, required: true },
     previewImageUrl: { type: String },
+    isCertified: { type: Boolean, default: false },
 }, baseOptions);
 
 export const Product = models.Product || model('Product', ProductSchema);

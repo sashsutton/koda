@@ -17,6 +17,7 @@ export function AdminRoleButton({ userId, initialRole }: AdminRoleButtonProps) {
     const { showSuccess, showError } = useLocalizedToast();
     const [role, setRole] = useState(initialRole);
     const [isLoading, setIsLoading] = useState(false);
+    const t = useTranslations('Admin');
 
     const handleToggle = async () => {
         setIsLoading(true);
@@ -41,7 +42,7 @@ export function AdminRoleButton({ userId, initialRole }: AdminRoleButtonProps) {
             className="flex items-center gap-2"
         >
             <UserCog className="h-4 w-4" />
-            <span>{role === 'admin' ? "Demote" : "Promote"}</span>
+            <span>{role === 'admin' ? t('usersTable.demoteLabel') : t('usersTable.promoteLabel')}</span>
         </Button>
     );
 }
