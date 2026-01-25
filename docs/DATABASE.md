@@ -1,110 +1,91 @@
-# 🗄 Architecture de la Base de Données
+# 🗄 Database Architecture
 
-Koda utilise **MongoDB** comme base de données principale, interfacée via l'ODM **Mongoose**.
+Koda uses **MongoDB** as its primary data store, interfaced through the **Mongoose** Object Data Modeling (ODM) library.
 
-## Connexion
+## Connection Management
 
-La connexion à la base de données est gérée dans [`lib/db.ts`](../lib/db.ts). Elle utilise un pattern de cache pour éviter de multiplier les connexions lors des rechargements à chaud en développement (Hot Reload).
+Database connections are handled in [`lib/db.ts`](../lib/db.ts). We implement a connection caching pattern to reuse existing connections across Serverless function invocations and prevent "Too many connections" errors during development hot-reloads.
 
-## Modèles de Données
+## Data Models
 
-### Product (Base Model avec Discriminators)
+### Product (Base Model)
 
-Le modèle `Product` utilise le pattern **discriminator** de Mongoose pour supporter différents types de produits (actuellement `Automation`, extensible pour Templates, Plugins, etc.).
+The `Product` model is the foundation of the marketplace. It uses the Mongoose **discriminator** pattern to support different product types (e.g., `Automation`) while sharing a common core.
 
-**Fichier** : [`models/Product.ts`](../models/Product.ts)
+**File**: [`models/Product.ts`](../models/Product.ts)
 
-| Champ | Type | Requis | Description |
+| Field | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
-| `title` | `String` | ✅ Oui | Titre du produit. |
-| `description` | `String` | ✅ Oui | Description détaillée. |
-| `price` | `Number` | ✅ Oui | Prix de vente en euros. |
-| `category` | `ProductCategory` | ✅ Oui | Catégorie business : `Social Media`, `Email Marketing`, `Productivity`, `Sales`, `Other`. |
-| `tags` | `String[]` | ❌ Non | Tags pour faciliter la recherche. |
-| `previewImageUrl`| `String` | ❌ Non | URL de l'image de prévisualisation (S3). |
-| `sellerId` | `String` | ✅ Oui | Identifiant utilisateur Clerk du vendeur. |
-| `productType` | `String` | - | Discriminator key (défini automatiquement : `Automation`, etc.). |
-| `createdAt` | `Date` | - | Date de création (timestamp automatique). |
-| `updatedAt` | `Date` | - | Date de modification (timestamp automatique). |
+| `title` | `String` | ✅ Yes | The name of the product. |
+| `description` | `String` | ✅ Yes | Detailed product explanation. |
+| `price` | `Number` | ✅ Yes | Sale price in Euros. |
+| `category` | `ProductCategory` | ✅ Yes | One of: `Social Media`, `Email Marketing`, `Productivity`, `Sales`, `Other`. |
+| `tags` | `String[]` | ❌ No | Keywords for search optimization. |
+| `previewImageUrl`| `String` | ❌ No | S3 URL for the thumbnail image. |
+| `sellerId` | `String` | ✅ Yes | Clerk User ID of the owner. |
+| `productType` | `String` | - | Automated discriminator key (e.g., `Automation`). |
+| `averageRating`| `Number` | - | Calculated rating (default: 0). |
+| `reviewCount` | `Number` | - | Total reviews received (default: 0). |
 
 ---
 
-### Automation (extends Product)
+### Automation (Discriminator)
 
-Modèle pour les automatisations (n8n, Make, Zapier, Python, etc.).
+Specialized model for automations (n8n, Make, Zapier, Python, etc.). It extends the base `Product` with file-specific fields.
 
-**Fichier** : [`models/Automation.ts`](../models/Automation.ts)
+**File**: [`models/Automation.ts`](../models/Automation.ts)
 
-**Champs supplémentaires** :
-
-| Champ | Type | Requis | Description |
+| Field | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
-| `platform` | `AutomationPlatform` | ✅ Oui | Plateforme : `n8n`, `Make`, `Zapier`, `Python`, `Other`. |
-| `fileUrl` | `String` | ✅ Oui | URL du fichier JSON hébergé sur AWS S3. |
-| `version` | `String` | ❌ Non | Version de l'automatisation (ex: `v1.0.0`). |
+| `platform` | `AutomationPlatform`| ✅ Yes | One of: `n8n`, `Make`, `Zapier`, `Python`, `Other`. |
+| `fileUrl` | `String` | ✅ Yes | S3 URL of the JSON/Workflow file. |
+| `version` | `String` | ❌ No | SemVer versioning (e.g., `1.2.0`). |
 
 ---
 
 ### User
 
-Modèle pour les utilisateurs de la plateforme.
+Stores local metadata associated with the Clerk authentication profile.
 
-**Fichier** : [`models/User.ts`](../models/User.ts)
+**File**: [`models/User.ts`](../models/User.ts)
 
-| Champ | Type | Requis | Description |
-| :--- | :--- | :--- | :--- |
-| `clerkId` | `String` | ✅ Oui | ID unique de l'utilisateur depuis Clerk. |
-| `firstName` | `String` | ❌ Non | Prénom (sync depuis Clerk). |
-| `lastName` | `String` | ❌ Non | Nom (sync depuis Clerk). |
-| `email` | `String` | ❌ Non | Email (sync depuis Clerk, unique avec sparse index). |
-| `imageUrl` | `String` | ❌ Non | URL de la photo de profil (sync depuis Clerk). |
-| `stripeConnectId` | `String` | ❌ Non | ID du compte Stripe Connect pour les vendeurs. |
-| `onboardingComplete` | `Boolean` | - | `true` si le vendeur a complété l'onboarding Stripe. Défaut : `false`. |
-| `createdAt` | `Date` | - | Date de création (timestamp automatique). |
-| `updatedAt` | `Date` | - | Date de modification (timestamp automatique). |
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `clerkId` | `String` | Primary key linking to Clerk Auth. |
+| `firstName` | `String` | User's first name (Synced via Webhook). |
+| `lastName` | `String` | User's last name (Synced via Webhook). |
+| `email` | `String` | User's email (Unique index). |
+| `imageUrl` | `String` | Profile picture URL. |
+| `role` | `String` | `user` or `admin`. |
+| `isBanned` | `Boolean` | Flag for account suspension. |
+| `stripeConnectId`| `String` | ID for the seller's Stripe Express account. |
+| `onboardingComplete`| `Boolean`| True if Stripe onboarding is finished. |
+| `cart` | `ObjectId[]` | References to `Product` IDs for the shopping cart. |
 
 ---
 
 ### Purchase
 
-Enregistrement des achats effectués sur la plateforme.
+Records every successful transaction on the platform.
 
-**Fichier** : [`models/Purchase.ts`](../models/Purchase.ts)
+**File**: [`models/Purchase.ts`](../models/Purchase.ts)
 
-| Champ | Type | Requis | Description |
-| :--- | :--- | :--- | :--- |
-| `productId` | `ObjectId` | ✅ Oui | Référence au produit acheté. |
-| `buyerId` | `String` | ✅ Oui | ID Clerk de l'acheteur. |
-| `sellerId` | `String` | ✅ Oui | ID Clerk du vendeur. |
-| `amount` | `Number` | ✅ Oui | Montant payé en euros. |
-| `stripeSessionId` | `String` | ❌ Non | ID de la session Stripe Checkout. |
-| `createdAt` | `Date` | - | Date d'achat (timestamp automatique). |
-
-## Types TypeScript
-
-Les types TypeScript sont définis dans `/types` :
-- **[`types/product.ts`](../types/product.ts)** : `IProduct`, `ProductCategory`
-- **[`types/automation.ts`](../types/automation.ts)** : `IAutomation`, `AutomationPlatform`, `CreateAutomationInput`
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `productId` | `ObjectId` | Reference to the `Product`. |
+| `buyerId` | `String` | Clerk ID of the purchaser. |
+| `sellerId` | `String` | Clerk ID of the seller. |
+| `amount` | `Number` | Total amount paid (Gross). |
+| `stripeSessionId`| `String` | Link to the Stripe Checkout session. |
 
 ---
 
-## Bonnes Pratiques
+## Technical Considerations
 
-- **Validation** : Mongoose assure la validation des types et des champs requis avant l'insertion.
-- **Indexation** : 
-  - `clerkId` est indexé (unique) dans `User`
-  - `email` est indexé (unique, sparse) dans `User`
-  - `sellerId` peut être indexé dans `Product` pour améliorer les recherches par vendeur
-- **Discriminators** : Permet d'étendre facilement le modèle `Product` pour ajouter de nouveaux types sans migration de données
+### Indexing Strategies
+- **Unique Indexes**: `clerkId` and `email` are uniquely indexed in the `User` model to prevent duplicates.
+- **Sparse Indexes**: Used for `email` to allow users without emails (if applicable) while maintaining uniqueness for those who have them.
+- **Query Optimization**: We frequently use `.lean()` in our queries to return plain JavaScript objects instead of Mongoose Documents, significantly reducing memory overhead and improving speed.
 
----
-
-## 🚨 Dépannage Connexion (DNS)
-
-Si vous rencontrez des erreurs de connexion persistantes en local (`MongooseServerSelectionError` ou timeouts), votre fournisseur d'accès bloque peut-être certaines résolutions DNS.
-
-**Solution recommandée :**
-Configurez votre ordinateur pour utiliser les DNS publics de Google : `8.8.8.8` (primaire) et `8.8.4.4` (secondaire).
-
-1. **Mac** : Réglages > Réseau > Détails > DNS.
-2. **Windows** : Paramètres Réseau > IPv4 > Propriétés > DNS.
+### Extensibility
+Thanks to the discriminator pattern, adding a "Plugin" or "Template" product type only requires creating a new model that extends `Product` with its specific fields. No database migration is needed for existing records.
