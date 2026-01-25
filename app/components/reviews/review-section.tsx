@@ -69,8 +69,6 @@ export function ReviewsSection({ productId, reviews, canReview, currentUserId }:
         setEditingReviewId(review._id);
         setRating(review.rating);
         setComment(review.comment);
-        // Scroll to form
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const cancelEdit = () => {
