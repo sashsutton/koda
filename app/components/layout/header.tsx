@@ -9,6 +9,7 @@ import { ModeToggle } from '@/app/components/layout/mode-toggle';
 import { auth } from "@clerk/nextjs/server";
 import { connectToDatabase } from '@/lib/db';
 import User from '@/models/User';
+import { cn } from "@/lib/utils";
 
 export default async function Header() {
     const t = await getTranslations('Navigation');
@@ -25,22 +26,34 @@ export default async function Header() {
     }
 
     return (
-        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-            <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
+            <div className={cn(
+                // Shape & Size
+                "w-full max-w-7xl h-16 px-6 rounded-2xl flex items-center justify-between",
+
+                // Glassmorphism
+                "backdrop-blur-md shadow-lg transition-all duration-300",
+
+                // Light Mode: White/Translucent + Gray Border
+                "bg-white/70 border border-gray-200/60",
+
+                // Dark Mode: Dark/Translucent + Orange Accent
+                "dark:bg-neutral-950/60 dark:border-orange-500/30 dark:shadow-orange-900/10"
+            )}>
                 {/* Logo */}
-                <Link href="/" className="text-3xl font-bold tracking-tight">
-                    Koda<span className="text-4xl text-orange-500">.</span>
+                <Link href="/" className="text-2xl font-bold tracking-tight flex items-center gap-1">
+                    Koda<span className="text-3xl text-orange-500">.</span>
                 </Link>
 
                 {/* Navigation & Auth */}
                 <div className="flex items-center gap-4">
                     <nav className="hidden md:flex gap-6 text-sm font-medium items-center">
-                        <Link href="/catalog" className="transition-colors hover:text-primary">
+                        <Link href="/catalog" className="transition-colors hover:text-primary text-muted-foreground hover:text-foreground">
                             {t('catalog')}
                         </Link>
 
                         <SignedIn>
-                            <Link href="/dashboard" className="transition-colors hover:text-primary flex items-center gap-1">
+                            <Link href="/dashboard" className="transition-colors hover:text-primary text-muted-foreground hover:text-foreground flex items-center gap-1">
                                 <LayoutDashboard className="h-4 w-4" />
                                 {t('dashboard')}
                             </Link>
@@ -53,21 +66,23 @@ export default async function Header() {
                             )}
                         </SignedIn>
 
-                        <Link href="/sell" className="transition-colors hover:text-primary">
+                        <Link href="/sell" className="transition-colors hover:text-primary text-muted-foreground hover:text-foreground">
                             {t('sell')}
                         </Link>
                     </nav>
 
                     <div className="flex items-center gap-2">
-
                         <CartSheetWrapper /> {/*Panier*/}
                         <ModeToggle />
+
+                        <div className="h-6 w-px bg-border/50 mx-1 hidden sm:block" />
+
                         <SignedOut>
                             <SignInButton mode="modal">
-                                <Button variant="ghost">{tAuth('login')}</Button>
+                                <Button variant="ghost" size="sm">{tAuth('login')}</Button>
                             </SignInButton>
                             <SignUpButton mode="modal">
-                                <Button>{tAuth('signup')}</Button>
+                                <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white rounded-full px-6">{tAuth('signup')}</Button>
                             </SignUpButton>
                         </SignedOut>
 

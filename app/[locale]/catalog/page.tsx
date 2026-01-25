@@ -27,7 +27,7 @@ export default async function CatalogPage(props: CatalogPageProps) {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8 min-h-screen">
+        <div className="container mx-auto px-4 py-8 pt-32 min-h-screen">
             <div className="flex flex-col md:flex-row gap-8">
                 {/* Sidebar Sticky pour les filtres */}
                 <aside className="w-full md:w-[280px] space-y-8 md:sticky md:top-24 h-fit">

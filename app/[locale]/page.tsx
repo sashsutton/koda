@@ -110,7 +110,7 @@ export default async function Home(props: HomeProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* --- HERO SECTION --- */}
-      <section className="relative py-20 px-4 border-b bg-gradient-to-b from-muted/50 to-background overflow-hidden">
+      <section className="relative pt-44 pb-20 px-4 border-b bg-gradient-to-b from-muted/50 to-background overflow-hidden">
         <div className="container mx-auto text-center space-y-6 max-w-4xl relative z-10">
           <FadeIn direction="down" delay={0}>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground leading-tight">

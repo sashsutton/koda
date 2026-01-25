@@ -52,7 +52,7 @@ export default async function AdminDashboard({
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pt-32 container mx-auto px-4">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-3xl font-bold italic tracking-tight">{t('title')}</h1>
             </div>

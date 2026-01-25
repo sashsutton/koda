@@ -27,7 +27,7 @@ export function DashboardContent({ user, balance, sales, products, orders, onDel
 
     return (
         <div className="min-h-screen bg-background/50">
-            <div className="container mx-auto py-12 px-4 max-w-7xl space-y-8">
+            <div className="container mx-auto py-12 pt-32 px-4 max-w-7xl space-y-8">
                 {/* Header Section */}
                 <DashboardHeader user={user} />
 

@@ -12,7 +12,7 @@ export default async function LegalPage() {
     const t = await getTranslations('Legal');
 
     return (
-        <div className="min-h-screen bg-background text-foreground py-16">
+        <div className="min-h-screen bg-background text-foreground py-16 pt-32">
             <div className="container mx-auto px-4 max-w-4xl space-y-12">
                 <div className="space-y-4 text-center">
                     <h1 className="text-4xl font-extrabold tracking-tight">{t('title')}</h1>

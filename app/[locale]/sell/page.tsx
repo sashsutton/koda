@@ -68,7 +68,7 @@ export default async function SellPage() {
             {/* Subtle Gradient Background */}
             <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none -z-10" />
 
-            <div className="container mx-auto px-4 py-16 space-y-12 max-w-4xl">
+            <div className="container mx-auto px-4 py-16 pt-32 space-y-12 max-w-4xl">
                 <div className="text-center space-y-4">
                     <div className="inline-flex items-center justify-center px-3 py-1 text-xs font-medium text-primary rounded-full bg-primary/10 mb-2">
                         {t('badge')}
