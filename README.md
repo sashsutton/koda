@@ -70,27 +70,35 @@ Create a `.env.local` file in the root directory and fill it with your API keys:
 
 ```env
 # --- CLERK AUTHENTICATION ---
-# Find these in your Clerk Dashboard -> API Keys
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
 CLERK_WEBHOOK_SECRET=whsec_...
 
+# Clerk Redirects
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+
 # --- MONGODB ---
-# Your MongoDB connection string (Atlas or local)
 MONGODB_URI=mongodb+srv://...
 
 # --- AWS S3 ---
-# IAM User keys with S3 PutObject/GetObject permissions
+AWS_REGION=eu-west-3
 AWS_ACCESS_KEY_ID=...
 AWS_SECRET_ACCESS_KEY=...
-AWS_REGION=eu-west-3
-AWS_BUCKET_NAME=...
+AWS_S3_BUCKET_NAME=...
 
 # --- STRIPE ---
-# Your Stripe Secret Key and Publishable Key from Dashboard
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+
+# --- EMAIL (RESEND) ---
+RESEND_API_KEY=re_...
+
+# --- MONITORING (SENTRY) ---
+SENTRY_AUTH_TOKEN=sntrys_...
 
 # --- REDIS/UPSTASH (Optional for Caching) ---
 UPSTASH_REDIS_REST_URL=...
@@ -137,15 +145,18 @@ Dive deeper into our technical guides:
 
 ## 📁 Project Structure
 
-- `/app`: Pages and API Routes (App Router)
-    - `/actions`: Server Actions (Business logic: Stripe, Upload, DB)
-    - `/api`: Webhooks and specialized endpoints
-- `/components`: UI and Layout components
-- `/models`: Database schemas (Product, User, Purchase)
-- `/lib`: Utility functions (DB connection, S3 client, Helpers)
-- `/types`: Global TypeScript definitions
-- `/__tests__`: Integration and Unit tests
-- `/e2e`: Playwright browser tests
+```text
+koda/
+├── app/                  # Pages, API & Server Actions
+├── components/           # Reusable UI & Layout
+├── models/               # Database Schemas
+├── lib/                  # Shared Utilities (S3, Stripe)
+├── hooks/                # Custom Client Hooks
+├── types/                # TypeScript Interfaces
+├── messages/             # i18n Translations
+├── __tests__/            # Unit & Integration Tests
+└── e2e/                  # Browser Tests
+```
 
 ---
 

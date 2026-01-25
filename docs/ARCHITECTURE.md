@@ -28,18 +28,22 @@ This document provides a deep dive into the technical design and architectural c
 
 The project follows the standard Next.js App Router structure with localized features:
 
-- `/app`: The heart of the application logic.
-    - `/actions`: Business logic functions executed on the server.
-    - `/api`: Standard API routes (Webhooks, File proxies).
-    - `/dashboard`: Routes for the user's private space.
-    - `/sell`: Routes for product submission.
-- `/components`:
-    - `/ui`: Reusable, atomic UI components (Buttons, Inputs, Modals).
-    - `/forms`: Complex form structures and validation logic.
-- `/models`: Mongoose schema definitions (The "M" in MVC).
-- `/lib`: Singleton instances and shared utilities (DB connection, S3 client).
-- `/hooks`: Custom React hooks for shared client-side logic.
-- `/types`: Project-wide TypeScript interfaces and enums.
+```text
+koda/
+├── app/                  # Next.js App Router (The "Heart")
+│   ├── [locale]/         # Internationalized routes (next-intl)
+│   ├── actions/          # Server Actions (Business Logic)
+│   ├── api/              # API Endpoints & Webhooks
+│   └── components/       # Feature-specific UI components
+├── components/           # Reusable UI primitives (Shadcn)
+├── models/               # Mongoose Schema Definitions (Data)
+├── lib/                  # Service clients (S3, Stripe, DB)
+├── hooks/                # Custom React hooks
+├── types/                # Global TypeScript definitions
+├── messages/             # i18n JSON translations
+├── __tests__/            # Unit & Integration tests
+└── e2e/                  # Playwright browser tests
+```
 
 ## 🔄 Design Patterns
 
