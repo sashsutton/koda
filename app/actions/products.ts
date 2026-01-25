@@ -21,7 +21,7 @@ import { getOrSetCache } from "@/lib/cache-utils";
 export async function getFilteredProducts(params: ProductFilterParams) {
     try {
         // Create a unique cache key based on params
-        const cacheKey = `products:${JSON.stringify(params)}`;
+        const cacheKey = `products_v2:${JSON.stringify(params)}`;
 
         return await getOrSetCache(cacheKey, async () => {
             await connectToDatabase();
@@ -72,7 +72,9 @@ export async function getFilteredProducts(params: ProductFilterParams) {
                 createdAt: p.createdAt ? p.createdAt.toISOString() : null,
                 updatedAt: p.updatedAt ? p.updatedAt.toISOString() : null,
                 seller: sellerMap.get(p.sellerId) ? {
-                    username: (sellerMap.get(p.sellerId) as any).username,
+                    username: (sellerMap.get(p.sellerId) as any).username ||
+                        `${(sellerMap.get(p.sellerId) as any).firstName || ''} ${(sellerMap.get(p.sellerId) as any).lastName || ''}`.trim() ||
+                        "Vendeur",
                     firstName: (sellerMap.get(p.sellerId) as any).firstName,
                     lastName: (sellerMap.get(p.sellerId) as any).lastName,
                     imageUrl: (sellerMap.get(p.sellerId) as any).imageUrl

@@ -85,12 +85,19 @@ export async function POST(req: Request) {
                         });
 
                         if (!existingPurchase) {
+                            const platformFee = product.price * 0.15;
+                            const netAmount = product.price - platformFee;
+
                             await Purchase.create({
                                 buyerId: userId,
                                 productId: productId,
                                 sellerId: seller?.clerkId || product.sellerId,
                                 stripeSessionId: session.id,
                                 amount: product.price,
+                                netAmount: netAmount,
+                                platformFee: platformFee,
+                                category: product.category,
+                                platform: (product as any).platform, // Automation platform
                             });
                         }
 

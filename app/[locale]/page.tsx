@@ -58,11 +58,26 @@ async function getAutomations(searchQuery?: string, platform?: string, category?
       .limit(12)
       .lean();
 
-    return automations.map((a: any) => ({
-      ...a,
-      _id: a._id.toString(),
-      createdAt: a.createdAt ? a.createdAt.toISOString() : null
-    }));
+    // 2. Récupérer les infos vendeurs en vrac pour éviter le N+1
+    const sellerIds = [...new Set(automations.map((a: any) => a.sellerId))];
+    const sellers = await User.find({ clerkId: { $in: sellerIds } })
+      .select("clerkId username firstName lastName")
+      .lean();
+
+    // Créer un map pour accès rapide
+    const sellerMap = new Map(sellers.map((s: any) => [s.clerkId, s]));
+
+    return automations.map((a: any) => {
+      const seller = sellerMap.get(a.sellerId);
+      return {
+        ...a,
+        _id: a._id.toString(),
+        createdAt: a.createdAt ? a.createdAt.toISOString() : null,
+        seller: seller ? {
+          username: seller.username || `${seller.firstName || ''} ${seller.lastName || ''}`.trim() || "Vendeur"
+        } : null
+      };
+    });
   } catch (e) {
     console.error("Erreur MongoDB:", e);
     return [];
