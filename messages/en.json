@@ -119,7 +119,9 @@
         "userUnbanned": "User has been unbanned",
         "articleAddedToCart": "Article added to the cart!",
         "articleRemoved": "Article removed from the cart.",
-        "alreadyInCart": "This article is already in your cart."
+        "alreadyInCart": "This article is already in your cart.",
+        "syncResult": "{synced} synced, {deleted} deleted (orphans).",
+        "userDeleted": "User and all associated data have been permanently deleted."
     },
     "CartSheet": {
         "title": "My Cart",
@@ -306,6 +308,17 @@
         },
         "sales": {
             "noSales": "No sales yet."
+        }
+    },
+    "Admin": {
+        "sync": {
+            "button": "Full Database Sync",
+            "loading": "Full synchronization in progress...",
+            "confirm": "This will sync ALL users with Clerk and DELETE local users that no longer exist in Clerk. Continue?"
+        },
+        "delete": {
+            "loading": "Nuclear deletion in progress (Clerk + Stripe + DB)...",
+            "confirm": "WARNING: This will permanently delete the Clerk account, Stripe Connect account, all products, and all history for this user. This action is irreversible. Continue?"
         }
     }
 }

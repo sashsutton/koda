@@ -118,7 +118,9 @@
         "userUnbanned": "L'utilisateur a été débanni",
         "articleAddedToCart": "Article ajouté au panier !",
         "articleRemoved": "Article retiré du panier.",
-        "alreadyInCart": "Cet article est déjà dans votre panier."
+        "alreadyInCart": "Cet article est déjà dans votre panier.",
+        "syncResult": "{synced} synchronisés, {deleted} supprimés (orphelins).",
+        "userDeleted": "L'utilisateur et toutes ses données associées ont été supprimés définitivement."
     },
     "CartSheet": {
         "title": "Mon Panier",
@@ -305,6 +307,17 @@
         },
         "sales": {
             "noSales": "Aucune vente pour le moment."
+        }
+    },
+    "Admin": {
+        "sync": {
+            "button": "Synchro Complète BDD",
+            "loading": "Synchronisation complète en cours...",
+            "confirm": "Cela synchronisera TOUS les utilisateurs avec Clerk et SUPPRIMERA les utilisateurs locaux qui n'existent plus sur Clerk. Continuer ?"
+        },
+        "delete": {
+            "loading": "Suppression nucléaire en cours (Clerk + Stripe + DB)...",
+            "confirm": "ATTENTION : Cela supprimera définitivement le compte Clerk, le compte Stripe Connect, tous les produits et tout l'historique de cet utilisateur. Cette action est irréversible. Continuer ?"
         }
     }
 }

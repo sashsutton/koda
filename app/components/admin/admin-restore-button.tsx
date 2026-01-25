@@ -8,15 +8,16 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 export function AdminRestoreButton() {
+    const tAdmin = useTranslations('Admin');
     const { showSuccess, showError, showLoading, dismiss } = useLocalizedToast();
     const [loading, setLoading] = useState(false);
 
     const handleSync = async () => {
         setLoading(true);
-        const toastId = showLoading("Synchronisation complète en cours...");
+        const toastId = showLoading(tAdmin('sync.loading'));
         try {
             const result = await fullSyncWithClerk();
-            showSuccess(`${result.count} synchronisés, ${result.deleted} supprimés (orphelins).`);
+            showSuccess("syncResult", { synced: result.count, deleted: result.deleted });
         } catch (error: any) {
             showError(error);
         } finally {
@@ -28,12 +29,12 @@ export function AdminRestoreButton() {
     return (
         <ConfirmButton
             variant="outline"
-            confirmMessage="Cela synchronisera TOUS les utilisateurs avec Clerk et SUPPRIMERA les utilisateurs locaux qui n'existent plus sur Clerk. Continuer ?"
+            confirmMessage={tAdmin('sync.confirm')}
             onClick={handleSync}
             disabled={loading}
         >
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
-            Full Database Sync
+            {tAdmin('sync.button')}
         </ConfirmButton>
     );
 }
