@@ -57,7 +57,7 @@ export default async function AdminDashboard() {
                                             </div>
                                             <div className="text-xs text-gray-500 font-mono mt-1 opacity-70">
                                                 {user.clerkId}
-                                                {user.stripeConnectId && <span className="text-green-600 ml-2 font-semibold">({t('usersTable.seller')})</span>}
+                                                {user.stripeConnectId && user.onboardingComplete && <span className="text-green-600 ml-2 font-semibold">({t('usersTable.seller')})</span>}
                                                 {user.isBanned && <span className="text-red-600 ml-2 font-bold">[{t('usersTable.banned')}]</span>}
                                             </div>
                                         </td>
