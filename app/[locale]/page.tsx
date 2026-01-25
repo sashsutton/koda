@@ -1,70 +1,44 @@
 import { connectToDatabase } from "@/lib/db";
 import Automation from "@/models/Automation";
 import User from "@/models/User";
+import Purchase from "@/models/Purchase";
 import { Link } from '@/i18n/routing';
 import { Button } from "@/app/components/ui/button";
 import { ProductCard } from "@/app/components/products/product-card";
 import { SearchBar } from "@/app/components/search/search-bar";
+import { FadeIn } from "@/app/components/ui/fade-in";
 import { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from 'next-intl/server';
 
 export const metadata: Metadata = {
   title: 'Koda - Marketplace d\'Automations No-Code',
-  description: 'Achetez et vendez des workflows n8n, Make, Zapier, Python testés et approuvés. Automatisez votre business avec des templates prêts à l\'emploi.',
-  keywords: ['automations', 'n8n', 'Make', 'Zapier', 'workflows', 'no-code', 'marketplace'],
-  openGraph: {
-    title: 'Koda - Marketplace d\'Automations',
-    description: 'Des workflows testés et approuvés pour automatiser votre business',
-    type: 'website',
-  },
+  description: 'Achetez et vendez des workflows n8n, Make, Zapier, Python testés et approuvés.',
 };
 
-//récupère les produits en fonction de la recherche et des filtres
 async function getAutomations(searchQuery?: string, platform?: string, category?: string, sellerId?: string) {
   "use server";
   try {
     await connectToDatabase();
-
     const filter: any = {};
-
-    // Filtre texte : recherche dans titre, description
     if (searchQuery) {
       const regex = { $regex: searchQuery, $options: "i" };
-      filter.$or = [
-        { title: regex },
-        // { description: regex }, // J'ai commenté la description pour prioriser le titre comme demandé
-      ];
+      filter.$or = [{ title: regex }];
     }
+    if (platform && platform !== "all") filter.platform = platform;
+    if (category && category !== "all") filter.category = category;
+    if (sellerId && sellerId !== "all") filter.sellerId = sellerId;
 
-    // Filtre plateforme
-    if (platform && platform !== "all") {
-      filter.platform = platform;
-    }
-
-    // Filtre catégorie
-    if (category && category !== "all") {
-      filter.category = category;
-    }
-
-    // Filtre vendeur
-    if (sellerId && sellerId !== "all") {
-      filter.sellerId = sellerId;
-    }
-
-    // On récupère les données
+    // Limite à 18 pour un multiple de 3 (grille complète)
     const automations = await Automation.find(filter)
       .sort({ createdAt: -1 })
-      .limit(12)
+      .limit(18)
       .lean();
 
-    // 2. Récupérer les infos vendeurs en vrac pour éviter le N+1
     const sellerIds = [...new Set(automations.map((a: any) => a.sellerId))];
     const sellers = await User.find({ clerkId: { $in: sellerIds } })
       .select("clerkId username firstName lastName")
       .lean();
-
-    // Créer un map pour accès rapide
     const sellerMap = new Map(sellers.map((s: any) => [s.clerkId, s]));
 
     return automations.map((a: any) => {
@@ -84,31 +58,25 @@ async function getAutomations(searchQuery?: string, platform?: string, category?
   }
 }
 
-// Récupère la liste des vendeurs actifs (ceux qui ont des produits)
 async function getActiveSellers() {
   "use server";
   try {
     await connectToDatabase();
-
-    // 1. Trouver tous les IDs de vendeurs distincts dans les produits
     const sellerIds = await Automation.distinct("sellerId");
-
-    // 2. Récupérer les infos utilisateurs correspondantes
-    const users = await User.find({ clerkId: { $in: sellerIds } })
-      .select("clerkId firstName lastName username")
+    const sellers = await User.find({ clerkId: { $in: sellerIds } })
+      .select("clerkId username firstName lastName")
       .lean();
 
-    return users.map((u: any) => ({
-      value: u.clerkId,
-      label: u.username || `${u.firstName || ''} ${u.lastName || ''}`.trim() || "Vendeur"
+    return sellers.map((s: any) => ({
+      value: s.clerkId,
+      label: s.username || `${s.firstName || ''} ${s.lastName || ''}`.trim() || "Vendeur"
     }));
   } catch (e) {
-    console.error("Erreur récup vendeurs:", e);
+    console.error("Error fetching active sellers:", e);
     return [];
   }
 }
 
-// composant FRONTEND (Page)
 interface HomeProps {
   searchParams: Promise<{
     q?: string;
@@ -118,26 +86,20 @@ interface HomeProps {
   }>;
 }
 
-import Purchase from "@/models/Purchase";
-
-// ... existing imports ...
-
 export default async function Home(props: HomeProps) {
   const t = await getTranslations('HomePage');
-  const { userId } = await auth(); // Récupération de l'utilisateur connecté
+  const { userId } = await auth();
   const searchParams = await props.searchParams;
   const query = searchParams.q || "";
   const platform = searchParams.platform || "all";
   const category = searchParams.category || "all";
   const seller = searchParams.seller || "all";
 
-  // Récupération parallèle pour perf
   const [automations, sellers] = await Promise.all([
     getAutomations(query, platform, category, seller),
     getActiveSellers()
   ]);
 
-  // Récupération des achats de l'utilisateur
   const purchasedProductIds = new Set<string>();
   if (userId) {
     await connectToDatabase();
@@ -148,59 +110,77 @@ export default async function Home(props: HomeProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* --- HERO SECTION --- */}
-      <section className="relative py-20 px-4 border-b bg-gradient-to-b from-muted/50 to-background">
-        <div className="container mx-auto text-center space-y-6 max-w-4xl">
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground">
-            {t('title')}
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            {t('subtitle')}
-          </p>
+      <section className="relative py-20 px-4 border-b bg-gradient-to-b from-muted/50 to-background overflow-hidden">
+        <div className="container mx-auto text-center space-y-6 max-w-4xl relative z-10">
+          <FadeIn direction="down" delay={0}>
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground leading-tight">
+              {t('title')}
+            </h1>
+          </FadeIn>
 
-          <div className="pt-4 flex flex-col items-center gap-6 w-full">
-            {/* Barre de recherche centrée */}
+          <FadeIn direction="down" delay={0.1}>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              {t('subtitle')}
+            </p>
+          </FadeIn>
+
+          <FadeIn direction="up" delay={0.2} className="pt-8 flex flex-col items-center gap-6 w-full">
             <div className="w-full flex justify-center">
               <SearchBar sellers={sellers} />
             </div>
-          </div>
+          </FadeIn>
         </div>
       </section>
 
-      {/* --- CATALOGUE --- */}
-      <main id="catalogue" className="container mx-auto py-16 px-4">
-        <div className="flex justify-between items-center mb-10">
-          <h2 className="text-3xl font-bold tracking-tight">
-            {/* Titre dynamique : Affiche la catégorie ou "Résultats" */}
-            {category !== "all" ? category : (query ? `Résultats pour "${query}"` : "Nouveautés")}
-          </h2>
+      {/* --- CATALOGUE (GRILLE STANDARD) --- */}
+      <main id="catalogue" className="container mx-auto py-24 px-4 max-w-7xl">
+        <div className="flex justify-between items-end mb-16">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight">
+              {category !== "all" ? category : (query ? `Résultats pour "${query}"` : "Nouveautés")}
+            </h2>
+            <p className="text-muted-foreground mt-2">Découvrez les dernières automatisations ajoutées.</p>
+          </div>
+
           {(query || category !== "all") && (
-            <Link href="/" className="text-sm text-muted-foreground hover:underline">
+            <Link href="/" className="text-sm font-medium text-primary hover:underline bg-primary/10 px-4 py-2 rounded-full transition-colors hover:bg-primary/20">
               Tout effacer
             </Link>
           )}
         </div>
 
         {automations.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {automations.map((item: any) => (
-              <ProductCard
+          // GRILLE STANDARD : 1 col mobile, 2 cols tablette, 3 cols desktop
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {automations.map((item, index) => (
+              <FadeIn
                 key={item._id}
-                product={item}
-                userId={userId}
-                isPurchased={purchasedProductIds.has(item._id.toString())}
-              />
+                // Délai progressif simple (0, 0.05, 0.10, 0.15...)
+                // On garde le modulo pour éviter que les éléments tout en bas n'attendent 10 secondes pour apparaître
+                delay={(index % 6) * 0.1}
+                direction="up"
+                className="h-full"
+              >
+                <ProductCard
+                  product={item}
+                  userId={userId}
+                  isPurchased={purchasedProductIds.has(item._id.toString())}
+                />
+              </FadeIn>
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-muted/20 rounded-xl border border-dashed">
-            <h3 className="text-lg font-semibold">Aucun résultat trouvé 🔍</h3>
-            <p className="text-muted-foreground mt-2">
-              Aucune automatisation ne correspond à vos filtres.
-            </p>
-            <Button variant="link" asChild className="mt-4">
-              <Link href="/">Effacer les filtres</Link>
-            </Button>
-          </div>
+          <FadeIn>
+            <div className="text-center py-20 bg-muted/20 rounded-xl border border-dashed">
+              <h3 className="text-lg font-semibold">Aucun résultat trouvé 🔍</h3>
+              <p className="text-muted-foreground mt-2">
+                Aucune automatisation ne correspond à vos filtres.
+              </p>
+              <Button variant="link" asChild className="mt-4">
+                <Link href="/">Effacer les filtres</Link>
+              </Button>
+            </div>
+          </FadeIn>
         )}
       </main>
     </div>
