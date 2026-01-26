@@ -104,6 +104,7 @@ export function AdminTabs({ users, products, translations }: AdminTabsProps) {
                                             <AdminBanButton
                                                 userId={user.clerkId}
                                                 initialIsBanned={user.isBanned}
+                                                role={user.role}
                                             />
                                         </div>
                                     </td>
@@ -115,7 +116,7 @@ export function AdminTabs({ users, products, translations }: AdminTabsProps) {
                                             userId={user.clerkId}
                                             initialRole={user.role}
                                         />
-                                        <AdminDeleteButton userId={user.clerkId} />
+                                        <AdminDeleteButton userId={user.clerkId} role={user.role} />
                                     </td>
                                 </tr>
                             ))}

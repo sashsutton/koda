@@ -10,14 +10,17 @@ import { useTranslations } from "next-intl";
 
 interface AdminDeleteButtonProps {
     userId: string;
+    role?: string;
 }
 
-export function AdminDeleteButton({ userId }: AdminDeleteButtonProps) {
+export function AdminDeleteButton({ userId, role }: AdminDeleteButtonProps) {
     const tAdmin = useTranslations('Admin');
     const { showSuccess, showError, showLoading, dismiss } = useLocalizedToast();
     const [isLoading, setIsLoading] = useState(false);
+    const isAdmin = role === 'admin';
 
     const handleDelete = async () => {
+        if (isAdmin) return;
         setIsLoading(true);
         const toastId = showLoading(tAdmin('delete.loading'));
         try {
@@ -35,8 +38,8 @@ export function AdminDeleteButton({ userId }: AdminDeleteButtonProps) {
         <ConfirmButton
             variant="ghost"
             size="icon"
-            className="text-muted-foreground hover:text-destructive transition-colors"
-            disabled={isLoading}
+            className={`text-muted-foreground hover:text-destructive transition-colors ${isAdmin ? 'opacity-30 cursor-not-allowed hover:text-muted-foreground' : ''}`}
+            disabled={isLoading || isAdmin}
             confirmMessage={tAdmin('delete.confirm')}
             onClick={handleDelete}
         >

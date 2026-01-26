@@ -10,15 +10,19 @@ import { useTranslations } from "next-intl";
 interface AdminBanButtonProps {
     userId: string;
     initialIsBanned: boolean;
+    role?: string;
 }
 
-export function AdminBanButton({ userId, initialIsBanned }: AdminBanButtonProps) {
+export function AdminBanButton({ userId, initialIsBanned, role }: AdminBanButtonProps) {
     const { showSuccess, showError } = useLocalizedToast();
     const [isBanned, setIsBanned] = useState(initialIsBanned);
     const [isLoading, setIsLoading] = useState(false);
     const t = useTranslations('Admin');
 
+    const isAdmin = role === 'admin';
+
     const handleToggle = async () => {
+        if (isAdmin) return;
         setIsLoading(true);
         try {
             const result = await toggleBanUser(userId);
@@ -35,8 +39,8 @@ export function AdminBanButton({ userId, initialIsBanned }: AdminBanButtonProps)
         <ConfirmButton
             variant={isBanned ? "outline" : "destructive"}
             size="sm"
-            className="flex items-center gap-1"
-            disabled={isLoading}
+            className={`flex items-center gap-1 ${isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={isLoading || isAdmin}
             confirmMessage={isBanned ? t('usersTable.unbanConfirm') : t('usersTable.banConfirm')}
             onClick={handleToggle}
         >

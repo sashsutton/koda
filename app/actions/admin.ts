@@ -147,6 +147,10 @@ export async function toggleBanUser(userId: string) {
     const user = await User.findOne({ clerkId: userId });
     if (!user) throw new Error("User not found.");
 
+    if (user.role === 'admin') {
+        throw new Error("You cannot ban an administrator.");
+    }
+
     user.isBanned = !user.isBanned;
     await user.save();
 
@@ -242,6 +246,10 @@ export async function deleteUser(userId: string) {
 
     const user = await User.findOne({ clerkId: userId });
     if (!user) throw new Error("User not found in local database.");
+
+    if (user.role === 'admin') {
+        throw new Error("You cannot delete an administrator.");
+    }
 
     const client = await clerkClient();
 
