@@ -4,7 +4,7 @@ import { Link } from '@/i18n/routing';
 import { Card, CardContent, CardFooter, CardHeader } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
-import { ShoppingCart, Eye, Check, Star, ShieldCheck } from "lucide-react"; // <--- AJOUT DE STAR
+import { ShoppingCart, Eye, Check, Star, ShieldCheck, Trash2 } from "lucide-react"; // <--- AJOUT DE STAR
 import { useCart } from "@/hooks/use-cart";
 import { IAutomation } from "@/types/automation";
 import { IProduct } from "@/types/product";
@@ -36,6 +36,8 @@ export function ProductCard({ product, userId, isPurchased = false }: ProductCar
     const rating = product.averageRating || 0;
     const reviewCount = product.reviewCount || 0;
 
+    const isInCart = cart.items.some(item => item._id === product._id);
+
     const onAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
@@ -55,7 +57,7 @@ export function ProductCard({ product, userId, isPurchased = false }: ProductCar
             return;
         }
 
-        if (cart.items.some(item => item._id === product._id)) {
+        if (isInCart) {
             cart.removeItem(product._id);
             showSuccess('articleRemoved');
         } else {
@@ -163,7 +165,9 @@ export function ProductCard({ product, userId, isPurchased = false }: ProductCar
                     onClick={onAddToCart}
                     className={`w-full shadow-sm transition-all ${isPurchased
                         ? "bg-green-500/10 text-green-600 border-green-200 hover:bg-green-500/20 disabled:opacity-100"
-                        : "bg-primary/90 hover:bg-primary"
+                        : isInCart
+                            ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            : "bg-primary/90 hover:bg-primary"
                         }`}
                     disabled={isOwner || !automation || isPurchased}
                     variant={isPurchased ? "outline" : "default"}
@@ -182,6 +186,11 @@ export function ProductCard({ product, userId, isPurchased = false }: ProductCar
                         <>
                             <ShoppingCart className="mr-2 h-4 w-4 opacity-50" />
                             {t('unavailable')}
+                        </>
+                    ) : isInCart ? (
+                        <>
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            {t('removeFromCart')}
                         </>
                     ) : (
                         <>

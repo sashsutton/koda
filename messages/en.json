@@ -25,6 +25,7 @@
         "certified": "Certified",
         "unavailable": "Unavailable",
         "addToCart": "Add to cart",
+        "removeFromCart": "Remove from cart",
         "toast": {
             "cannotAdd": "This product cannot be added to the cart.",
             "alreadyOwned": "You already own this product.",

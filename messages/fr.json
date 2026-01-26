@@ -25,6 +25,7 @@
         "certified": "Certifié",
         "unavailable": "Indisponible",
         "addToCart": "Ajouter au panier",
+        "removeFromCart": "Retirer du panier",
         "toast": {
             "cannotAdd": "Ce produit ne peut pas être ajouté au panier.",
             "alreadyOwned": "Vous possédez déjà ce produit.",
