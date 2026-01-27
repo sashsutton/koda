@@ -72,13 +72,20 @@ export async function POST(req: Request) {
         const fileKey = `uploads/${userId}/${Date.now()}-${safeFileName}`;
 
         // 6. SÉCURISATION DE LA COMMANDE S3
+        const isImage = fileType.startsWith("image/");
+        const contentDisposition = isImage
+            ? `inline; filename="${safeFileName}"`
+            : `attachment; filename="${safeFileName}"`;
+
         const command = new PutObjectCommand({
             Bucket: process.env.AWS_S3_BUCKET_NAME,
             Key: fileKey,
             ContentType: fileType,
-            // CRITIQUE : Force le téléchargement. Empêche l'exécution de script dans le navigateur (XSS)
-            // Si un attaquant upload un HTML déguisé, le navigateur le téléchargera au lieu de l'afficher.
-            ContentDisposition: `attachment; filename="${safeFileName}"`,
+            // CRITIQUE : Force le téléchargement pour les non-images pour éviter XSS (fichiers HTML, SVG, etc)
+            // Pour les images, on permet l'affichage inline
+            ContentDisposition: contentDisposition,
+            // Cache control pour les images (1 an immutable)
+            CacheControl: isImage ? "public, max-age=31536000, immutable" : undefined,
             // Métadonnées pour suivi éventuel
             Metadata: {
                 userId: userId,
