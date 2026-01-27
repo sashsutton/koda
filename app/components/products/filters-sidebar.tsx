@@ -111,7 +111,9 @@ export function FiltersSidebar({
                                         checked={platforms.includes(platform)}
                                         onCheckedChange={(checked) => handlePlatformChange(platform, checked as boolean)}
                                     />
-                                    <Label htmlFor={`platform-${platform}`} className="cursor-pointer">{platform}</Label>
+                                    <Label htmlFor={`platform-${platform}`} className="cursor-pointer">
+                                        {platform === "Other" ? tCats('other') : platform}
+                                    </Label>
                                 </div>
                             ))}
                         </div>
