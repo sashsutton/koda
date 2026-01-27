@@ -189,10 +189,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                 <h1 className="text-4xl font-extrabold tracking-tight mb-8 italic">{product.title}</h1>
 
                                 <Tabs defaultValue="description" className="w-full">
-                                    <TabsList className="grid w-full grid-cols-3 mb-6">
+                                    <TabsList className="grid w-full grid-cols-2 mb-6">
                                         <TabsTrigger value="description">{t('description')}</TabsTrigger>
                                         <TabsTrigger value="reviews">{tPage('reviews')} ({product.reviewCount || 0})</TabsTrigger>
-                                        <TabsTrigger value="discussion">{tPage('discussion')}</TabsTrigger>
                                     </TabsList>
 
                                     <TabsContent value="description" className="animate-in fade-in duration-300">
@@ -209,16 +208,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                             canReview={canReview}
                                             currentUserId={userId}
                                         />
-                                    </TabsContent>
-
-                                    <TabsContent value="discussion" className="animate-in fade-in duration-300">
-                                        <div className="flex flex-col items-center justify-center p-12 text-center border-2 border-dashed rounded-xl bg-muted/20">
-                                            <div className="p-4 bg-background rounded-full mb-4 shadow-sm">
-                                                <MessageSquare className="h-6 w-6 text-muted-foreground" />
-                                            </div>
-                                            <h3 className="text-lg font-semibold">{tPage('discussion')}</h3>
-                                            <p className="text-muted-foreground max-w-sm mt-2">{tPage('comingSoon')}.</p>
-                                        </div>
                                     </TabsContent>
                                 </Tabs>
                             </CardContent>
