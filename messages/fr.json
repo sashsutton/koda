@@ -30,7 +30,8 @@
             "cannotAdd": "Ce produit ne peut pas être ajouté au panier.",
             "alreadyOwned": "Vous possédez déjà ce produit.",
             "ownProduct": "Vous ne pouvez pas acheter votre propre produit."
-        }
+        },
+        "description": "Description"
     },
     "Search": {
         "placeholder": "Rechercher une automatisation...",
@@ -141,6 +142,21 @@
         "loading": "Chargement...",
         "login": "Se connecter pour payer",
         "checkout": "Passer au paiement"
+    },
+    "ProductPage": {
+        "verifiedSeller": "Vendeur Vérifié",
+        "backToCatalog": "Retour au catalogue",
+        "purchased": "Acheté",
+        "certifiedByKoda": "Certifié par Koda",
+        "reviews": "Avis",
+        "discussion": "Discussion",
+        "about": "À propos",
+        "comingSoon": "Prochainement",
+        "immediateAccess": "Accès Immédiat",
+        "instantDownload": "Téléchargez vos fichiers instantanément après achat",
+        "verifiedByKoda": "Vérifié par Koda",
+        "validatedStructure": "Structure et qualité validées par notre équipe",
+        "priceLicense": "Prix / Licence"
     },
     "Sell": {
         "title": "Vendre un Blueprint",
