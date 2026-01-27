@@ -19,6 +19,7 @@ import { useTranslations } from "next-intl";
 
 export default function CartSheet() {
     const t = useTranslations('CartSheet');
+    const tCats = useTranslations('Categories');
     const { showSuccess, showError, showInfo } = useLocalizedToast();
     const [isMounted, setIsMounted] = useState(false);
     const [isPending, startTransition] = useTransition();
@@ -209,7 +210,11 @@ export default function CartSheet() {
                                         </div>
                                         <div className="flex justify-between items-end mt-2">
                                             <span className="text-[10px] text-muted-foreground bg-secondary px-1.5 py-0.5 rounded">
-                                                {item.category || "Automation"}
+                                                {item.category === "Social Media" ? tCats('socialMedia') :
+                                                    item.category === "Email Marketing" ? tCats('emailMarketing') :
+                                                        item.category === "Productivity" ? tCats('productivity') :
+                                                            item.category === "Sales" ? tCats('sales') :
+                                                                item.category === "Other" ? tCats('other') : (item.category || "Automation")}
                                             </span>
                                             <Button
                                                 variant="ghost"
