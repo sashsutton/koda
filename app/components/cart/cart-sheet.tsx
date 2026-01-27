@@ -158,7 +158,7 @@ export default function CartSheet() {
                 </Button>
             </SheetTrigger>
 
-            <SheetContent className="z-[100] flex flex-col h-[calc(100%-2rem)] top-4 right-4 rounded-2xl border border-orange-500/20 shadow-2xl bg-background/80 backdrop-blur-xl sm:max-w-md overflow-hidden">
+            <SheetContent className="z-[100] flex flex-col h-[calc(100%-1rem)] sm:h-[calc(100%-2rem)] top-2 right-2 left-2 sm:left-auto sm:top-4 sm:right-4 rounded-2xl border border-orange-500/20 shadow-2xl bg-background/80 backdrop-blur-xl w-auto sm:w-full sm:max-w-md overflow-hidden">
                 <SheetHeader className="border-b pb-4 flex flex-row items-center justify-between">
                     <SheetTitle className="flex items-center gap-2">
                         <ShoppingCart className="w-5 h-5" />
