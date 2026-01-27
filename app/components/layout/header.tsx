@@ -11,6 +11,7 @@ import { connectToDatabase } from '@/lib/db';
 import User from '@/models/User';
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/app/components/layout/language-switcher";
+import { MobileMenu } from "@/app/components/layout/mobile-menu";
 
 export default async function Header() {
     const t = await getTranslations('Navigation');
@@ -42,9 +43,12 @@ export default async function Header() {
                 "dark:bg-neutral-950/60 dark:border-orange-500/30 dark:shadow-orange-900/10"
             )}>
                 {/* Logo */}
-                <Link href="/" className="text-2xl font-bold tracking-tight flex items-center gap-1">
-                    Koda<span className="text-3xl text-orange-500">.</span>
-                </Link>
+                <div className="flex items-center gap-2">
+                    <MobileMenu isAdmin={isAdmin} />
+                    <Link href="/" className="text-2xl font-bold tracking-tight flex items-center gap-1">
+                        Koda<span className="text-3xl text-orange-500">.</span>
+                    </Link>
+                </div>
 
                 {/* Navigation & Auth */}
                 <div className="flex items-center gap-4">
