@@ -12,6 +12,7 @@ import {
 } from "@/app/components/ui/accordion";
 import { Slider } from "@/app/components/ui/slider";
 import { Button } from "@/app/components/ui/button";
+import { useTranslations } from "next-intl";
 
 const PLATFORMS = ["n8n", "Make", "Zapier", "Python", "Other"];
 const CATEGORIES = ["Social Media", "Email Marketing", "Productivity", "Sales", "Other"];
@@ -29,6 +30,8 @@ export function FiltersSidebar({
     initialMinPrice,
     initialMaxPrice,
 }: FiltersSidebarProps) {
+    const t = useTranslations('Catalog.filters');
+    const tCats = useTranslations('Categories');
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -98,7 +101,7 @@ export function FiltersSidebar({
 
                 {/* PLATFORMS */}
                 <AccordionItem value="platforms">
-                    <AccordionTrigger>Plateforme</AccordionTrigger>
+                    <AccordionTrigger>{t('platform')}</AccordionTrigger>
                     <AccordionContent>
                         <div className="space-y-2 pt-2">
                             {PLATFORMS.map((platform) => (
@@ -117,7 +120,7 @@ export function FiltersSidebar({
 
                 {/* CATEGORIES */}
                 <AccordionItem value="categories">
-                    <AccordionTrigger>Catégorie</AccordionTrigger>
+                    <AccordionTrigger>{t('category')}</AccordionTrigger>
                     <AccordionContent>
                         <div className="space-y-2 pt-2">
                             {CATEGORIES.map((category) => (
@@ -127,7 +130,14 @@ export function FiltersSidebar({
                                         checked={categories.includes(category)}
                                         onCheckedChange={(checked) => handleCategoryChange(category, checked as boolean)}
                                     />
-                                    <Label htmlFor={`category-${category}`} className="cursor-pointer">{category}</Label>
+                                    <Label htmlFor={`category-${category}`} className="cursor-pointer">
+                                        {/* Map internal English keys to localized strings */}
+                                        {category === "Social Media" ? tCats('socialMedia') :
+                                            category === "Email Marketing" ? tCats('emailMarketing') :
+                                                category === "Productivity" ? tCats('productivity') :
+                                                    category === "Sales" ? tCats('sales') :
+                                                        category === "Other" ? tCats('other') : category}
+                                    </Label>
                                 </div>
                             ))}
                         </div>
@@ -136,7 +146,7 @@ export function FiltersSidebar({
 
                 {/* PRICE */}
                 <AccordionItem value="price">
-                    <AccordionTrigger>Prix</AccordionTrigger>
+                    <AccordionTrigger>{t('price')}</AccordionTrigger>
                     <AccordionContent>
                         <div className="pt-4 px-2 space-y-4">
                             <Slider
@@ -166,7 +176,7 @@ export function FiltersSidebar({
                     setPriceRange([0, 1000]);
                     updateURL([], [], [0, 1000]);
                 }}>
-                    Réinitialiser les filtres
+                    {t('reset')}
                 </Button>
             )}
         </div>

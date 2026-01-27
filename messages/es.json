@@ -61,6 +61,26 @@
         "activeFilters": "Filtros activos:",
         "clearAll": "Borrar todo"
     },
+    "Categories": {
+        "socialMedia": "Redes Sociales",
+        "emailMarketing": "Email Marketing",
+        "productivity": "Productividad",
+        "sales": "Ventas",
+        "other": "Otro"
+    },
+    "Catalog": {
+        "title": "Mercado",
+        "loading": "Cargando gemas...",
+        "noResults": "Sin resultados",
+        "adjustFilters": "Ajusta tus filtros para encontrar lo que buscas.",
+        "filters": {
+            "title": "Filtros",
+            "platform": "Plataforma",
+            "category": "Categoría",
+            "price": "Precio",
+            "reset": "Restablecer filtros"
+        }
+    },
     "Footer": {
         "description": "El mercado de confianza para automatizar tu negocio con n8n, Make, Zapier, etc...",
         "marketplace": "Mercado",

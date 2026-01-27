@@ -13,6 +13,7 @@ interface CatalogPageProps {
 }
 
 export default async function CatalogPage(props: CatalogPageProps) {
+    const t = await getTranslations('Catalog');
     const params = await props.searchParams;
 
     // Normalisation des paramètres pour l'action
@@ -47,13 +48,13 @@ export default async function CatalogPage(props: CatalogPageProps) {
                 {/* Contenu Principal avec Suspense pour l'optimisation du rendu */}
                 <main className="flex-1">
                     <div className="flex flex-col sm:row justify-between items-start sm:items-center mb-8 gap-4">
-                        <h1 className="text-3xl font-bold italic text-primary">Marketplace</h1>
+                        <h1 className="text-3xl font-bold italic text-primary">{t('title')}</h1>
                         <Suspense fallback={<div className="w-[180px] h-10 bg-muted animate-pulse rounded" />}>
                             <SortSelect initialSort={filters.sort} />
                         </Suspense>
                     </div>
 
-                    <Suspense key={JSON.stringify(params)} fallback={<LoadingGrid />}>
+                    <Suspense key={JSON.stringify(params)} fallback={<LoadingGrid t={t} />}>
                         <ProductList filters={filters} />
                     </Suspense>
                 </main>
@@ -65,11 +66,13 @@ export default async function CatalogPage(props: CatalogPageProps) {
 import { auth } from "@clerk/nextjs/server";
 import Purchase from "@/models/Purchase";
 import { connectToDatabase } from "@/lib/db";
+import { getTranslations } from "next-intl/server";
 
 // ... existing imports ...
 
 // Composant interne pour gérer l'affichage des produits
 async function ProductList({ filters }: { filters: any }) {
+    const t = await getTranslations('Catalog');
     const { products, metadata } = await getFilteredProducts(filters);
     const { userId } = await auth();
     const purchasedProductIds = new Set<string>();
@@ -85,8 +88,8 @@ async function ProductList({ filters }: { filters: any }) {
         return (
             <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed rounded-2xl bg-muted/5">
                 <Search className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                <h3 className="text-xl font-semibold">Aucun résultat</h3>
-                <p className="text-muted-foreground mt-2">Ajustez vos filtres pour trouver ce que vous cherchez.</p>
+                <h3 className="text-xl font-semibold">{t('noResults')}</h3>
+                <p className="text-muted-foreground mt-2">{t('adjustFilters')}</p>
             </div>
         );
     }
@@ -113,11 +116,12 @@ async function ProductList({ filters }: { filters: any }) {
 }
 
 // Skeleton de chargement pour le streaming
-function LoadingGrid() {
+// Skeleton de chargement pour le streaming
+function LoadingGrid({ t }: { t: any }) {
     return (
         <div className="flex items-center justify-center py-20">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-3 text-muted-foreground">Chargement des pépites...</span>
+            <span className="ml-3 text-muted-foreground">{t('loading')}</span>
         </div>
     );
 }

@@ -28,6 +28,7 @@ function isAutomation(p: ProductLike): p is IAutomation {
 export function ProductCard({ product, userId, isPurchased = false }: ProductCardProps) {
     const { showSuccess, showError } = useLocalizedToast();
     const t = useTranslations('ProductCard');
+    const tCats = useTranslations('Categories');
     const cart = useCart();
     const isOwner = userId === product.sellerId;
     const automation = isAutomation(product);
@@ -102,7 +103,11 @@ export function ProductCard({ product, userId, isPurchased = false }: ProductCar
                 {/* Badge Category (Top Left) */}
                 <div className="absolute top-2 left-2">
                     <Badge variant="secondary" className="backdrop-blur-md bg-background/80 hover:bg-background/90 shadow-sm">
-                        {product.category}
+                        {product.category === "Social Media" ? tCats('socialMedia') :
+                            product.category === "Email Marketing" ? tCats('emailMarketing') :
+                                product.category === "Productivity" ? tCats('productivity') :
+                                    product.category === "Sales" ? tCats('sales') :
+                                        product.category === "Other" ? tCats('other') : product.category}
                     </Badge>
                 </div>
 

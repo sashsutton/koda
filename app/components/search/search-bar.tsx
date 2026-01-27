@@ -21,6 +21,7 @@ interface SearchBarProps {
 
 export function SearchBar({ sellers = [] }: SearchBarProps) {
     const t = useTranslations('Search');
+    const tCats = useTranslations('Categories');
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -41,11 +42,11 @@ export function SearchBar({ sellers = [] }: SearchBarProps) {
 
     const CATEGORIES = [
         { value: "all", label: t('allCategories') },
-        { value: "Social Media", label: "Social Media" },
-        { value: "Email Marketing", label: "Email Marketing" },
-        { value: "Productivity", label: "Productivity" },
-        { value: "Sales", label: "Sales" },
-        { value: "Other", label: t('other') },
+        { value: "Social Media", label: tCats('socialMedia') },
+        { value: "Email Marketing", label: tCats('emailMarketing') },
+        { value: "Productivity", label: tCats('productivity') },
+        { value: "Sales", label: tCats('sales') },
+        { value: "Other", label: tCats('other') },
     ];
 
     useEffect(() => {
