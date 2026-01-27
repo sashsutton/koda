@@ -58,8 +58,8 @@ export function DashboardContent({ user, balance, sales, products, orders, onDel
                                     <div className="p-4 bg-muted rounded-full mb-4">
                                         <ShoppingCart className="h-8 w-8 text-muted-foreground opacity-20" />
                                     </div>
-                                    <h3 className="text-lg font-bold mb-2">Buyer Insights</h3>
-                                    <p className="text-xs text-muted-foreground">Detailed analytics for your purchases coming soon.</p>
+                                    <h3 className="text-lg font-bold mb-2">{t('sections.buyerInsights')}</h3>
+                                    <p className="text-xs text-muted-foreground">{t('sections.buyerInsightsDesc')}</p>
                                 </Card>
                             </div>
                         </div>

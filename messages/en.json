@@ -353,7 +353,9 @@
             "activity": "Recent Activity",
             "products": "My Products",
             "orders": "My Purchases",
-            "sales": "Recent Sales"
+            "sales": "Recent Sales",
+            "buyerInsights": "Buyer Insights",
+            "buyerInsightsDesc": "Detailed analytics for your purchases coming soon."
         },
         "stats": {
             "balance": "Stripe Balance",

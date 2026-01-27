@@ -352,7 +352,9 @@
             "activity": "Activité Récente",
             "products": "Mes Produits",
             "orders": "Mes Achats",
-            "sales": "Ventes Récentes"
+            "sales": "Ventes Récentes",
+            "buyerInsights": "Aperçu Acheteur",
+            "buyerInsightsDesc": "Analyses détaillées de vos achats bientôt disponibles."
         },
         "stats": {
             "balance": "Balance Stripe",
