@@ -7,6 +7,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/ap
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { LanguageSwitcher } from "@/app/components/layout/language-switcher";
+import { ModeToggle } from "@/app/components/layout/mode-toggle";
 
 interface MobileMenuProps {
     isAdmin: boolean;
@@ -93,6 +95,13 @@ export function MobileMenu({ isAdmin }: MobileMenuProps) {
                             </SignUpButton>
                         </div>
                     </SignedOut>
+
+                    {/* Language & Theme controls */}
+                    <div className="h-px bg-border my-2" />
+                    <div className="flex items-center justify-center gap-2 px-4 py-2">
+                        <LanguageSwitcher />
+                        <ModeToggle />
+                    </div>
                 </nav>
             </SheetContent>
         </Sheet>

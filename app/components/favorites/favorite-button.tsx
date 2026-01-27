@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { Heart } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -31,8 +31,14 @@ export function FavoriteButton({
     const favorites = useFavorites();
     const [isPending, startTransition] = useTransition();
     const [isAnimating, setIsAnimating] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
-    const isFavorited = favorites.isFavorited(productId);
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    // Use favorited state only after mount to prevent hydration mismatch
+    const isFavorited = isMounted ? favorites.isFavorited(productId) : false;
 
     // Don't render if disabled (e.g., already purchased or own product)
     if (disabled) return null;

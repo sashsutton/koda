@@ -52,7 +52,7 @@ export default async function Header() {
                 </div>
 
                 {/* Navigation & Auth */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
                     <nav className="hidden md:flex gap-6 text-sm font-medium items-center">
                         <Link href="/catalog" className="transition-colors hover:text-primary text-muted-foreground hover:text-foreground">
                             {t('catalog')}
@@ -77,11 +77,15 @@ export default async function Header() {
                         </Link>
                     </nav>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2">
                         <FavoritesSheetWrapper /> {/*Favoris*/}
                         <CartSheetWrapper /> {/*Panier*/}
-                        <LanguageSwitcher />
-                        <ModeToggle />
+                        <div className="hidden sm:block">
+                            <LanguageSwitcher />
+                        </div>
+                        <div className="hidden sm:block">
+                            <ModeToggle />
+                        </div>
 
                         <div className="h-6 w-px bg-border/50 mx-1 hidden sm:block" />
 

@@ -71,7 +71,7 @@ export default async function RootLayout({
                   {children}
                 </main>
                 <Footer />
-                <Toaster position="top-center" richColors />
+                <Toaster position="bottom-center" richColors />
               </FavoritesSyncProvider>
             </ThemeProvider>
 
