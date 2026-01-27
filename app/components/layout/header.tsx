@@ -10,6 +10,7 @@ import { auth } from "@clerk/nextjs/server";
 import { connectToDatabase } from '@/lib/db';
 import User from '@/models/User';
 import { cn } from "@/lib/utils";
+import { LanguageSwitcher } from "@/app/components/layout/language-switcher";
 
 export default async function Header() {
     const t = await getTranslations('Navigation');
@@ -73,6 +74,7 @@ export default async function Header() {
 
                     <div className="flex items-center gap-2">
                         <CartSheetWrapper /> {/*Panier*/}
+                        <LanguageSwitcher />
                         <ModeToggle />
 
                         <div className="h-6 w-px bg-border/50 mx-1 hidden sm:block" />
