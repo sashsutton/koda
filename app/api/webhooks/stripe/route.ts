@@ -70,9 +70,11 @@ export async function POST(req: Request) {
 
                 // On crée une preuve d'achat pour CHAQUE produit trouvé
                 if (productIds.length > 0) {
+                    console.log(`[WEBHOOK] Processing ${productIds.length} products for user ${userId}:`, productIds);
                     const buyerEmail = session.customer_details?.email;
                     const buyerOrderItems: { title: string, price: number }[] = [];
                     let orderTotal = 0;
+                    let ordersCreated = 0;
 
                     for (const productId of productIds) {
                         try {
@@ -99,7 +101,7 @@ export async function POST(req: Request) {
                                     const platformFee = product.price * 0.15;
                                     const netAmount = product.price - platformFee;
 
-                                    await Purchase.create({
+                                    const newPurchase = await Purchase.create({
                                         buyerId: userId,
                                         productId: productId,
                                         sellerId: seller?.clerkId || product.sellerId,
@@ -108,25 +110,29 @@ export async function POST(req: Request) {
                                         netAmount: netAmount,
                                         platformFee: platformFee,
                                         category: product.category,
-                                        platform: (product as any).platform, // Automation platform
+                                        platform: (product as any).platform,
                                     });
+                                    ordersCreated++;
+                                    console.log(`[WEBHOOK] Created purchase ${newPurchase._id} for product ${productId} (${product.title})`);
+                                } else {
+                                    console.log(`[WEBHOOK] Purchase already exists for product ${productId}, skipping`);
+                                }
 
-                                    // 1a. Send Email to Seller
-                                    if (seller) {
-                                        let sellerEmail = seller.email;
-                                        if (!sellerEmail) {
-                                            try {
-                                                const clerk = await clerkClient();
-                                                const clerkUser = await clerk.users.getUser(seller.clerkId);
-                                                sellerEmail = clerkUser.emailAddresses[0]?.emailAddress;
-                                            } catch (e) {
-                                                console.error("Failed to fetch seller email from Clerk:", e);
-                                            }
+                                // 1a. Send Email to Seller
+                                if (seller) {
+                                    let sellerEmail = seller.email;
+                                    if (!sellerEmail) {
+                                        try {
+                                            const clerk = await clerkClient();
+                                            const clerkUser = await clerk.users.getUser(seller.clerkId);
+                                            sellerEmail = clerkUser.emailAddresses[0]?.emailAddress;
+                                        } catch (e) {
+                                            console.error("Failed to fetch seller email from Clerk:", e);
                                         }
+                                    }
 
-                                        if (sellerEmail) {
-                                            await sendSellerEmail(sellerEmail, product.title, product.price * 0.85);
-                                        }
+                                    if (sellerEmail) {
+                                        await sendSellerEmail(sellerEmail, product.title, product.price * 0.85);
                                     }
                                 }
 
@@ -153,9 +159,11 @@ export async function POST(req: Request) {
                                 }
                             }
                         } catch (innerError) {
-                            console.error(`Error processing product ${productId}:`, innerError);
+                            console.error(`[WEBHOOK] Error processing product ${productId}:`, innerError);
                         }
                     }
+
+                    console.log(`[WEBHOOK] Completed: ${ordersCreated} orders created out of ${productIds.length} products`);
 
                     // 3. Send Email to Buyer
                     if (buyerEmail && buyerOrderItems.length > 0) {
