@@ -31,7 +31,7 @@
             "ownProduct": "No puedes comprar tu propio producto."
         },
         "description": "Descripción",
-        "removeFromCart": "Eliminar"
+        "removeFromCart": "Eliminar del carrito"
     },
     "ProductPage": {
         "verifiedSeller": "Vendedor Verificado",
