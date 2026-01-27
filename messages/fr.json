@@ -209,6 +209,22 @@
         "buyNow": "Acheter maintenant",
         "soldBy": "Vendu par"
     },
+    "Reviews": {
+        "title": "Avis clients",
+        "editReview": "Modifier mon avis",
+        "leaveReview": "Laisser un avis",
+        "cancel": "Annuler",
+        "yourRating": "Votre note",
+        "yourComment": "Votre commentaire",
+        "placeholder": "Qu'avez-vous pensé de cette automatisation ?",
+        "sending": "Envoi...",
+        "update": "Mettre à jour",
+        "publish": "Publier l'avis",
+        "noReviews": "Aucun avis pour le moment. Soyez le premier à tester !",
+        "user": "Utilisateur",
+        "me": "Moi",
+        "confirmDelete": "Supprimer cet avis ?"
+    },
     "Sell": {
         "title": "Vendre un Blueprint",
         "description": "Partagez votre expertise, aidez la communauté et générez des revenus passifs avec vos automatisations.",

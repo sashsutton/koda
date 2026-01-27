@@ -63,6 +63,22 @@
         "buyNow": "Comprar ahora",
         "soldBy": "Vendido por"
     },
+    "Reviews": {
+        "title": "Reseñas de clientes",
+        "editReview": "Editar mi reseña",
+        "leaveReview": "Dejar una reseña",
+        "cancel": "Cancelar",
+        "yourRating": "Tu valoración",
+        "yourComment": "Tu comentario",
+        "placeholder": "¿Qué te pareció esta automatización?",
+        "sending": "Enviando...",
+        "update": "Actualizar",
+        "publish": "Publicar reseña",
+        "noReviews": "Aún no hay reseñas. ¡Sé el primero en probar!",
+        "user": "Usuario",
+        "me": "Yo",
+        "confirmDelete": "¿Eliminar esta reseña?"
+    },
     "Search": {
         "placeholder": "Buscar una automatización...",
         "allPlatforms": "Todas las plataformas",

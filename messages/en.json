@@ -210,6 +210,22 @@
         "buyNow": "Buy now",
         "soldBy": "Sold by"
     },
+    "Reviews": {
+        "title": "Customer Reviews",
+        "editReview": "Edit my review",
+        "leaveReview": "Leave a review",
+        "cancel": "Cancel",
+        "yourRating": "Your rating",
+        "yourComment": "Your comment",
+        "placeholder": "What did you think of this automation?",
+        "sending": "Sending...",
+        "update": "Update",
+        "publish": "Publish review",
+        "noReviews": "No reviews yet. Be the first to test it!",
+        "user": "User",
+        "me": "Me",
+        "confirmDelete": "Delete this review?"
+    },
     "Sell": {
         "title": "Sell a Blueprint",
         "description": "Share your expertise, help the community and generate passive income with your automations.",
