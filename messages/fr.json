@@ -318,7 +318,11 @@
             "commissionDesc": "Frais de service Koda par vente.",
             "stripeConfig": "Vous devez configurer vos paiements pour recevoir des fonds.",
             "setupPayouts": "Configurer mes paiements",
-            "openStripe": "Ouvrir le Dashboard Stripe"
+            "openStripe": "Ouvrir le Dashboard Stripe",
+            "standard": "Standard",
+            "learnPremium": "Découvrir Premium",
+            "conversionRate": "Taux de conversion",
+            "proPlan": "Disponible avec le plan Professionnel"
         },
         "account": {
             "memberSince": "Membre depuis le",
@@ -338,7 +342,10 @@
             },
             "description": "Gérez votre expertise et suivez vos performances",
             "emptyState": "Prêt à partager votre workflow avec le monde ? Votre premier blueprint n'est qu'à un clic.",
-            "previewListing": "Aperçu de l'annonce"
+            "previewListing": "Aperçu de l'annonce",
+            "general": "Général",
+            "tags": "Tags",
+            "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce produit ?"
         },
         "orders": {
             "noOrders": "Vous n'avez pas encore effectué d'achats.",
@@ -349,6 +356,10 @@
         "sales": {
             "noSales": "Aucune vente pour le moment.",
             "description": "Flux de revenus en temps réel"
+        },
+        "feed": {
+            "productUnavailable": "Produit indisponible",
+            "success": "Succès"
         }
     },
     "Admin": {

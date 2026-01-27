@@ -319,7 +319,11 @@
             "commissionDesc": "Koda service fee per sale.",
             "stripeConfig": "To receive funds, you must configure your payments.",
             "setupPayouts": "Setup Payouts",
-            "openStripe": "Open Stripe Dashboard"
+            "openStripe": "Open Stripe Dashboard",
+            "standard": "Standard",
+            "learnPremium": "Learn about Premium",
+            "conversionRate": "Conversion Rate",
+            "proPlan": "Available in the Professional plan"
         },
         "account": {
             "memberSince": "Member since",
@@ -339,7 +343,10 @@
             },
             "description": "Manage your expertise and track your performance",
             "emptyState": "Ready to share your workflow with the world? Your first blueprint is just a click away.",
-            "previewListing": "Preview Listing"
+            "previewListing": "Preview Listing",
+            "general": "General",
+            "tags": "Tags",
+            "confirmDelete": "Are you sure you want to delete this product?"
         },
         "orders": {
             "noOrders": "You haven't made any purchases yet.",
@@ -350,6 +357,10 @@
         "sales": {
             "noSales": "No sales yet.",
             "description": "Real-time revenue stream"
+        },
+        "feed": {
+            "productUnavailable": "Product Unavailable",
+            "success": "Success"
         }
     },
     "Admin": {

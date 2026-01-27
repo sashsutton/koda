@@ -68,14 +68,14 @@ export function StatsGrid({ balance }: StatsGridProps) {
                 <CardContent className="space-y-4">
                     <div className="flex items-baseline gap-2">
                         <span className="text-4xl font-black tracking-tight text-foreground">15%</span>
-                        <Badge variant="outline" className="text-[10px] uppercase font-bold border-primary/20 text-primary">Standard</Badge>
+                        <Badge variant="outline" className="text-[10px] uppercase font-bold border-primary/20 text-primary">{t('standard')}</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed flex items-start gap-2 bg-muted/30 p-3 rounded-lg border border-border/50">
                         <Info className="h-4 w-4 mt-0.5 text-primary opacity-70" />
                         {t('commissionDesc')}
                     </p>
                     <button className="text-[11px] font-bold uppercase tracking-widest text-primary flex items-center gap-1 hover:gap-2 transition-all opacity-80 hover:opacity-100 cursor-pointer">
-                        Learn about Premium <ChevronRight className="h-3 w-3" />
+                        {t('learnPremium')} <ChevronRight className="h-3 w-3" />
                     </button>
                 </CardContent>
             </Card>
@@ -85,7 +85,7 @@ export function StatsGrid({ balance }: StatsGridProps) {
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                         <TrendingUp className="h-4 w-4 text-primary" />
-                        Conversion Rate
+                        {t('conversionRate')}
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center justify-center py-6 text-center">
@@ -93,7 +93,7 @@ export function StatsGrid({ balance }: StatsGridProps) {
                         <TrendingUp className="h-6 w-6 text-muted-foreground/50" />
                     </div>
                     <p className="text-xs text-muted-foreground font-medium max-w-[150px]">
-                        Available in the Professional plan
+                        {t('proPlan')}
                     </p>
                 </CardContent>
             </Card>

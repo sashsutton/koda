@@ -91,7 +91,7 @@ export function ProductList({ products, onDelete }: ProductListProps) {
                                         </div>
                                     </div>
                                     <p className="text-xs text-muted-foreground font-medium line-clamp-1 opacity-70">
-                                        {product.category || "General"} • {product.tags?.length || 0} Tags
+                                        {product.category || t('products.general')} • {product.tags?.length || 0} {t('products.tags')}
                                     </p>
                                 </div>
 
@@ -114,7 +114,7 @@ export function ProductList({ products, onDelete }: ProductListProps) {
                                     </Button>
 
                                     <form action={async () => {
-                                        if (confirm("Are you sure?")) {
+                                        if (confirm(t('products.confirmDelete'))) {
                                             await onDelete(product._id);
                                         }
                                     }} className="flex">

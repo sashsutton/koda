@@ -51,7 +51,7 @@ export function ActivityFeed({ sales = [], orders = [] }: ActivityFeedProps) {
                                                 </div>
                                                 <div>
                                                     <p className="font-bold text-sm text-foreground line-clamp-1 group-hover:text-primary transition-colors">
-                                                        {order.productId ? order.productId.title : "Product Unavailable"}
+                                                        {order.productId ? order.productId.title : t('feed.productUnavailable')}
                                                     </p>
                                                     <div className="flex items-center gap-2 text-[11px] text-muted-foreground mt-0.5">
                                                         <Clock className="h-3 w-3" />
@@ -120,7 +120,7 @@ export function ActivityFeed({ sales = [], orders = [] }: ActivityFeedProps) {
                                         <div className="font-black text-green-600 text-lg">
                                             +{sale.amount.toFixed(2)} €
                                         </div>
-                                        <Badge variant="outline" className="text-[9px] uppercase font-bold border-green-500/20 text-green-600 bg-green-500/5">Success</Badge>
+                                        <Badge variant="outline" className="text-[9px] uppercase font-bold border-green-500/20 text-green-600 bg-green-500/5">{t('feed.success')}</Badge>
                                     </div>
                                 </div>
                             ))}
