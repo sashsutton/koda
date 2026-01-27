@@ -68,11 +68,15 @@ Koda listens for specific events from Stripe at `/api/webhooks/stripe`.
 
 To simulate a successful payment (`checkout.session.completed`) with valid data from your local database:
 
-1. **Start the Listener** (Terminal 1):
+1. **Start the App** (Terminal 1):
+   ```bash
+   npm run dev
+   ```
+2. **Start the Listener** (Terminal 2):
    ```bash
    stripe listen --forward-to localhost:3000/api/webhooks/stripe
    ```
-2. **Trigger the Event** (Terminal 2):
+3. **Trigger the Event** (Terminal 3):
    ```bash
    npx tsx scripts/trigger-payment-webhook.ts
    ```
