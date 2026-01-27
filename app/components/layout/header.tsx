@@ -84,12 +84,14 @@ export default async function Header() {
                         <div className="h-6 w-px bg-border/50 mx-1 hidden sm:block" />
 
                         <SignedOut>
-                            <SignInButton mode="modal">
-                                <Button variant="ghost" size="sm">{tAuth('login')}</Button>
-                            </SignInButton>
-                            <SignUpButton mode="modal">
-                                <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white rounded-full px-6">{tAuth('signup')}</Button>
-                            </SignUpButton>
+                            <div className="hidden md:flex items-center gap-2">
+                                <SignInButton mode="modal">
+                                    <Button variant="ghost" size="sm">{tAuth('login')}</Button>
+                                </SignInButton>
+                                <SignUpButton mode="modal">
+                                    <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white rounded-full px-6">{tAuth('signup')}</Button>
+                                </SignUpButton>
+                            </div>
                         </SignedOut>
 
                         <SignedIn>
