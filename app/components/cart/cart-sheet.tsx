@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { ShoppingCart, Trash2, Loader2, LogIn, Tag, Plus } from "lucide-react";
@@ -89,15 +89,35 @@ export default function CartSheet() {
         }
     }, [purchasedIds, cart.items, isMounted, cart, userId]);
 
-    // 3. Animation on Add
+    // 3. Animation Control
+    const isFirstRender = useRef(true);
+    const initialItemCount = useRef(cart.items.length);
+
+    // Trigger animation only on increase
     useEffect(() => {
+        // Skip on mount
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            initialItemCount.current = cart.items.length;
+            setPrevItemCount(cart.items.length);
+            return;
+        }
+
+        // Trigger animation
         if (cart.items.length > prevItemCount) {
             setIsAnimating(true);
+        }
+
+        setPrevItemCount(cart.items.length);
+    }, [cart.items.length, prevItemCount]);
+
+    // Handle animation timer separately to prevent stuck state
+    useEffect(() => {
+        if (isAnimating) {
             const timer = setTimeout(() => setIsAnimating(false), 300);
             return () => clearTimeout(timer);
         }
-        setPrevItemCount(cart.items.length);
-    }, [cart.items.length, prevItemCount]);
+    }, [isAnimating]);
 
     // 4. Fetch Suggestions
     useEffect(() => {
