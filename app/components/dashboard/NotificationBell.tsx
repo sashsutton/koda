@@ -58,8 +58,16 @@ export default function NotificationBell() {
                 getNotifications(10),
                 getUnreadNotificationCount()
             ]);
-            setNotifications(data);
-            setUnreadCount(count);
+
+            // If server returns null (soft auth fail), keep old data to prevent flickering
+            if (data !== null) {
+                setNotifications(data);
+            }
+
+            // If server returns -1 (soft auth fail), keep old count
+            if (count !== -1) {
+                setUnreadCount(count);
+            }
         } catch (error) {
             console.error("Failed to fetch notifications", error);
         }
