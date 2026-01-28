@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 export default function UnreadMessagesBadge() {
     const [count, setCount] = useState(0);
 
+    // Load count once on mount
+    // Real-time updates happen via parent DashboardInbox component
     useEffect(() => {
         const fetchCount = async () => {
             try {
@@ -20,10 +22,6 @@ export default function UnreadMessagesBadge() {
         };
 
         fetchCount();
-        // Poll every 10 seconds
-        const interval = setInterval(fetchCount, 10000);
-
-        return () => clearInterval(interval);
     }, []);
 
     return (

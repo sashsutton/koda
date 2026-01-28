@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 
         const sanitizedFileName = path.basename(fileName, originalExtension).replace(/[^a-zA-Z0-9-_]/g, "");
         const safeFileName = `${sanitizedFileName}${originalExtension}`;
-        const fileKey = `images/${userId}/${Date.now()}-${safeFileName}`;
+        const fileKey = `uploads/${userId}/${Date.now()}-${safeFileName}`;
 
         // SIMPLIFICATION MAJEURE ICI :
         // On ne met QUE le ContentType. Si on ajoute Metadata ou ContentDisposition ici,

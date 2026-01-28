@@ -51,23 +51,36 @@ export function SellForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // c'est la verification de fichier que je desactive pour l'instant pour faire des tests
-        // if (!fileUrl) return alert("Veuillez uploader votre fichier d'automatisation"); 
+
+        // Validation: ensure file is uploaded
+        if (!fileUrl) {
+            showError(t('fileRequired') || "Please upload your automation file");
+            return;
+        }
 
         setLoading(true);
         const toastId = showLoading(t('publishing'));
         try {
-            await createAutomation({
+            const result = await createAutomation({
                 ...formData,
                 fileUrl,
                 previewImageUrl,
                 version: formData.version || undefined,
             });
-            showSuccess('productPublished');
-            router.push("/");
+
+            if (result.success) {
+                showSuccess('productPublished');
+                // Small delay to let user see success message
+                setTimeout(() => {
+                    router.push("/");
+                }, 1000);
+            }
         } catch (error: any) {
-            console.error(error);
-            showError(error);
+            console.error("Product creation error:", error);
+            // Show user-friendly error message
+            const errorMessage = error?.message || error?.toString() || "Failed to publish product";
+            showError(errorMessage);
+            // Don't redirect on error - let user fix the issue
         } finally {
             setLoading(false);
             dismiss(toastId);

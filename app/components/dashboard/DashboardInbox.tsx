@@ -13,6 +13,7 @@ import { formatDistanceToNow } from "date-fns";
 import { fr, enUS, es, de } from "date-fns/locale";
 import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
+import { getPusherClient } from "@/lib/pusher-client";
 
 interface Conversation {
     _id: string;
@@ -51,13 +52,9 @@ export default function DashboardInbox() {
 
     const dateLocale = locale === 'fr' ? fr : locale === 'es' ? es : locale === 'de' ? de : enUS;
 
-    // Load conversations & poll every 10s
+    // Load conversations once on mount (no more polling!)
     useEffect(() => {
         loadConversations();
-        const interval = setInterval(() => {
-            loadConversations(true); // silent
-        }, 10000);
-        return () => clearInterval(interval);
     }, []);
 
     const loadConversations = async (silent = false) => {
@@ -66,14 +63,13 @@ export default function DashboardInbox() {
             const data = await getMyConversations();
             setConversations(data);
         } catch (error) {
-            // Only log errors if not silent (user initiated) or if it's not a generic fetch error
             if (!silent) console.error("Failed to load conversations:", error);
         } finally {
             if (!silent) setIsLoadingConvs(false);
         }
     };
 
-    // Load messages when conversation selected & poll every 5s
+    // Load messages when conversation selected & subscribe to Pusher for real-time updates
     useEffect(() => {
         if (!selectedConvId) return;
 
@@ -94,12 +90,27 @@ export default function DashboardInbox() {
         };
 
         fetchMessages();
-        const interval = setInterval(() => {
-            fetchMessages(true); // silent
-        }, 5000);
 
-        return () => clearInterval(interval);
-    }, [selectedConvId]);
+        // Subscribe to Pusher for real-time message updates
+        const pusher = getPusherClient();
+        const channel = pusher.subscribe(`private-conversation-${selectedConvId}`);
+
+        channel.bind('new-message', (data: Message) => {
+            // Update messages list with new message
+            setMessages(prev => [...prev, {
+                ...data,
+                isMine: data.senderId === userId
+            }]);
+
+            // Update conversation list
+            loadConversations(true);
+        });
+
+        return () => {
+            channel.unbind('new-message');
+            pusher.unsubscribe(`private-conversation-${selectedConvId}`);
+        };
+    }, [selectedConvId, userId]);
 
     // Auto-scroll to bottom only if user is already at bottom or new message is mine
     useEffect(() => {

@@ -31,6 +31,8 @@ import { ScrollArea } from "@/app/components/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
 import { enUS, fr, es, de } from "date-fns/locale";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@clerk/nextjs";
+import { getPusherClient } from "@/lib/pusher-client";
 
 export default function NotificationBell() {
     const [notifications, setNotifications] = useState<INotificationData[]>([]);
@@ -42,6 +44,7 @@ export default function NotificationBell() {
     const locale = useLocale();
     const router = useRouter();
     const t = useTranslations();
+    const { userId } = useAuth();
 
     const getDateLocale = () => {
         switch (locale) {
@@ -73,12 +76,28 @@ export default function NotificationBell() {
         }
     };
 
-    // Initial load & Polling
+    // Initial load & Pusher subscription for real-time notifications
     useEffect(() => {
+        if (!userId) return;
+
         fetchNotifications();
-        const interval = setInterval(fetchNotifications, 10000);
-        return () => clearInterval(interval);
-    }, []);
+
+        // Subscribe to Pusher for real-time notification updates
+        const pusher = getPusherClient();
+        const channel = pusher.subscribe(`private-user-${userId}`);
+
+        channel.bind('new-notification', (data: INotificationData) => {
+            // Add new notification to the list
+            setNotifications(prev => [data, ...prev]);
+            // Increment unread count
+            setUnreadCount(prev => prev + 1);
+        });
+
+        return () => {
+            channel.unbind('new-notification');
+            pusher.unsubscribe(`private-user-${userId}`);
+        };
+    }, [userId]);
 
     // Refresh when opening popover
     useEffect(() => {

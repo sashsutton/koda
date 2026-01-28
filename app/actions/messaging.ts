@@ -8,6 +8,7 @@ import { requireAuth } from "@/lib/auth-utils";
 import { resend } from "@/lib/resend";
 import { auth } from "@clerk/nextjs/server";
 import { createNotification } from "@/app/actions/notifications";
+import { pusherServer } from "@/lib/pusher-server";
 
 // --- Types ---
 export interface IMessage {
@@ -94,6 +95,26 @@ export async function sendMessage(conversationId: string, content: string) {
     conversation.lastMessage = content.substring(0, 50) + (content.length > 50 ? "..." : "");
     conversation.lastMessageAt = new Date();
     await conversation.save();
+
+    // --- Real-time Pusher Event ---
+    // Trigger event to both participants for instant message delivery
+    try {
+        await pusherServer.trigger(
+            `private-conversation-${conversationId}`,
+            'new-message',
+            {
+                _id: message._id.toString(),
+                senderId: userId,
+                content: message.content,
+                createdAt: message.createdAt.toISOString(),
+                read: false,
+                isMine: false // Will be determined on client side
+            }
+        );
+    } catch (error) {
+        console.error("Pusher trigger error:", error);
+        // Don't fail the request if Pusher fails
+    }
 
     // --- Notification Email (Async) & In-App Notification ---
     // Trouver le destinataire

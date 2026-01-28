@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { connectToDatabase } from "@/lib/db";
-import { redirect } from "next/navigation";
+import { redirect as nextRedirect } from "next/navigation";
+import { redirect } from "@/i18n/routing";
 import User from "@/models/User";
 
 /**

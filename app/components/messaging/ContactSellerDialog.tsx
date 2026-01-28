@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useAuth } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { startConversation } from "@/app/actions/messaging";
 import {
     Dialog,
@@ -54,15 +54,19 @@ export default function ContactSellerDialog({ sellerId, sellerName, productTitle
                     ? `${t('regarding')}: "${productTitle}"\n\n${message}`
                     : message;
 
-                await startConversation(sellerId, initialMessage);
+                const conversationId = await startConversation(sellerId, initialMessage);
                 showSuccess(t('success'));
                 setIsOpen(false);
                 setMessage("");
+
+                // Redirect to dashboard messages
+                router.push(`/dashboard?mode=messages&c=${conversationId}`);
             } catch (error: any) {
+                console.error("Error starting conversation:", error);
                 if (error.message === "You cannot message yourself") {
                     showError(t('cannotMessageSelf'));
                 } else {
-                    showError(t('error'));
+                    showError(error.message || t('error'));
                 }
             }
         });

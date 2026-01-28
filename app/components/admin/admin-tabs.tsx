@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
 import { AdminProductTable } from "@/app/components/admin/admin-product-table";
-import { Users, Package } from "lucide-react";
+import { Users, Package, Mail } from "lucide-react";
 import { AdminBanButton } from "@/app/components/admin/admin-ban-button";
 import { AdminRoleButton } from "@/app/components/admin/admin-role-button";
 import { AdminDeleteButton } from "@/app/components/admin/admin-delete-button";
@@ -45,12 +45,15 @@ export function AdminTabs({ users, products, translations }: AdminTabsProps) {
 
     return (
         <Tabs defaultValue="users" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-8 max-w-md">
+            <TabsList className="grid w-full grid-cols-3 mb-8 max-w-2xl">
                 <TabsTrigger value="users" className="gap-2">
                     <Users className="w-4 h-4" /> {translations.tabs.users} ({users.length})
                 </TabsTrigger>
                 <TabsTrigger value="products" className="gap-2">
                     <Package className="w-4 h-4" /> {translations.tabs.products} ({products.length})
+                </TabsTrigger>
+                <TabsTrigger value="marketing" className="gap-2">
+                    <Mail className="w-4 h-4" /> Marketing
                 </TabsTrigger>
             </TabsList>
 
@@ -137,6 +140,26 @@ export function AdminTabs({ users, products, translations }: AdminTabsProps) {
                 <AdminSearch type="products" />
 
                 <AdminProductTable products={products} />
+            </TabsContent>
+
+            <TabsContent value="marketing" className="space-y-4">
+                <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-lg p-8 text-center">
+                    <div className="flex flex-col items-center gap-4">
+                        <Mail className="w-12 h-12 text-purple-500" />
+                        <div>
+                            <h2 className="text-2xl font-bold mb-2">📧 Email Marketing & Notifications</h2>
+                            <p className="text-muted-foreground mb-6">
+                                Send bulk emails and notifications to your users with advanced filtering
+                            </p>
+                        </div>
+                        <a
+                            href="/admin/marketing"
+                            className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors inline-flex items-center gap-2"
+                        >
+                            Open Marketing Dashboard →
+                        </a>
+                    </div>
+                </div>
             </TabsContent>
         </Tabs>
     );

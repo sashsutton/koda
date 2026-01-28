@@ -28,6 +28,9 @@ export default function FileUpload({ onUploadSuccess, accept, label = "Automatio
             // 1. Get presigned URL
             const res = await fetch(endpoint, {
                 method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify({ fileName: file.name, fileType: file.type, fileSize: file.size }),
             });
 

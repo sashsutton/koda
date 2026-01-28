@@ -198,12 +198,19 @@ export async function POST(req: Request) {
 
                     console.log(`[WEBHOOK] Completed: ${ordersCreated} orders created out of ${productIds.length} products`);
 
-                    // 3. Send Email to Buyer
-                    if (buyerEmail && buyerOrderItems.length > 0) {
-                        await sendBuyerEmail(buyerEmail, buyerOrderItems, orderTotal);
+                    // 3. Get Stripe receipt URL for buyer email
+                    let stripeReceiptUrl: string | undefined;
+                    if (paymentIntent && (paymentIntent as any).charges?.data?.length > 0) {
+                        const charge = (paymentIntent as any).charges.data[0];
+                        stripeReceiptUrl = charge.receipt_url || undefined;
                     }
 
-                    // 4. Clear cart and remove purchased items from favorites
+                    // 4. Send Email to Buyer with Stripe receipt
+                    if (buyerEmail && buyerOrderItems.length > 0) {
+                        await sendBuyerEmail(buyerEmail, buyerOrderItems, orderTotal, stripeReceiptUrl);
+                    }
+
+                    // 5. Clear cart and remove purchased items from favorites
                     await User.findOneAndUpdate(
                         { clerkId: userId },
                         {

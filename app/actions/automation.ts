@@ -19,28 +19,44 @@ export async function createAutomation(formData: CreateAutomationInput) {
         throw new Error("Too many requests. Please try again later.");
     }
 
+    // Sanitize empty strings to undefined
+    const sanitizedData = {
+        ...formData,
+        previewImageUrl: formData.previewImageUrl?.trim() || undefined,
+        version: formData.version?.trim() || undefined,
+    };
 
     // Validation Zod
-    const validationResult = ProductSchema.safeParse(formData);
+    const validationResult = ProductSchema.safeParse(sanitizedData);
 
     if (!validationResult.success) {
         // On renvoie la première erreur trouvée pour simplifier l'affichage
-        throw new Error(validationResult.error.issues[0].message);
+        const firstError = validationResult.error.issues[0];
+        throw new Error(`${firstError.path.join('.')}: ${firstError.message}`);
     }
 
     const validData = validationResult.data;
 
-    await connectToDatabase();
+    try {
+        await connectToDatabase();
 
-    // VÉRIFICATION STRIPE CONNECT
-    ensureSellerIsReady(user);
+        // NOTE: Removed Stripe validation to allow product creation before Stripe setup
+        // Users can set up Stripe later in their dashboard
+        // Products will be created but payments won't work until Stripe is configured
 
-    // Création du produit uniquement si le compte Stripe est prêt
-    const newAutomation = await Automation.create({
-        ...validData,
-        sellerId: user.clerkId,
-    });
+        // Création du produit
+        const newAutomation = await Automation.create({
+            ...validData,
+            sellerId: user.clerkId,
+        });
 
-    revalidatePath("/");
-    return { success: true, id: newAutomation._id.toString() };
+        revalidatePath("/");
+        return { success: true, id: newAutomation._id.toString() };
+    } catch (error) {
+        console.error("Error creating automation:", error);
+        if (error instanceof Error) {
+            throw error;
+        }
+        throw new Error("Failed to create product. Please try again.");
+    }
 }

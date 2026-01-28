@@ -4,6 +4,7 @@ import { connectToDatabase } from "@/lib/db";
 import Notification from "@/models/Notification";
 import { requireAuth } from "@/lib/auth-utils";
 import { auth } from "@clerk/nextjs/server";
+import { pusherServer } from "@/lib/pusher-server";
 
 export interface INotificationData {
     _id: string;
@@ -112,7 +113,7 @@ export async function createNotification(
     await connectToDatabase();
 
     try {
-        await Notification.create({
+        const notification = await Notification.create({
             userId,
             type,
             title,
@@ -124,6 +125,31 @@ export async function createNotification(
             read: false,
             createdAt: new Date()
         });
+
+        // --- Real-time Pusher Event ---
+        // Trigger event to user's private channel for instant notification
+        try {
+            await pusherServer.trigger(
+                `private-user-${userId}`,
+                'new-notification',
+                {
+                    _id: notification._id.toString(),
+                    type,
+                    title,
+                    message,
+                    titleKey,
+                    messageKey,
+                    params,
+                    link,
+                    read: false,
+                    createdAt: notification.createdAt.toISOString()
+                }
+            );
+        } catch (pusherError) {
+            console.error("Pusher trigger error:", pusherError);
+            // Don't fail if Pusher fails
+        }
+
         return { success: true };
     } catch (error) {
         console.error("Failed to create notification:", error);

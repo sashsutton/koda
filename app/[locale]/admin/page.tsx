@@ -57,6 +57,24 @@ export default async function AdminDashboard({
                 <h1 className="text-3xl font-bold italic tracking-tight">{t('title')}</h1>
             </div>
 
+            {/* Marketing Card */}
+            <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-lg p-6 mb-6">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-xl font-bold mb-2">📧 Email Marketing & Notifications</h2>
+                        <p className="text-muted-foreground text-sm">
+                            Send bulk emails and notifications to your users with advanced filtering
+                        </p>
+                    </div>
+                    <a
+                        href="/admin/marketing"
+                        className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+                    >
+                        Go to Marketing →
+                    </a>
+                </div>
+            </div>
+
             <AdminTabs
                 users={users}
                 products={products}

@@ -311,35 +311,35 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                         </div>
                                     )}
                                 </div>
-                                <div className="pt-4 flex items-center gap-3 border-t mt-4">
-                                    <Link href={`/seller/${product.sellerId}`} className="flex items-center gap-3 group hover:opacity-80 transition-opacity">
-                                        {sellerImageUrl ? (
-                                            <img src={sellerImageUrl} alt={sellerName} className="h-10 w-10 rounded-full border group-hover:border-primary/50 transition-colors" />
-                                        ) : (
-                                            <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center group-hover:bg-secondary/80 transition-colors"><User size={20} /></div>
-                                        )}
-                                        <div className="flex flex-col">
-                                            <div className="text-[10px] text-muted-foreground uppercase font-bold flex items-center gap-1 group-hover:text-primary transition-colors">
-                                                {tPage('soldBy')}
-                                                <ArrowRight className="h-3 w-3 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                                            </div>
-                                            <div className="flex items-center gap-2">
+                                <div className="pt-4 border-t mt-4">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <Link href={`/seller/${product.sellerId}`} className="flex items-center gap-3 group hover:opacity-80 transition-opacity">
+                                            {sellerImageUrl ? (
+                                                <img src={sellerImageUrl} alt={sellerName} className="h-10 w-10 rounded-full border group-hover:border-primary/50 transition-colors" />
+                                            ) : (
+                                                <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center group-hover:bg-secondary/80 transition-colors"><User size={20} /></div>
+                                            )}
+                                            <div className="flex flex-col">
+                                                <div className="text-[10px] text-muted-foreground uppercase font-bold flex items-center gap-1 group-hover:text-primary transition-colors">
+                                                    {tPage('soldBy')}
+                                                    <ArrowRight className="h-3 w-3 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                                                </div>
                                                 <span className="text-sm font-semibold text-primary">{sellerName}</span>
-                                                {product.sellerId && product.sellerId !== "mock-seller" && (
-                                                    <ContactSellerDialog
-                                                        sellerId={product.sellerId}
-                                                        sellerName={sellerName}
-                                                        productTitle={product.title}
-                                                        trigger={
-                                                            <Button variant="ghost" size="icon" className="h-6 w-6 ml-1 text-muted-foreground hover:text-primary">
-                                                                <MessageSquare className="h-4 w-4" />
-                                                            </Button>
-                                                        }
-                                                    />
-                                                )}
                                             </div>
-                                        </div>
-                                    </Link>
+                                        </Link>
+                                        {product.sellerId && product.sellerId !== "mock-seller" && (
+                                            <ContactSellerDialog
+                                                sellerId={product.sellerId}
+                                                sellerName={sellerName}
+                                                productTitle={product.title}
+                                                trigger={
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary shrink-0">
+                                                        <MessageSquare className="h-4 w-4" />
+                                                    </Button>
+                                                }
+                                            />
+                                        )}
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>

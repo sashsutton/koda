@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { getUnreadMessageCount } from "@/app/actions/messaging";
 import { cn } from "@/lib/utils";
 
-export type DashboardMode = 'buyer' | 'seller' | 'profile' | 'messages';
+export type DashboardMode = 'buyer' | 'seller' | 'messages';
 
 interface DashboardModeSwitcherProps {
     currentMode: DashboardMode;
@@ -17,6 +17,8 @@ export default function DashboardModeSwitcher({ currentMode, onChangeMode }: Das
     const t = useTranslations('Dashboard.modes');
     const [unreadCount, setUnreadCount] = useState(0);
 
+    // Load count once on mount
+    // Real-time updates happen via Pusher in NotificationBell/DashboardInbox
     useEffect(() => {
         const fetchCount = async () => {
             try {
@@ -28,8 +30,6 @@ export default function DashboardModeSwitcher({ currentMode, onChangeMode }: Das
         };
 
         fetchCount();
-        const interval = setInterval(fetchCount, 10000);
-        return () => clearInterval(interval);
     }, []);
 
     return (
@@ -72,16 +72,6 @@ export default function DashboardModeSwitcher({ currentMode, onChangeMode }: Das
                         {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                 )}
-            </button>
-            <button
-                onClick={() => onChangeMode('profile')}
-                className={`flex items-center px-4 py-2 rounded-md transition-all whitespace-nowrap cursor-pointer ${currentMode === 'profile'
-                    ? 'bg-background shadow-sm text-foreground font-medium'
-                    : 'text-muted-foreground hover:bg-background/50 hover:text-foreground'
-                    }`}
-            >
-                <User className="w-4 h-4 mr-2" />
-                {t('profile')}
             </button>
         </div>
     );

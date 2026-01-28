@@ -32,8 +32,7 @@ export const ProductSchema = z.object({
     previewImageUrl: z
         .string()
         .url("Invalid image URL.")
-        .optional()
-        .or(z.literal("")),
+        .optional(),
 
     version: z.string().optional().or(z.literal("")),
 });
