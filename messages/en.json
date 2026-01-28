@@ -168,6 +168,7 @@
         "alreadyInCart": "This article is already in your cart.",
         "inCart": "In your cart",
         "syncResult": "{synced} synced, {deleted} deleted (orphans).",
+        "profileUpdated": "Profile updated successfully!",
         "addedToFavorites": "Added to favorites!",
         "removedFromFavorites": "Removed from favorites.",
         "loginRequired": "Please log in to save favorites.",
@@ -238,6 +239,16 @@
         "addToFavorites": "Add to favorites",
         "removeFromFavorites": "Remove from favorites",
         "browse": "Browse catalog"
+    },
+    "Seller": {
+        "verified": "Verified Seller",
+        "products": "products",
+        "sales": "sales",
+        "rating": "rating",
+        "memberSince": "Member since",
+        "productsBy": "Products by {name}",
+        "noProducts": "No products available",
+        "backToCatalog": "Back to catalog"
     },
     "Sell": {
         "title": "Sell a Blueprint",
@@ -375,7 +386,8 @@
             "buyer": "Buyer View",
             "seller": "Seller View",
             "buyerDesc": "Manage your purchases and downloads.",
-            "sellerDesc": "Track your sales and manage your inventory."
+            "sellerDesc": "Track your sales and manage your inventory.",
+            "profile": "Profile"
         },
         "sections": {
             "overview": "Overview",
@@ -385,6 +397,30 @@
             "sales": "Recent Sales",
             "buyerInsights": "Buyer Insights",
             "buyerInsightsDesc": "Detailed analytics for your purchases coming soon."
+        },
+        "profile": {
+            "title": "Profile Settings",
+            "description": "Manage your public profile information",
+            "avatar": {
+                "title": "Profile Picture",
+                "description": "Your avatar is managed via Clerk authentication.",
+                "changeButton": "Change on Clerk"
+            },
+            "form": {
+                "username": "Username",
+                "usernameHelp": "Unique handle for your public profile URL (@username)",
+                "firstName": "First Name",
+                "lastName": "Last Name",
+                "bio": "Bio",
+                "bioPlaceholder": "Tell us about yourself...",
+                "bioHelp": "Calculated by character count",
+                "save": "Save Changes",
+                "saving": "Saving..."
+            },
+            "errors": {
+                "usernameTaken": "This username is already taken.",
+                "updateFailed": "Failed to update profile. Please try again."
+            }
         },
         "stats": {
             "balance": "Stripe Balance",

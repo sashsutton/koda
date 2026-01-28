@@ -1,4 +1,5 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
+import User from "@/models/User";
 import { getSellerBalance, getSalesHistory, getMyProducts, getMyOrders } from "@/app/actions/dashboard";
 import { getMyFavorites } from "@/app/actions/favorites";
 import { deleteProduct } from "@/app/actions/product-management";
@@ -23,12 +24,13 @@ export default async function DashboardPage() {
     if (!userId || !user) redirect("/sign-in");
 
     // Parallel data fetching
-    const [balance, sales, products, orders, favorites] = await Promise.all([
+    const [balance, sales, products, orders, favorites, dbUser] = await Promise.all([
         getSellerBalance(),
         getSalesHistory(),
         getMyProducts(),
         getMyOrders(),
         getMyFavorites(),
+        User.findOne({ clerkId: userId }).lean(),
     ]);
 
     async function handleDelete(productId: string) {
@@ -36,15 +38,22 @@ export default async function DashboardPage() {
         await deleteProduct(productId);
     }
 
+    // Merge Clerk data with DB data
+    const completeUser = {
+        clerkId: userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        imageUrl: user.imageUrl,
+        email: user.emailAddresses[0]?.emailAddress,
+        username: dbUser?.username || user.username,
+        bio: dbUser?.bio || "",
+        createdAt: user.createdAt,
+        onboardingComplete: dbUser?.onboardingComplete || false
+    };
+
     return (
         <DashboardContent
-            user={{
-                firstName: user.firstName,
-                lastName: user.lastName,
-                imageUrl: user.imageUrl,
-                createdAt: user.createdAt,
-                email: user.emailAddresses[0]?.emailAddress
-            }}
+            user={completeUser}
             balance={balance}
             sales={sales}
             products={products}

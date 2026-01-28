@@ -165,9 +165,9 @@ export function ProductCard({ product, userId, isPurchased = false }: ProductCar
                 {/* Seller Info */}
                 <div className="text-xs text-muted-foreground flex items-center gap-1">
                     <span>{t('offeredBy')}</span>
-                    <span className="font-medium text-foreground hover:underline cursor-pointer">
+                    <Link href={`/seller/${product.sellerId}`} className="font-medium text-foreground hover:underline cursor-pointer transition-colors hover:text-primary">
                         {product.seller?.username || "Vendeur"}
-                    </span>
+                    </Link>
                 </div>
             </CardHeader>
 

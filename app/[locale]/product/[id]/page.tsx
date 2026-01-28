@@ -6,7 +6,7 @@ import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Separator } from "@/app/components/ui/separator";
 import { getPublicImageUrl } from "@/lib/image-helper";
-import { ShieldCheck, ChevronLeft, Download, Zap, MessageSquare, Star, Package, User } from "lucide-react";
+import { ShieldCheck, ChevronLeft, Download, Zap, MessageSquare, Star, Package, User, ArrowRight } from "lucide-react";
 import { getTranslations, getFormatter } from "next-intl/server";
 import Link from "next/link";
 import { createClerkClient } from "@clerk/nextjs/server";
@@ -310,15 +310,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                     )}
                                 </div>
                                 <div className="pt-4 flex items-center gap-3 border-t mt-4">
-                                    {sellerImageUrl ? (
-                                        <img src={sellerImageUrl} alt={sellerName} className="h-10 w-10 rounded-full border" />
-                                    ) : (
-                                        <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center"><User size={20} /></div>
-                                    )}
-                                    <div className="flex flex-col">
-                                        <span className="text-[10px] text-muted-foreground uppercase font-bold">{tPage('soldBy')}</span>
-                                        <span className="text-sm font-semibold text-primary">{sellerName}</span>
-                                    </div>
+                                    <Link href={`/seller/${product.sellerId}`} className="flex items-center gap-3 group hover:opacity-80 transition-opacity">
+                                        {sellerImageUrl ? (
+                                            <img src={sellerImageUrl} alt={sellerName} className="h-10 w-10 rounded-full border group-hover:border-primary/50 transition-colors" />
+                                        ) : (
+                                            <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center group-hover:bg-secondary/80 transition-colors"><User size={20} /></div>
+                                        )}
+                                        <div className="flex flex-col">
+                                            <div className="text-[10px] text-muted-foreground uppercase font-bold flex items-center gap-1 group-hover:text-primary transition-colors">
+                                                {tPage('soldBy')}
+                                                <ArrowRight className="h-3 w-3 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                                            </div>
+                                            <span className="text-sm font-semibold text-primary">{sellerName}</span>
+                                        </div>
+                                    </Link>
                                 </div>
                             </CardContent>
                         </Card>

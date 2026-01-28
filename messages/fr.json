@@ -167,6 +167,7 @@
         "alreadyInCart": "Cet article est déjà dans votre panier.",
         "inCart": "Dans le panier",
         "syncResult": "{synced} synchronisés, {deleted} supprimés (orphelins).",
+        "profileUpdated": "Profil mis à jour avec succès !",
         "addedToFavorites": "Ajouté aux favoris !",
         "removedFromFavorites": "Retiré des favoris.",
         "loginRequired": "Connectez-vous pour sauvegarder des favoris.",
@@ -237,6 +238,16 @@
         "addToFavorites": "Ajouter aux favoris",
         "removeFromFavorites": "Retirer des favoris",
         "browse": "Parcourir le catalogue"
+    },
+    "Seller": {
+        "verified": "Vendeur vérifié",
+        "products": "produits",
+        "sales": "ventes",
+        "rating": "évaluation",
+        "memberSince": "Membre depuis",
+        "productsBy": "Produits par {name}",
+        "noProducts": "Aucun produit disponible",
+        "backToCatalog": "Retour au catalogue"
     },
     "Sell": {
         "title": "Vendre un Blueprint",
@@ -374,7 +385,8 @@
             "buyer": "Vue Acheteur",
             "seller": "Vue Vendeur",
             "buyerDesc": "Gérez vos achats et vos téléchargements.",
-            "sellerDesc": "Suivez vos ventes et gérez votre inventaire."
+            "sellerDesc": "Suivez vos ventes et gérez votre inventaire.",
+            "profile": "Profil"
         },
         "sections": {
             "overview": "Vue d'ensemble",
@@ -384,6 +396,30 @@
             "sales": "Ventes Récentes",
             "buyerInsights": "Aperçu Acheteur",
             "buyerInsightsDesc": "Analyses détaillées de vos achats bientôt disponibles."
+        },
+        "profile": {
+            "title": "Paramètres du Profil",
+            "description": "Gérez vos informations de profil public",
+            "avatar": {
+                "title": "Photo de Profil",
+                "description": "Votre avatar est géré via l'authentification Clerk.",
+                "changeButton": "Modifier sur Clerk"
+            },
+            "form": {
+                "username": "Nom d'utilisateur",
+                "usernameHelp": "Identifiant unique pour votre URL de profil public (@username)",
+                "firstName": "Prénom",
+                "lastName": "Nom",
+                "bio": "Bio",
+                "bioPlaceholder": "Parlez-nous de vous...",
+                "bioHelp": "Calculé par nombre de caractères",
+                "save": "Enregistrer",
+                "saving": "Sauvegarde..."
+            },
+            "errors": {
+                "usernameTaken": "Ce nom d'utilisateur est déjà pris.",
+                "updateFailed": "Échec de la mise à jour du profil. Veuillez réessayer."
+            }
         },
         "stats": {
             "balance": "Balance Stripe",

@@ -216,6 +216,7 @@
         "alreadyInCart": "Este artículo ya está en tu carrito.",
         "inCart": "En el carrito",
         "syncResult": "{synced} sincronizados, {deleted} eliminados (huérfanos).",
+        "profileUpdated": "¡Perfil actualizado con éxito!",
         "addedToFavorites": "¡Añadido a favoritos!",
         "removedFromFavorites": "Eliminado de favoritos.",
         "loginRequired": "Inicia sesión para guardar favoritos.",
@@ -237,6 +238,16 @@
         "codePlaceholder": "Introducir código",
         "youMightLike": "También te podría gustar",
         "add": "Añadir"
+    },
+    "Seller": {
+        "verified": "Vendedor verificado",
+        "products": "productos",
+        "sales": "ventas",
+        "rating": "valoración",
+        "memberSince": "Miembro desde",
+        "productsBy": "Productos de {name}",
+        "noProducts": "No hay productos disponibles",
+        "backToCatalog": "Volver al catálogo"
     },
     "Sell": {
         "title": "Vender un Blueprint",
@@ -374,7 +385,8 @@
             "buyer": "Vista de Comprador",
             "seller": "Vista de Vendedor",
             "buyerDesc": "Gestiona tus compras y descargas.",
-            "sellerDesc": "Sigue tus ventas y gestiona tu inventario."
+            "sellerDesc": "Sigue tus ventas y gestiona tu inventario.",
+            "profile": "Perfil"
         },
         "sections": {
             "overview": "Resumen",
@@ -384,6 +396,30 @@
             "sales": "Ventas Recientes",
             "buyerInsights": "Perspectivas del comprador",
             "buyerInsightsDesc": "Análisis detallado de tus compras próximamente."
+        },
+        "profile": {
+            "title": "Configuración del Perfil",
+            "description": "Gestiona tu información de perfil público",
+            "avatar": {
+                "title": "Foto de Perfil",
+                "description": "Tu avatar se gestiona a través de la autenticación de Clerk.",
+                "changeButton": "Cambiar en Clerk"
+            },
+            "form": {
+                "username": "Nombre de usuario",
+                "usernameHelp": "Identificador único para tu URL de perfil público (@username)",
+                "firstName": "Nombre",
+                "lastName": "Apellido",
+                "bio": "Biografía",
+                "bioPlaceholder": "Cuéntanos sobre ti...",
+                "bioHelp": "Calculado por número de caracteres",
+                "save": "Guardar cambios",
+                "saving": "Guardando..."
+            },
+            "errors": {
+                "usernameTaken": "Este nombre de usuario ya está en uso.",
+                "updateFailed": "Error al actualizar el perfil. Por favor, inténtalo de nuevo."
+            }
         },
         "stats": {
             "balance": "Balance de Stripe",

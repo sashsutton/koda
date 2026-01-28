@@ -1,10 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { ShoppingBag, LayoutDashboard, Store } from "lucide-react";
+import { ShoppingBag, LayoutDashboard, Store, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type DashboardMode = "buyer" | "seller";
+export type DashboardMode = "buyer" | "seller" | "profile";
 
 interface DashboardModeSwitcherProps {
     mode: DashboardMode;
@@ -41,7 +41,20 @@ export function DashboardModeSwitcher({ mode, onChange }: DashboardModeSwitcherP
                     <Store className={cn("h-4 w-4", mode === "seller" ? "text-primary" : "text-muted-foreground")} />
                     {t('seller')}
                 </button>
+                <button
+                    onClick={() => onChange("profile")}
+                    className={cn(
+                        "flex items-center gap-2.5 px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 cursor-pointer",
+                        mode === "profile"
+                            ? "bg-background text-primary shadow-xl ring-1 ring-border/20 scale-100"
+                            : "text-muted-foreground hover:text-foreground hover:bg-white/5 scale-95 opacity-70"
+                    )}
+                >
+                    <User className={cn("h-4 w-4", mode === "profile" ? "text-primary" : "text-muted-foreground")} />
+                    {t('profile')}
+                </button>
             </div>
         </div>
     );
 }
+

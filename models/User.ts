@@ -7,6 +7,7 @@ export interface IUser extends Document {
     lastName?: string;
     email?: string;
     imageUrl?: string;
+    bio?: string; // Seller bio/description
     stripeConnectId?: string;
     onboardingComplete: boolean;
     role: 'user' | 'admin';
@@ -24,6 +25,7 @@ const UserSchema = new mongoose.Schema({
     lastName: { type: String },
     email: { type: String, unique: true, sparse: true },
     imageUrl: { type: String },
+    bio: { type: String, maxlength: 500 }, // Seller bio
     stripeConnectId: { type: String },
     onboardingComplete: { type: Boolean, default: false },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
