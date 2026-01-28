@@ -14,6 +14,10 @@
         "noMatch": "No automation matches your filters.",
         "clearFilters": "Clear filters"
     },
+    "Common": {
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+    },
     "Navigation": {
         "catalog": "Catalog",
         "dashboard": "Dashboard",
@@ -181,7 +185,10 @@
         "center": {
             "title": "Notifications",
             "markAllRead": "Mark all as read",
-            "empty": "No notifications yet"
+            "empty": "No notifications yet",
+            "clearAll": "Clear all",
+            "confirmClearAll": "Are you sure you want to delete all notifications?",
+            "delete": "Delete"
         },
         "messageReceivedTitle": "New Message",
         "messageReceivedBody": "You received a message: \"{preview}\"",

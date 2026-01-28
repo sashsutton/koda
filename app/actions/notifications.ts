@@ -121,3 +121,25 @@ export async function createNotification(
         return { success: false, error };
     }
 }
+
+/**
+ * Delete a single notification
+ */
+export async function deleteNotification(notificationId: string) {
+    const userId = await requireAuth();
+    await connectToDatabase();
+
+    await Notification.deleteOne({ _id: notificationId, userId });
+    return { success: true };
+}
+
+/**
+ * Delete all notifications for the current user
+ */
+export async function deleteAllNotifications() {
+    const userId = await requireAuth();
+    await connectToDatabase();
+
+    await Notification.deleteMany({ userId });
+    return { success: true };
+}

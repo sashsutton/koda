@@ -14,6 +14,10 @@
         "noMatch": "Ninguna automatización coincide con tus filtros.",
         "clearFilters": "Borrar filtros"
     },
+    "Common": {
+        "cancel": "Cancelar",
+        "confirm": "Confirmar"
+    },
     "Navigation": {
         "catalog": "Catálogo",
         "dashboard": "Panel",
@@ -227,7 +231,10 @@
         "center": {
             "title": "Notificaciones",
             "markAllRead": "Marcar todo como leído",
-            "empty": "Sin notificaciones"
+            "empty": "Sin notificaciones",
+            "clearAll": "Borrar todo",
+            "confirmClearAll": "¿Estás seguro de que quieres borrar todas las notificaciones?",
+            "delete": "Eliminar"
         },
         "messageReceivedTitle": "Nuevo Mensaje",
         "messageReceivedBody": "Recibiste un mensaje: \"{preview}\"",
