@@ -219,6 +219,7 @@
         "editReview": "Edit my review",
         "leaveReview": "Leave a review",
         "cancel": "Cancel",
+        "errorUpdating": "Error updating profile.",
         "yourRating": "Your rating",
         "yourComment": "Your comment",
         "placeholder": "What did you think of this automation?",
@@ -422,6 +423,13 @@
                 "updateFailed": "Failed to update profile. Please try again."
             }
         },
+        "Inbox": {
+            "title": "Messages",
+            "noConversations": "No conversations yet.",
+            "startDiscussion": "Start the discussion!",
+            "placeholder": "Type your message...",
+            "selectConversation": "Select a conversation to start chatting."
+        },
         "stats": {
             "balance": "Stripe Balance",
             "available": "Available",
@@ -530,5 +538,17 @@
             "loading": "Nuclear deletion in progress (Clerk + Stripe + DB)...",
             "confirm": "WARNING: This will permanently delete the Clerk account, Stripe Connect account, all products, and all history for this user. This action is irreversible. Continue?"
         }
+    },
+    "ContactSeller": {
+        "button": "Contact Seller",
+        "title": "Contact {name}",
+        "description": "Send a message to the seller. You can find their reply in your Dashboard.",
+        "placeholder": "Hello, I have a question about...",
+        "cancel": "Cancel",
+        "send": "Send Message",
+        "success": "Message sent!",
+        "error": "Error sending message.",
+        "cannotMessageSelf": "You cannot message yourself.",
+        "regarding": "Regarding product"
     }
 }

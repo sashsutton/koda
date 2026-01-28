@@ -3,10 +3,12 @@
 import { useTranslations, useFormatter } from "next-intl";
 import { UserButton } from "@clerk/nextjs";
 import { Badge } from "@/app/components/ui/badge";
+import { Link } from "@/i18n/routing";
 import { Calendar } from "lucide-react";
 
 interface DashboardHeaderProps {
     user: {
+        clerkId: string;
         firstName: string | null;
         lastName: string | null;
         imageUrl: string;
@@ -30,15 +32,15 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
             </div>
 
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-                <div className="flex-shrink-0 relative group">
+                <Link href={`/seller/${user.clerkId}`} className="flex-shrink-0 relative group cursor-pointer block">
                     <div className="absolute -inset-1 bg-gradient-to-r from-primary to-primary/50 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                    <div className="relative h-32 w-32 rounded-full overflow-hidden border-4 border-background shadow-2xl">
+                    <div className="relative h-32 w-32 rounded-full overflow-hidden border-4 border-background shadow-2xl transition-transform group-hover:scale-105">
                         <img src={user.imageUrl} alt="Profile" className="object-cover w-full h-full" />
                     </div>
-                    <div className="absolute bottom-1 right-1">
+                    <div className="absolute bottom-1 right-1 pointer-events-auto" onClick={(e) => e.stopPropagation()}>
                         <UserButton afterSignOutUrl="/" appearance={{ elements: { userButtonAvatarBox: "h-10 w-10 border-2 border-background" } }} />
                     </div>
-                </div>
+                </Link>
 
                 <div className="text-center md:text-left space-y-4">
                     <div>

@@ -9,7 +9,8 @@ import { StatsGrid } from "@/app/components/dashboard/StatsGrid";
 import { ActivityFeed } from "@/app/components/dashboard/ActivityFeed";
 import { ProductList } from "@/app/components/dashboard/ProductList";
 import { FavoritesList } from "@/app/components/dashboard/FavoritesList";
-import { DashboardModeSwitcher, DashboardMode } from "@/app/components/dashboard/DashboardModeSwitcher";
+import DashboardInbox from "@/app/components/dashboard/DashboardInbox";
+import DashboardModeSwitcher, { DashboardMode } from "@/app/components/dashboard/DashboardModeSwitcher";
 import { ProfileSettings } from "@/app/components/dashboard/ProfileSettings";
 
 interface DashboardContentProps {
@@ -33,7 +34,7 @@ export function DashboardContent({ user, balance, sales, products, orders, favor
                 <DashboardHeader user={user} />
 
                 {/* Mode Switcher */}
-                <DashboardModeSwitcher mode={mode} onChange={setMode} />
+                <DashboardModeSwitcher currentMode={mode} onChangeMode={setMode} />
 
                 <div className="space-y-12 transition-all duration-500">
                     {mode === "seller" ? (
@@ -52,6 +53,11 @@ export function DashboardContent({ user, balance, sales, products, orders, favor
                         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                             {/* Profile Settings View */}
                             <ProfileSettings user={user} />
+                        </div>
+                    ) : mode === "messages" ? (
+                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            {/* Inbox View */}
+                            <DashboardInbox />
                         </div>
                     ) : (
                         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">

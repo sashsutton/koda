@@ -14,8 +14,11 @@ import {
     ShoppingBag,
     Calendar,
     User,
-    ArrowLeft
+    ArrowLeft,
+    User as UserIcon,
+    CheckCircle
 } from "lucide-react";
+import ContactSellerDialog from "@/app/components/messaging/ContactSellerDialog";
 import { auth } from "@clerk/nextjs/server";
 
 interface SellerPageProps {
@@ -84,11 +87,13 @@ export default async function SellerPage({ params }: SellerPageProps) {
                         <div className="flex-1 text-center md:text-left">
                             <div className="flex flex-col md:flex-row items-center md:items-start gap-3 mb-4">
                                 <h1 className="text-3xl md:text-4xl font-bold">{displayName}</h1>
-                                {seller.onboardingComplete && (
-                                    <Badge className="bg-green-600 text-white">
-                                        <ShieldCheck className="w-3.5 h-3.5 mr-1" />
-                                        {t('verified')}
-                                    </Badge>
+                                {seller.onboardingComplete && userId !== seller.clerkId && (
+                                    <div className="flex gap-2 w-full sm:w-auto">
+                                        <ContactSellerDialog
+                                            sellerId={seller.clerkId || ""}
+                                            sellerName={seller.username || seller.firstName || "Vendeur"}
+                                        />
+                                    </div>
                                 )}
                             </div>
 

@@ -16,6 +16,7 @@ import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
 import { getDownloadUrl } from "@/lib/s3";
 import { getUserPurchasedProductIds } from "@/app/actions/purchases";
+import ContactSellerDialog from "@/app/components/messaging/ContactSellerDialog";
 import { Metadata } from "next";
 
 // Imports pour les avis
@@ -320,7 +321,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
                                                 {tPage('soldBy')}
                                                 <ArrowRight className="h-3 w-3 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
                                             </div>
-                                            <span className="text-sm font-semibold text-primary">{sellerName}</span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-semibold text-primary">{sellerName}</span>
+                                                {product.sellerId && product.sellerId !== "mock-seller" && (
+                                                    <ContactSellerDialog
+                                                        sellerId={product.sellerId}
+                                                        sellerName={sellerName}
+                                                        productTitle={product.title}
+                                                        trigger={
+                                                            <Button variant="ghost" size="icon" className="h-6 w-6 ml-1 text-muted-foreground hover:text-primary">
+                                                                <MessageSquare className="h-4 w-4" />
+                                                            </Button>
+                                                        }
+                                                    />
+                                                )}
+                                            </div>
                                         </div>
                                     </Link>
                                 </div>

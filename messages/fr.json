@@ -421,6 +421,13 @@
                 "updateFailed": "Échec de la mise à jour du profil. Veuillez réessayer."
             }
         },
+        "Inbox": {
+            "title": "Messagerie",
+            "noConversations": "Aucune conversation pour le moment.",
+            "startDiscussion": "Lancez la discussion !",
+            "placeholder": "Écrivez votre message...",
+            "selectConversation": "Sélectionnez une conversation pour discuter."
+        },
         "stats": {
             "balance": "Balance Stripe",
             "available": "Disponible",
@@ -529,5 +536,17 @@
             "loading": "Suppression nucléaire en cours (Clerk + Stripe + DB)...",
             "confirm": "ATTENTION : Cela supprimera définitivement le compte Clerk, le compte Stripe Connect, tous les produits et tout l'historique de cet utilisateur. Cette action est irréversible. Continuer ?"
         }
+    },
+    "ContactSeller": {
+        "button": "Contacter le vendeur",
+        "title": "Contacter {name}",
+        "description": "Envoyez un message au vendeur. Vous retrouverez sa réponse dans votre Dashboard.",
+        "placeholder": "Bonjour, j'ai une question à propos de...",
+        "cancel": "Annuler",
+        "send": "Envoyer",
+        "success": "Message envoyé !",
+        "error": "Erreur lors de l'envoi.",
+        "cannotMessageSelf": "Vous ne pouvez pas vous envoyer de message.",
+        "regarding": "Concernant le produit"
     }
 }

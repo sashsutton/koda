@@ -17,11 +17,18 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-export default async function DashboardPage() {
+type DashboardMode = 'buyer' | 'seller' | 'profile' | 'messages';
+
+export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ mode?: string }> }) {
     const { userId } = await auth();
     const user = await currentUser();
 
     if (!userId || !user) redirect("/sign-in");
+
+    const resolvedParams = await searchParams;
+    const mode = resolvedParams.mode;
+    const validModes: DashboardMode[] = ['buyer', 'seller', 'profile', 'messages'];
+    const initialMode: DashboardMode = validModes.includes(mode as DashboardMode) ? (mode as DashboardMode) : 'buyer';
 
     // Parallel data fetching
     const [balance, sales, products, orders, favorites, dbUser] = await Promise.all([

@@ -13,11 +13,16 @@ export function useLocalizedToast() {
     const tNotif = useTranslations("Notifications");
 
     const showSuccess = (messageKey: string, params?: any) => {
-        // messageKey can be a simple string or a key in Notifications
+        // Check if input is a raw sentence (contains spaces/punctuation)
+        if (messageKey.includes(' ') || messageKey.endsWith('!') || messageKey.endsWith('.')) {
+            toast.success(messageKey);
+            return;
+        }
+
         try {
             toast.success(tNotif(messageKey, params));
         } catch {
-            toast.success(messageKey); // Fallback to raw string
+            toast.success(messageKey);
         }
     };
 

@@ -472,6 +472,13 @@
         "feed": {
             "productUnavailable": "Produkt nicht verfügbar",
             "success": "Erfolg"
+        },
+        "Inbox": {
+            "title": "Nachrichten",
+            "noConversations": "Noch keine Unterhaltungen.",
+            "startDiscussion": "Starten Sie die Diskussion!",
+            "placeholder": "Schreiben Sie Ihre Nachricht...",
+            "selectConversation": "Wählen Sie eine Unterhaltung, um zu chatten."
         }
     },
     "Admin": {
@@ -530,5 +537,17 @@
             "loading": "Vollständige Löschung läuft (Clerk + Stripe + DB)...",
             "confirm": "WARNUNG: Dies wird das Clerk-Konto, das Stripe Connect-Konto, alle Produkte und den gesamten Verlauf für diesen Benutzer dauerhaft löschen. Diese Aktion ist irreversibel. Fortfahren?"
         }
+    },
+    "ContactSeller": {
+        "button": "Verkäufer kontaktieren",
+        "title": "Kontaktieren Sie {name}",
+        "description": "Senden Sie eine Nachricht an den Verkäufer. Sie finden die Antwort in Ihrem Dashboard.",
+        "placeholder": "Hallo, ich habe eine Frage zu...",
+        "cancel": "Abbrechen",
+        "send": "Nachricht senden",
+        "success": "Nachricht gesendet!",
+        "error": "Fehler beim Senden der Nachricht.",
+        "cannotMessageSelf": "Sie können sich nicht selbst schreiben.",
+        "regarding": "Betreffend Produkt"
     }
 }
