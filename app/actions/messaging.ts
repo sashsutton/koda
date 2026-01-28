@@ -6,7 +6,7 @@ import Message from "@/models/Message";
 import User from "@/models/User";
 import { requireAuth } from "@/lib/auth-utils";
 import { resend } from "@/lib/resend";
-import { clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { createNotification } from "@/app/actions/notifications";
 
 // --- Types ---
@@ -210,9 +210,12 @@ export async function getConversationMessages(conversationId: string): Promise<I
 
 /**
  * Compte le nombre total de messages non lus pour l'utilisateur
+ * Returns 0 if not authenticated (poll-safe)
  */
 export async function getUnreadMessageCount(): Promise<number> {
-    const userId = await requireAuth();
+    const { userId } = await auth(); // Soft check, no redirect
+    if (!userId) return 0;
+
     await connectToDatabase();
 
     const count = await Message.countDocuments({

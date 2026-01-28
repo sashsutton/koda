@@ -3,6 +3,7 @@
 import { connectToDatabase } from "@/lib/db";
 import Notification from "@/models/Notification";
 import { requireAuth } from "@/lib/auth-utils";
+import { auth } from "@clerk/nextjs/server";
 
 export interface INotificationData {
     _id: string;
@@ -19,9 +20,13 @@ export interface INotificationData {
 
 /**
  * Fetch notifications for the current user
+ * Returns empty array if not authenticated (poll-safe)
  */
 export async function getNotifications(limit = 10): Promise<INotificationData[]> {
-    const userId = await requireAuth();
+    // Soft check prevents redirect loop during polling
+    const { userId } = await auth();
+    if (!userId) return [];
+
     await connectToDatabase();
 
     const notifications = await Notification.find({ userId })
@@ -45,9 +50,13 @@ export async function getNotifications(limit = 10): Promise<INotificationData[]>
 
 /**
  * Get unread notification count
+ * Returns 0 if not authenticated (poll-safe)
  */
 export async function getUnreadNotificationCount(): Promise<number> {
-    const userId = await requireAuth();
+    // Soft check prevents redirect loop during polling
+    const { userId } = await auth();
+    if (!userId) return 0;
+
     await connectToDatabase();
 
     const count = await Notification.countDocuments({
