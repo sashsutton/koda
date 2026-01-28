@@ -15,7 +15,7 @@ import { redirect } from "next/navigation";
 import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
 import { getDownloadUrl } from "@/lib/s3";
-import Purchase from "@/models/Purchase";
+import { getUserPurchasedProductIds } from "@/app/actions/purchases";
 import { Metadata } from "next";
 
 // Imports pour les avis
@@ -71,17 +71,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
     let purchase = null;
 
     if (userId) {
-        // CORRECTION : On ne filtre plus par 'status' car le modèle Purchase n'en a pas.
-        // Si l'entrée existe dans Purchase, c'est que c'est payé (le webhook ne crée que si success).
-        const userPurchases = await Purchase.find({
-            buyerId: userId
-        }).lean();
+        const purchasedIds = await getUserPurchasedProductIds(userId);
+        hasPurchased = purchasedIds.includes(id);
 
-        // On cherche le bon produit en comparant les IDs en String (sécurité maximale)
-        purchase = userPurchases.find((p: any) => p.productId.toString() === id);
+        if (hasPurchased) {
+            // Fetch purchase details if needed, or re-verify for download URL secure logic if it relies on DB object properties beyond ID. 
+            // Ideally we should move getDownloadUrl logic to a secure action too, but for now let's verify if `purchase` object was used for anything else.
+            // It seems 'purchase' variable is used. We might need a separate call or just trust ID if that's enough for logic. 
+            // Looking at lines 83-92: if purchase exists, we generate secureDownloadUrl. 
+            // We can just rely on hasPurchased boolean.
 
-        if (purchase) {
-            hasPurchased = true;
             try {
                 const fileKey = product.fileUrl.split('.com/')[1];
                 const filename = `${product.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`;

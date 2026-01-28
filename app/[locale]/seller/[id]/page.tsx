@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { getSellerProfile } from "@/app/actions/seller";
-import Purchase from "@/models/Purchase";
+import { getUserPurchasedProductIds } from "@/app/actions/purchases";
 import { ProductCard } from "@/app/components/products/product-card";
 import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
@@ -32,11 +32,8 @@ export default async function SellerPage({ params }: SellerPageProps) {
     const seller = await getSellerProfile(id);
 
     // Fetch user's purchases to determine if they own any of the products
-    let purchasedProductIds: string[] = [];
-    if (userId) {
-        const purchases = await Purchase.find({ buyerId: userId }).select('productId').lean();
-        purchasedProductIds = purchases.map((p: any) => p.productId.toString());
-    }
+    // Fetch user's purchases to determine if they own any of the products
+    const purchasedProductIds = await getUserPurchasedProductIds(userId || '');
 
     if (!seller) {
         notFound();

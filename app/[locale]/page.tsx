@@ -1,7 +1,7 @@
 import { connectToDatabase } from "@/lib/db";
 import Automation from "@/models/Automation";
 import User from "@/models/User";
-import Purchase from "@/models/Purchase";
+import { getUserPurchasedProductIds } from "@/app/actions/purchases";
 import { Link } from '@/i18n/routing';
 import { Button } from "@/app/components/ui/button";
 import { ProductCard } from "@/app/components/products/product-card";
@@ -83,9 +83,8 @@ export default async function Home(props: HomeProps) {
 
   const purchasedProductIds = new Set<string>();
   if (userId) {
-    await connectToDatabase();
-    const purchases = await Purchase.find({ buyerId: userId }).select("productId");
-    purchases.forEach(p => purchasedProductIds.add(p.productId.toString()));
+    const ids = await getUserPurchasedProductIds(userId);
+    ids.forEach(id => purchasedProductIds.add(id));
   }
 
   return (

@@ -64,7 +64,7 @@ export default async function CatalogPage(props: CatalogPageProps) {
 }
 
 import { auth } from "@clerk/nextjs/server";
-import Purchase from "@/models/Purchase";
+import { getUserPurchasedProductIds } from "@/app/actions/purchases";
 import { connectToDatabase } from "@/lib/db";
 import { getTranslations } from "next-intl/server";
 
@@ -78,10 +78,8 @@ async function ProductList({ filters }: { filters: any }) {
     const purchasedProductIds = new Set<string>();
 
     if (userId) {
-        await connectToDatabase();
-        // On récupère uniquement les IDs des produits achetés par l'utilisateur
-        const purchases = await Purchase.find({ buyerId: userId }).select("productId");
-        purchases.forEach(p => purchasedProductIds.add(p.productId.toString()));
+        const ids = await getUserPurchasedProductIds(userId);
+        ids.forEach(id => purchasedProductIds.add(id));
     }
 
     if (products.length === 0) {
