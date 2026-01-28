@@ -26,9 +26,12 @@ export async function getAllProducts(search?: string) {
     return await getOrSetCache(cacheKey, async () => {
         const query = search ? { title: { $regex: search, $options: 'i' } } : {};
 
-        const products = await Product.find(query)
+        const rawProducts = await Product.find(query)
             .sort({ createdAt: -1 })
             .lean();
+
+        // Sanitize Mongoose objects (ObjectIds, etc.)
+        const products = JSON.parse(JSON.stringify(rawProducts));
 
         // Récupération des vendeurs pour l'affichage
         const sellerIds = [...new Set(products.map((p: any) => p.sellerId))];
@@ -37,9 +40,10 @@ export async function getAllProducts(search?: string) {
 
         return products.map((product: any) => ({
             ...product,
-            _id: product._id.toString(),
-            createdAt: product.createdAt?.toISOString(),
-            updatedAt: product.updatedAt?.toISOString(),
+            // _id and dates are already strings via JSON.stringify but let's be safe/consistent
+            _id: product._id,
+            createdAt: product.createdAt,
+            updatedAt: product.updatedAt,
             seller: sellerMap.get(product.sellerId) ? {
                 username: (sellerMap.get(product.sellerId) as any).username ||
                     `${(sellerMap.get(product.sellerId) as any).firstName || ''} ${(sellerMap.get(product.sellerId) as any).lastName || ''}`.trim() ||
@@ -67,20 +71,23 @@ export async function getAllUsers(search?: string) {
             ]
         } : {};
 
-        const users = await User.find(query)
-            .select("-cart")
+        const rawUsers = await User.find(query)
+            .select("-cart") // We don't need cart for admin list, optimization
             .sort({ createdAt: -1 })
             .lean();
+
+        // Sanitize: this converts ObjectIds in favorites/etc to strings
+        const users = JSON.parse(JSON.stringify(rawUsers));
 
         // Note: La synchro automatique Clerk est omise ici pour la performance de la recherche
         // Utilisez le bouton "Restaurer/Sync" pour forcer une mise à jour si nécessaire.
 
         return users.map((user: any) => ({
             ...user,
-            _id: user._id.toString(),
+            _id: user._id,
             isBanned: !!user.isBanned,
-            createdAt: user.createdAt?.toISOString(),
-            updatedAt: user.updatedAt?.toISOString(),
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
         }));
     }, 60);
 }
