@@ -574,7 +574,32 @@
             "title": "Email Marketing & Notifications",
             "description": "Send bulk emails and notifications to your users with advanced filtering",
             "openDashboard": "Open Marketing Dashboard",
-            "goToMarketing": "Go to Marketing"
+            "goToMarketing": "Go to Marketing",
+            "dashboard": {
+                "subtitle": "Send bulk emails and notifications to your users",
+                "filterPanel": "User Filter Panel",
+                "composer": "Email Composer",
+                "readyToSend": "Ready to send to {count} users",
+                "applyFilters": "Apply filters to select users",
+                "sendButton": "Send to {count} users",
+                "sending": "Sending...",
+                "alerts": {
+                    "noUsers": "Please select users first by applying filters",
+                    "noMethod": "Please select at least one sending method (Email or Notification)",
+                    "noEmailContent": "Please fill in email subject and content",
+                    "noNotificationContent": "Please fill in notification title and message",
+                    "confirmSend": "Are you sure you want to send to {count} users?",
+                    "failed": "Failed to send campaign"
+                },
+                "results": {
+                    "success": "Campaign Sent Successfully!",
+                    "failed": "Campaign Failed",
+                    "emailsSent": "Emails sent: {count}",
+                    "emailsFailed": "Emails failed: {count}",
+                    "notificationsSent": "Notifications sent: {count}",
+                    "viewErrors": "View errors ({count})"
+                }
+            }
         }
     },
     "ContactSeller": {
