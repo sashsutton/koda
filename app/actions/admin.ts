@@ -34,7 +34,7 @@ export async function getAllProducts(search?: string) {
         const products = JSON.parse(JSON.stringify(rawProducts));
 
         // Récupération des vendeurs pour l'affichage
-        const sellerIds = [...new Set(products.map((p: any) => p.sellerId))];
+        const sellerIds = Array.from(new Set(products.map((p: any) => p.sellerId))) as string[];
         const sellers = await User.find({ clerkId: { $in: sellerIds } }).lean();
         const sellerMap = new Map(sellers.map((s: any) => [s.clerkId, s]));
 
@@ -147,7 +147,7 @@ export async function updateUserRole(userId: string, newRole: 'user' | 'admin') 
  */
 export async function toggleBanUser(userId: string) {
     const admin = await requireAdmin();
-    if (admin.clerkId === userId) {
+    if (admin!.clerkId === userId) {
         throw new Error("You cannot ban yourself.");
     }
 
@@ -172,7 +172,7 @@ export async function toggleBanUser(userId: string) {
 export async function fullSyncWithClerk() {
     const admin = await requireAdmin();
 
-    const { success } = await ratelimit.limit(`admin_sync_${admin.clerkId}`);
+    const { success } = await ratelimit.limit(`admin_sync_${admin!.clerkId}`);
     if (!success) {
         throw new Error("Too many requests. Please try again later.");
     }
@@ -244,12 +244,12 @@ export async function fullSyncWithClerk() {
 export async function deleteUser(userId: string) {
     const admin = await requireAdmin();
 
-    const { success } = await ratelimit.limit(`admin_delete_${admin.clerkId}`);
+    const { success } = await ratelimit.limit(`admin_delete_${admin!.clerkId}`);
     if (!success) {
         throw new Error("Too many requests. Please try again later.");
     }
 
-    if (admin.clerkId === userId) throw new Error("You cannot delete yourself.");
+    if (admin!.clerkId === userId) throw new Error("You cannot delete yourself.");
 
     const user = await User.findOne({ clerkId: userId });
     if (!user) throw new Error("User not found in local database.");

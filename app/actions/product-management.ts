@@ -1,3 +1,5 @@
+"use server";
+
 import { requireUser } from "@/lib/auth-utils";
 import { connectToDatabase } from "@/lib/db";
 import { Product } from "@/models/Product";

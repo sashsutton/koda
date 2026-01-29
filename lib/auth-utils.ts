@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { connectToDatabase } from "@/lib/db";
 import { redirect as nextRedirect } from "next/navigation";
 import { redirect } from "@/i18n/routing";
+import { getLocale } from "next-intl/server";
 import User from "@/models/User";
 
 /**
@@ -11,9 +12,10 @@ import User from "@/models/User";
  */
 export async function requireAuth() {
     const { userId } = await auth();
+    const locale = await getLocale();
 
     if (!userId) {
-        redirect("/sign-in");
+        redirect({ href: "/sign-in", locale });
     }
 
     await connectToDatabase();
@@ -26,18 +28,18 @@ export async function requireAuth() {
         try {
             const { clerkClient } = await import("@clerk/nextjs/server");
             const client = await clerkClient();
-            const clerkUser = await client.users.getUser(userId);
+            const clerkUser = await client.users.getUser(userId!);
 
             if (clerkUser) {
                 const email = clerkUser.emailAddresses[0]?.emailAddress;
                 // Create and return the user (we only need isBanned here)
                 const newUser = await User.create({
-                    clerkId: userId,
+                    clerkId: userId!,
                     email: email,
-                    firstName: clerkUser.firstName,
-                    lastName: clerkUser.lastName,
+                    firstName: clerkUser.firstName ?? undefined,
+                    lastName: clerkUser.lastName ?? undefined,
                     imageUrl: clerkUser.imageUrl,
-                    username: clerkUser.username,
+                    username: clerkUser.username ?? undefined,
                     role: 'user',
                     onboardingComplete: false
                 });
@@ -49,10 +51,10 @@ export async function requireAuth() {
         }
     }
     if (user?.isBanned) {
-        redirect("/banned");
+        redirect({ href: "/banned", locale });
     }
 
-    return userId;
+    return userId!;
 }
 
 /**
@@ -76,17 +78,17 @@ export async function requireUser() {
         try {
             const { clerkClient } = await import("@clerk/nextjs/server");
             const client = await clerkClient();
-            const clerkUser = await client.users.getUser(userId);
+            const clerkUser = await client.users.getUser(userId!);
 
             if (clerkUser) {
                 const email = clerkUser.emailAddresses[0]?.emailAddress;
                 user = await User.create({
-                    clerkId: userId,
+                    clerkId: userId!,
                     email: email,
-                    firstName: clerkUser.firstName,
-                    lastName: clerkUser.lastName,
+                    firstName: clerkUser.firstName ?? undefined,
+                    lastName: clerkUser.lastName ?? undefined,
                     imageUrl: clerkUser.imageUrl,
-                    username: clerkUser.username,
+                    username: clerkUser.username ?? undefined,
                     role: 'user',
                     onboardingComplete: false
                 });
@@ -113,9 +115,10 @@ export async function requireUser() {
  */
 export async function requireAdmin() {
     const { userId } = await auth();
+    const locale = await getLocale();
 
     if (!userId) {
-        redirect("/sign-in");
+        redirect({ href: "/sign-in", locale });
     }
 
     await connectToDatabase();
@@ -123,11 +126,11 @@ export async function requireAdmin() {
     const user = await User.findOne({ clerkId: userId as string });
 
     if (!user || user.role !== 'admin') {
-        redirect("/");
+        redirect({ href: "/", locale });
     }
 
-    if (user.isBanned) {
-        redirect("/banned");
+    if (user!.isBanned) {
+        redirect({ href: "/banned", locale });
     }
 
     return user;

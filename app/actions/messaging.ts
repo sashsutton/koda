@@ -52,7 +52,7 @@ export async function startConversation(recipientId: string, initialMessage?: st
 
     if (!conversation) {
         conversation = await Conversation.create({
-            participants: [userId, recipientId],
+            participants: [userId!, recipientId],
             lastMessage: initialMessage || "Démarrage de la conversation",
             lastMessageAt: new Date(),
         });
@@ -79,14 +79,14 @@ export async function sendMessage(conversationId: string, content: string) {
     if (!conversation) throw new Error("Conversation not found");
 
     // Vérifier que l'utilisateur fait partie de la conv
-    if (!conversation.participants.includes(userId)) {
+    if (!conversation.participants.includes(userId!)) {
         throw new Error("Unauthorized");
     }
 
     // Créer le message
     const message = await Message.create({
         conversationId,
-        senderId: userId,
+        senderId: userId!,
         content: content.trim(),
         read: false
     });
@@ -104,7 +104,7 @@ export async function sendMessage(conversationId: string, content: string) {
             'new-message',
             {
                 _id: message._id.toString(),
-                senderId: userId,
+                senderId: userId!,
                 content: message.content,
                 createdAt: message.createdAt.toISOString(),
                 read: false,
