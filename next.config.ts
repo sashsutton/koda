@@ -51,7 +51,11 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin'
+            value: 'no-referrer-when-downgrade'
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: 'https://kodas.works'
           },
           {
             key: 'Content-Security-Policy',
