@@ -517,7 +517,8 @@
         "title": "Admin Console",
         "tabs": {
             "users": "Users",
-            "products": "Products"
+            "products": "Products",
+            "marketing": "Marketing"
         },
         "usersTable": {
             "user": "User",
@@ -568,6 +569,12 @@
         "delete": {
             "loading": "Nuclear deletion in progress (Clerk + Stripe + DB)...",
             "confirm": "WARNING: This will permanently delete the Clerk account, Stripe Connect account, all products, and all history for this user. This action is irreversible. Continue?"
+        },
+        "marketing": {
+            "title": "Email Marketing & Notifications",
+            "description": "Send bulk emails and notifications to your users with advanced filtering",
+            "openDashboard": "Open Marketing Dashboard",
+            "goToMarketing": "Go to Marketing"
         }
     },
     "ContactSeller": {

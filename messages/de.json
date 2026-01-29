@@ -514,7 +514,8 @@
         "title": "Admin-Konsole",
         "tabs": {
             "users": "Benutzer",
-            "products": "Produkte"
+            "products": "Produkte",
+            "marketing": "Marketing"
         },
         "usersTable": {
             "user": "Benutzer",
@@ -565,6 +566,12 @@
         "delete": {
             "loading": "Vollständige Löschung läuft (Clerk + Stripe + DB)...",
             "confirm": "WARNUNG: Dies wird das Clerk-Konto, das Stripe Connect-Konto, alle Produkte und den gesamten Verlauf für diesen Benutzer dauerhaft löschen. Diese Aktion ist irreversibel. Fortfahren?"
+        },
+        "marketing": {
+            "title": "E-Mail-Marketing & Benachrichtigungen",
+            "description": "Senden Sie Massen-E-Mails und Benachrichtigungen an Ihre Benutzer mit erweiterter Filterung",
+            "openDashboard": "Marketing-Dashboard öffnen",
+            "goToMarketing": "Zum Marketing"
         }
     },
     "ContactSeller": {

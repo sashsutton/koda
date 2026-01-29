@@ -515,7 +515,8 @@
         "title": "Console Administration",
         "tabs": {
             "users": "Utilisateurs",
-            "products": "Produits"
+            "products": "Produits",
+            "marketing": "Marketing"
         },
         "usersTable": {
             "user": "Utilisateur",
@@ -566,6 +567,12 @@
         "delete": {
             "loading": "Suppression nucléaire en cours (Clerk + Stripe + DB)...",
             "confirm": "ATTENTION : Cela supprimera définitivement le compte Clerk, le compte Stripe Connect, tous les produits et tout l'historique de cet utilisateur. Cette action est irréversible. Continuer ?"
+        },
+        "marketing": {
+            "title": "Marketing par Email & Notifications",
+            "description": "Envoyez des emails et notifications en masse à vos utilisateurs avec filtrage avancé",
+            "openDashboard": "Ouvrir le Tableau de Bord Marketing",
+            "goToMarketing": "Aller au Marketing"
         }
     },
     "ContactSeller": {

@@ -36,9 +36,31 @@ export async function POST(req: NextRequest) {
                     { status: 403 }
                 );
             }
+        } else if (channelName.startsWith("private-conversation-")) {
+            // Verify user is a participant in the conversation
+            const conversationId = channelName.replace("private-conversation-", "");
+
+            try {
+                const { connectToDatabase } = await import("@/lib/db");
+                const Conversation = (await import("@/models/Conversation")).default;
+
+                await connectToDatabase();
+                const conversation = await Conversation.findById(conversationId);
+
+                if (!conversation || !conversation.participants.includes(userId)) {
+                    return NextResponse.json(
+                        { error: "Forbidden: Not a participant in this conversation" },
+                        { status: 403 }
+                    );
+                }
+            } catch (error) {
+                console.error("Error verifying conversation access:", error);
+                return NextResponse.json(
+                    { error: "Failed to verify conversation access" },
+                    { status: 500 }
+                );
+            }
         }
-        // For conversation channels, we could add additional verification
-        // to check if the user is a participant in the conversation
 
         // Authenticate the user for this channel
         const authResponse = pusherServer.authorizeChannel(socketId, channelName);

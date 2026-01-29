@@ -147,8 +147,9 @@ export function AdminTabs({ users, products, translations }: AdminTabsProps) {
                     <div className="flex flex-col items-center gap-4">
                         <Mail className="w-12 h-12 text-purple-500" />
                         <div>
-                            <h2 className="text-2xl font-bold mb-2">📧 Email Marketing & Notifications</h2>
+                            <h2 className="text-2xl font-bold mb-2">{translations.tabs.marketing}</h2>
                             <p className="text-muted-foreground mb-6">
+                                {/* Description can be added to translations if needed */}
                                 Send bulk emails and notifications to your users with advanced filtering
                             </p>
                         </div>
