@@ -10,6 +10,14 @@ const PurchaseSchema = new Schema({
     category: { type: String }, // Dénormalisé pour analytics
     platform: { type: String }, // Dénormalisé pour analytics
     stripeSessionId: { type: String, required: true }, // Not unique (one session can have multiple products)
+    refundStatus: {
+        type: String,
+        enum: ['none', 'pending', 'approved', 'completed', 'failed', 'rejected'],
+        default: 'none'
+    },
+    refundReason: { type: String }, // Admin note for refund
+    refundedAt: { type: Date }, // When refund was completed
+    stripeRefundId: { type: String }, // Stripe refund ID for tracking
     createdAt: { type: Date, default: Date.now },
 });
 

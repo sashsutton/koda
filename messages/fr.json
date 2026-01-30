@@ -516,7 +516,8 @@
         "tabs": {
             "users": "Utilisateurs",
             "products": "Produits",
-            "marketing": "Marketing"
+            "marketing": "Marketing",
+            "refunds": "Remboursements"
         },
         "usersTable": {
             "user": "Utilisateur",
@@ -573,6 +574,31 @@
             "description": "Envoyez des emails et notifications en masse à vos utilisateurs avec filtrage avancé",
             "openDashboard": "Ouvrir le Tableau de Bord Marketing",
             "goToMarketing": "Aller au Marketing"
+        },
+        "refunds": {
+            "product": "Produit",
+            "buyer": "Acheteur",
+            "seller": "Vendeur",
+            "amount": "Montant",
+            "status": "Statut",
+            "reason": "Raison",
+            "date": "Date",
+            "actions": "Actions",
+            "approve": "Approuver",
+            "reject": "Rejeter",
+            "processing": "Traitement...",
+            "confirmProcess": "Êtes-vous sûr de vouloir traiter ce remboursement ? Le client sera remboursé et le transfert du vendeur sera annulé.",
+            "processSuccess": "Remboursement traité avec succès !",
+            "processFailed": "Échec du traitement du remboursement",
+            "rejectReasonPrompt": "Entrez une raison pour rejeter ce remboursement :",
+            "rejectSuccess": "Remboursement rejeté.",
+            "rejectFailed": "Échec du rejet du remboursement",
+            "noRefunds": "Aucun remboursement à afficher.",
+            "statusPending": "En attente",
+            "statusApproved": "Approuvé",
+            "statusCompleted": "Terminé",
+            "statusFailed": "Échoué",
+            "statusRejected": "Rejeté"
         }
     },
     "ContactSeller": {

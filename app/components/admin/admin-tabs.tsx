@@ -3,25 +3,28 @@
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
 import { AdminProductTable } from "@/app/components/admin/admin-product-table";
-import { Users, Package, Mail } from "lucide-react";
+import { Users, Package, Mail, RefreshCw } from "lucide-react";
 import { AdminBanButton } from "@/app/components/admin/admin-ban-button";
 import { AdminRoleButton } from "@/app/components/admin/admin-role-button";
 import { AdminDeleteButton } from "@/app/components/admin/admin-delete-button";
 import { AdminSearch } from "@/app/components/admin/admin-search"; // Import ajouté
+import { AdminRefundsTable } from "@/app/components/admin/admin-refunds-table";
 
 import { useFormatter } from "next-intl";
 
 interface AdminTabsProps {
     users: any[];
     products: any[];
+    refunds: any[];
     translations: {
         tabs: any;
         usersTable: any;
         productsTable: any;
+        refunds: any;
     };
 }
 
-export function AdminTabs({ users, products, translations }: AdminTabsProps) {
+export function AdminTabs({ users, products, refunds, translations }: AdminTabsProps) {
     const [mounted, setMounted] = useState(false);
     const format = useFormatter();
 
@@ -45,12 +48,15 @@ export function AdminTabs({ users, products, translations }: AdminTabsProps) {
 
     return (
         <Tabs defaultValue="users" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8 max-w-2xl">
+            <TabsList className="grid w-full grid-cols-4 mb-8 max-w-3xl">
                 <TabsTrigger value="users" className="gap-2">
                     <Users className="w-4 h-4" /> {translations.tabs.users} ({users.length})
                 </TabsTrigger>
                 <TabsTrigger value="products" className="gap-2">
                     <Package className="w-4 h-4" /> {translations.tabs.products} ({products.length})
+                </TabsTrigger>
+                <TabsTrigger value="refunds" className="gap-2">
+                    <RefreshCw className="w-4 h-4" /> {translations.tabs.refunds} ({refunds.length})
                 </TabsTrigger>
                 <TabsTrigger value="marketing" className="gap-2">
                     <Mail className="w-4 h-4" /> Marketing
@@ -142,7 +148,14 @@ export function AdminTabs({ users, products, translations }: AdminTabsProps) {
                 <AdminProductTable products={products} />
             </TabsContent>
 
+            <TabsContent value="refunds" className="space-y-4">
+                <div className="bg-white dark:bg-gray-950 rounded-lg shadow p-6">
+                    <AdminRefundsTable purchases={refunds} mode="pending" />
+                </div>
+            </TabsContent>
+
             <TabsContent value="marketing" className="space-y-4">
+
                 <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-lg p-8 text-center">
                     <div className="flex flex-col items-center gap-4">
                         <Mail className="w-12 h-12 text-purple-500" />

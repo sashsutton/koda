@@ -1,4 +1,5 @@
 import { getAllUsers, getAllProducts } from "@/app/actions/admin";
+import { getAllRefunds } from "@/app/actions/refunds";
 import { AdminTabs } from "@/app/components/admin/admin-tabs";
 import { getTranslations, getFormatter } from "next-intl/server";
 
@@ -12,9 +13,10 @@ export default async function AdminDashboard({
     const userSearch = params.userQ || "";
     const productSearch = params.productQ || "";
 
-    const [users, products, t, format] = await Promise.all([
+    const [users, products, refunds, t, format] = await Promise.all([
         getAllUsers(userSearch),
         getAllProducts(productSearch),
+        getAllRefunds({ status: 'pending' }),
         getTranslations('Admin'),
         getFormatter()
     ]);
@@ -23,7 +25,8 @@ export default async function AdminDashboard({
     const translations = {
         tabs: {
             users: t('tabs.users'),
-            products: t('tabs.products')
+            products: t('tabs.products'),
+            refunds: t('tabs.refunds')
         },
         usersTable: {
             user: t('usersTable.user'),
@@ -48,6 +51,31 @@ export default async function AdminDashboard({
             decertify: t('productsTable.decertify'),
             certify: t('productsTable.certify'),
             noProducts: t('productsTable.noProducts')
+        },
+        refunds: {
+            product: t('refunds.product'),
+            buyer: t('refunds.buyer'),
+            seller: t('refunds.seller'),
+            amount: t('refunds.amount'),
+            status: t('refunds.status'),
+            reason: t('refunds.reason'),
+            date: t('refunds.date'),
+            actions: t('refunds.actions'),
+            approve: t('refunds.approve'),
+            reject: t('refunds.reject'),
+            processing: t('refunds.processing'),
+            confirmProcess: t('refunds.confirmProcess'),
+            processSuccess: t('refunds.processSuccess'),
+            processFailed: t('refunds.processFailed'),
+            rejectReasonPrompt: t('refunds.rejectReasonPrompt'),
+            rejectSuccess: t('refunds.rejectSuccess'),
+            rejectFailed: t('refunds.rejectFailed'),
+            noRefunds: t('refunds.noRefunds'),
+            statusPending: t('refunds.statusPending'),
+            statusApproved: t('refunds.statusApproved'),
+            statusCompleted: t('refunds.statusCompleted'),
+            statusFailed: t('refunds.statusFailed'),
+            statusRejected: t('refunds.statusRejected')
         }
     };
 
@@ -78,6 +106,7 @@ export default async function AdminDashboard({
             <AdminTabs
                 users={users}
                 products={products}
+                refunds={refunds}
                 translations={translations}
             />
         </div>

@@ -518,6 +518,7 @@
         "tabs": {
             "users": "Users",
             "products": "Products",
+            "refunds": "Refunds",
             "marketing": "Marketing"
         },
         "usersTable": {
@@ -600,6 +601,31 @@
                     "viewErrors": "View errors ({count})"
                 }
             }
+        },
+        "refunds": {
+            "product": "Product",
+            "buyer": "Buyer",
+            "seller": "Seller",
+            "amount": "Amount",
+            "status": "Status",
+            "reason": "Reason",
+            "date": "Date",
+            "actions": "Actions",
+            "approve": "Approve",
+            "reject": "Reject",
+            "processing": "Processing...",
+            "confirmProcess": "Are you sure you want to process this refund? The customer will be refunded and the seller's transfer will be reversed.",
+            "processSuccess": "Refund processed successfully!",
+            "processFailed": "Failed to process refund",
+            "rejectReasonPrompt": "Enter a reason for rejecting this refund:",
+            "rejectSuccess": "Refund rejected.",
+            "rejectFailed": "Failed to reject refund",
+            "noRefunds": "No refunds to display.",
+            "statusPending": "Pending",
+            "statusApproved": "Approved",
+            "statusCompleted": "Completed",
+            "statusFailed": "Failed",
+            "statusRejected": "Rejected"
         }
     },
     "ContactSeller": {

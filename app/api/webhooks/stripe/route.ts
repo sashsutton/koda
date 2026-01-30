@@ -254,5 +254,44 @@ export async function POST(req: Request) {
         }
     }
 
+    // 5. Handle charge.refunded event (when a refund completes)
+    if (event.type === 'charge.refunded') {
+        const charge = event.data.object as Stripe.Charge;
+
+        try {
+            await connectToDatabase();
+
+            // Find purchases associated with this charge
+            const paymentIntentId = charge.payment_intent as string;
+
+            if (paymentIntentId) {
+                // Get the checkout session to find purchases
+                const sessions = await stripe.checkout.sessions.list({
+                    payment_intent: paymentIntentId,
+                    limit: 1
+                });
+
+                if (sessions.data.length > 0) {
+                    const sessionId = sessions.data[0].id;
+
+                    // Update all purchases from this session
+                    const purchases = await Purchase.find({ stripeSessionId: sessionId });
+
+                    for (const purchase of purchases) {
+                        if (purchase.refundStatus !== 'completed') {
+                            purchase.refundStatus = 'completed';
+                            purchase.refundedAt = new Date();
+                            await purchase.save();
+
+                            console.log(`Purchase ${purchase._id} marked as refunded via webhook`);
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error handling charge.refunded:', error);
+        }
+    }
+
     return new NextResponse(null, { status: 200 });
 }
