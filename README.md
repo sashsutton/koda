@@ -26,6 +26,7 @@ This platform empowers creators to sell their workflows and allows users to purc
     - Automatic email receipts for buyers and sale alerts for sellers via **Resend**.
 - **🛡️ Nuclear Admin Tools**:
     - **Marketing Blasts**: Send bulk emails or system notifications to all users.
+    - **Refund Management**: Admin-controlled refund system with automatic Stripe transfer reversals.
     - **User Sync**: Bi-directional synchronization with Clerk.
     - **Nuclear Deletion**: One-click purge of users across Clerk, Stripe, and Database.
 - **☁️ Secure Hosting (AWS S3)**:
@@ -180,7 +181,9 @@ If you use a custom domain (e.g., `kodas.works` and `clerk.kodas.works`), you **
 ### 4. Webhook Production URLs
 Update your webhook providers with the live URLs:
 - **Clerk**: `https://kodas.works/api/webhooks/clerk`
+  - Subscribe to: `user.created`, `user.updated`, `user.deleted`
 - **Stripe**: `https://kodas.works/api/webhooks/stripe`
+  - Subscribe to: `checkout.session.completed`, `account.updated`, `charge.refunded`
 
 ---
 
@@ -202,7 +205,79 @@ koda/
 
 ---
 
+## 💰 Refund System
+
+### Overview
+Koda includes a built-in admin-controlled refund system that handles customer refunds with automatic Stripe transfer reversals. Admins can review, approve, or reject refund requests through a dedicated "Refunds" tab in the admin dashboard.
+
+### How It Works
+
+1. **Customer Request**: Customers contact support to request a refund
+2. **Admin Review**: Admin creates and reviews refund in the dashboard (`/admin` → Refunds tab)
+3. **Approval**: Admin clicks "Approve" to process the refund
+4. **Automatic Processing**:
+   - Full refund issued to customer via Stripe
+   - Seller's 85% transfer automatically reversed
+   - Platform loses the 15% fee (standard marketplace behavior)
+   - Notifications sent to buyer and seller
+5. **Webhook**: Stripe sends `charge.refunded` event to update purchase status
+
+### Database Schema
+
+Refund tracking is built into the `Purchase` model:
+- `refundStatus`: 'none' | 'pending' | 'approved' | 'completed' | 'failed' | 'rejected'
+- `refundReason`: Admin note explaining the refund
+- `refundedAt`: Timestamp when refund completed
+- `stripeRefundId`: Stripe refund ID for reference
+
+### Admin Actions
+
+**Location**: `/admin` → Refunds tab
+
+**Available Actions**:
+- View all pending refund requests
+- Approve refunds (processes immediately)
+- Reject refunds (with reason)
+- View refund history (completed, failed, rejected)
+
+### Server Actions
+
+All refund operations are in `app/actions/refunds.ts`:
+- `getPendingRefunds()`: Fetch pending refunds for admin review
+- `getAllRefunds(filters)`: Get refund history with status filtering
+- `createRefundRequest()`: Mark purchase for refund review
+- `processRefund()`: Issue refund and reverse transfer
+- `rejectRefund()`: Reject refund with reason
+
+### Stripe Configuration
+
+**Required Webhook Event**:
+Add `charge.refunded` to your Stripe webhook subscription:
+
+1. Go to Stripe Dashboard → Developers → Webhooks
+2. Select your production endpoint (`https://kodas.works/api/webhooks/stripe`)
+3. Click "Add events to listen to"
+4. Select `charge.refunded`
+5. Save changes
+
+### Important Notes
+
+> **⚠️ Platform Fee Loss**: When issuing a refund, you (the platform) will lose the 15% commission. This is standard Stripe marketplace behavior and cannot be avoided.
+
+> **✅ Automatic Reversals**: Stripe automatically reverses the seller's 85% transfer when you create a refund. No manual intervention needed.
+
+### Multi-Language Support
+
+Refund UI is fully translated:
+- English ✅
+- French ✅
+- Spanish (add to `messages/es.json`)
+- German (add to `messages/de.json`)
+
+---
+
 ## 🚀 Troubleshooting
+
 
 ### Clerk Login Blocked / Infinite Loading?
 - **CSP Error**: Check browser console. If "Content Security Policy" violation, you need to update `next.config.ts` to allow your Clerk custom domain.
