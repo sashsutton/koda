@@ -394,14 +394,14 @@
     },
     "Legal": {
         "title": "Mentions Légales",
-        "lastUpdated": "Dernière mise à jour : 25 janvier 2026",
+        "lastUpdated": "Dernière mise à jour : 16 Mars 2026",
         "editor": {
             "title": "Éditeur du Site",
-            "content": "Koda est édité par [Votre Nom / Nom de l'Entreprise], situé à [Adresse]."
+            "content": "Koda est édité par Sasha Sutton, situé à 3 Pl. Victor Hugo, 13003 Marseille, France."
         },
         "host": {
             "title": "Hébergement",
-            "content": "Le site est hébergé par [Nom de l'Hébergeur]."
+            "content": "Le site est hébergé par Vercel."
         },
         "contact": {
             "title": "Contact",

@@ -395,11 +395,11 @@
         "lastUpdated": "Última actualización: 25 de enero de 2026",
         "editor": {
             "title": "Editor del Sitio",
-            "content": "Koda es editado por [Su Nombre / Nombre de l'Empresa], ubicado en [Dirección]."
+            "content": "Koda es editado por Sasha Sutton, ubicado en 3 Pl. Victor Hugo, 13003 Marseille, France."
         },
         "host": {
             "title": "Alojamiento",
-            "content": "El sitio está alojado por [Nombre del Proveedor de Alojamiento]."
+            "content": "El sitio está alojado por Vercel."
         },
         "contact": {
             "title": "Contacto",

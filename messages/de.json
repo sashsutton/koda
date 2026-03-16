@@ -393,14 +393,14 @@
     },
     "Legal": {
         "title": "Impressum",
-        "lastUpdated": "Zuletzt aktualisiert: 25. Januar 2026",
+        "lastUpdated": "Zuletzt aktualisiert: 16 März 2026",
         "editor": {
             "title": "Herausgeber der Website",
-            "content": "Koda wird herausgegeben von [Ihr Name / Firmenname], mit Sitz in [Adresse]."
+            "content": "Koda wird herausgegeben von Sasha Sutton, mit Sitz in 3 Pl. Victor Hugo, 13003 Marseille, France."
         },
         "host": {
             "title": "Hosting",
-            "content": "Die Website wird gehostet von [Name des Hosting-Anbieters]."
+            "content": "Die Website wird gehostet von Vercel."
         },
         "contact": {
             "title": "Kontakt",
