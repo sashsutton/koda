@@ -396,18 +396,18 @@
     },
     "Legal": {
         "title": "Legal Mentions",
-        "lastUpdated": "Last updated: January 25, 2026",
+        "lastUpdated": "Last updated: March 16, 2026",
         "editor": {
             "title": "Site Editor",
-            "content": "Koda is edited by [Your Name / Company Name], located at [Address]."
+            "content": "Koda is edited by Sasha Sutton, located at 3 Pl. Victor Hugo, 13003 Marseille, France."
         },
         "host": {
             "title": "Hosting",
-            "content": "The site is hosted by [Hosting Provider Name]."
+            "content": "The site is hosted by Vercel."
         },
         "contact": {
             "title": "Contact",
-            "content": "For any inquiries, you can contact us at [Your Email]."
+            "content": "For any inquiries, you can contact us at hello.kodateam@gmail.com."
         }
     },
     "Dashboard": {
