@@ -1,4 +1,4 @@
-# 🚀 Koda Marketplace - Developer's Guide
+# Koda Marketplace - Developer's Guide
 (secret)
 
 Welcome to **Koda**, a premium marketplace for no-code automations (n8n, Make, Zapier, Python).
@@ -6,7 +6,7 @@ This platform empowers creators to sell their workflows and allows users to purc
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 - **🌐 Internationalization (i18n)**:
     - Fully translated in 4 languages: **English, French, Spanish, German**.
@@ -41,7 +41,7 @@ This platform empowers creators to sell their workflows and allows users to purc
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
 - **Language**: TypeScript
@@ -58,7 +58,7 @@ This platform empowers creators to sell their workflows and allows users to purc
 
 ---
 
-## 📥 Getting Started
+## Getting Started
 
 ### 1. Prerequisites
 - **Node.js** (v20+)
@@ -155,7 +155,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## 🚢 Production Deployment (Vercel)
+## Production Deployment (Vercel)
 
 ### 1. Build Verification
 Before deploying, ensure the app builds locally:
@@ -205,7 +205,7 @@ koda/
 
 ---
 
-## 💰 Refund System
+## Refund System
 
 ### Overview
 Koda includes a built-in admin-controlled refund system that handles customer refunds with automatic Stripe transfer reversals. Admins can review, approve, or reject refund requests through a dedicated "Refunds" tab in the admin dashboard.
@@ -262,21 +262,21 @@ Add `charge.refunded` to your Stripe webhook subscription:
 
 ### Important Notes
 
-> **⚠️ Platform Fee Loss**: When issuing a refund, you (the platform) will lose the 15% commission. This is standard Stripe marketplace behavior and cannot be avoided.
+> **Platform Fee Loss**: When issuing a refund, you (the platform) will lose the 15% commission. This is standard Stripe marketplace behavior and cannot be avoided.
 
-> **✅ Automatic Reversals**: Stripe automatically reverses the seller's 85% transfer when you create a refund. No manual intervention needed.
+> **Automatic Reversals**: Stripe automatically reverses the seller's 85% transfer when you create a refund. No manual intervention needed.
 
 ### Multi-Language Support
 
 Refund UI is fully translated:
-- English ✅
-- French ✅
+- English 
+- French 
 - Spanish (add to `messages/es.json`)
 - German (add to `messages/de.json`)
 
 ---
 
-## 🚀 Troubleshooting
+## Troubleshooting
 
 
 ### Clerk Login Blocked / Infinite Loading?
